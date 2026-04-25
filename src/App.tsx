@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { api } from './api';
-import type { Tree, Rental, User, Review } from './types';
+import type { Tree, Rental, User, Review, FarmUpdate } from './types';
 import './App.css';
 
 const PLAN_EMOJI: Record<string, string> = { sapling: '🌱', adult: '🌳', grand: '🏔️' };
 const API_BASE = 'http://localhost:5000';
 
-const STATS = [['500+', 'Trees Available'], ['15–100 kg', 'Per Season'], ['3', 'Mango Varieties'], ['100%', 'Chemical-Free']];
+const STATS = [['15–60 kg', 'Per Season'], ['3', 'Tree Varieties']];
 const STEPS = [
   { n: 1, icon: '🛒', h: 'Pick Your Plan',      p: 'Choose a tree size — Sapling, Adult, or Grand.' },
   { n: 2, icon: '🌳', h: 'We Assign Your Tree', p: 'A dedicated tree is tagged with your name on our Ramnagar farm.' },
-  { n: 3, icon: '👨‍🌾', h: 'We Care For It',      p: 'Our farmers nurture your tree year-round with monthly photo updates.' },
-  { n: 4, icon: '📦', h: 'Harvest Delivered',   p: 'Fresh mangoes handpicked and shipped to your home within 24 hours.' },
+  { n: 3, icon: '👨‍🌾', h: 'We Care For It',      p: 'Our farmers nurture your tree year-round — weekly photos & videos sent straight to your dashboard.' },
+  { n: 4, icon: '📦', h: 'Harvest Delivered',   p: 'Fresh produce handpicked and shipped to your home within 24 hours.' },
 ];
 
 export default function App() {
@@ -22,8 +22,12 @@ export default function App() {
   const [view, setView] = useState<'home' | 'login' | 'register' | 'dashboard'>('home');
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2025' });
-  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
   const [reviewFiles, setReviewFiles] = useState<FileList | null>(null);
+  const [updates, setUpdates] = useState<Record<string, FarmUpdate[]>>({});
+  const [updateFiles, setUpdateFiles] = useState<FileList | null>(null);
+  const [updateCaption, setUpdateCaption] = useState('');
+  const [expandedRental, setExpandedRental] = useState<string | null>(null);
   const [msg, setMsg] = useState('');
 
   useEffect(() => {
@@ -68,17 +72,38 @@ export default function App() {
     const data = new FormData();
     data.append('rating', String(reviewForm.rating));
     data.append('comment', reviewForm.comment);
-    data.append('name', user?.name || 'Anonymous');
+    data.append('name', user?.name || reviewForm.name || 'Anonymous');
     if (reviewFiles) Array.from(reviewFiles).forEach(f => data.append('media', f));
-    const res = await fetch(`${API_BASE}/api/reviews`, {
+    const res = await fetch(`${API_BASE}/api/reviews`, { method: 'POST', body: data }).then(r => r.json());
+    if (res._id) {
+      setMsg('Review posted!'); setReviewForm({ rating: 5, comment: '', name: '' }); setReviewFiles(null);
+      api.get('/reviews').then(setReviews);
+    } else setMsg(res.message || 'Error posting review');
+  };
+
+  const loadUpdates = async (rentalId: string) => {
+    if (expandedRental === rentalId) { setExpandedRental(null); return; }
+    setExpandedRental(rentalId);
+    if (!updates[rentalId]) {
+      const data = await api.get(`/farm-updates/${rentalId}`);
+      setUpdates(u => ({ ...u, [rentalId]: data }));
+    }
+  };
+
+  const postFarmUpdate = async (rentalId: string) => {
+    const data = new FormData();
+    data.append('caption', updateCaption);
+    if (updateFiles) Array.from(updateFiles).forEach(f => data.append('media', f));
+    const res = await fetch(`${API_BASE}/api/farm-updates/${rentalId}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       body: data,
     }).then(r => r.json());
     if (res._id) {
-      setMsg('Review posted!'); setReviewForm({ rating: 5, comment: '' }); setReviewFiles(null);
-      api.get('/reviews').then(setReviews);
-    } else setMsg(res.message || 'Error posting review');
+      setUpdates(u => ({ ...u, [rentalId]: [res, ...(u[rentalId] || [])] }));
+      setUpdateCaption(''); setUpdateFiles(null);
+      setMsg('Update posted!');
+    }
   };
 
   const cancelRental = async (id: string) => {
@@ -90,7 +115,7 @@ export default function App() {
   return (
     <div className="app">
       <nav className="nav">
-        <div className="logo" onClick={() => setView('home')}>MangoMine 🥭</div>
+        <div className="logo" onClick={() => setView('home')}>MyTree 🌳</div>
         <div className="nav-links">
           {user ? (
             <>
@@ -114,8 +139,8 @@ export default function App() {
           <section className="hero">
             <div className="hero-text">
               <div className="badge">🌿 Farm-to-Door Experience</div>
-              <h1>Own a <span>Mango Tree.</span><br />Get Fresh Mangoes Every Season.</h1>
-              <p>Rent a real mango tree on our Ramnagar farm. We grow it, you enjoy the harvest — fresh mangoes delivered to your door.</p>
+              <h1>Own a <span>Tree.</span><br />Get Fresh Produce Every Season.</h1>
+              <p>Rent a real tree on our Ramnagar farm. We grow it, you enjoy the harvest — fresh produce delivered to your door.</p>
               <div className="hero-btns">
                 <button className="btn-primary" onClick={() => setView(user ? 'dashboard' : 'register')}>Rent My Tree →</button>
                 <button className="btn-outline" onClick={() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' })}>See Plans</button>
@@ -146,42 +171,46 @@ export default function App() {
           <section className="section plans-section" id="plans">
             <div className="section-title"><h2>Choose Your Tree</h2><p>All plans include free home delivery.</p></div>
             <div className="plans">
-              {trees.length === 0 ? <p className="empty">No trees available — seed the backend first!</p> : trees.map(tree => (
-                <div key={tree._id} className={`plan-card ${!tree.isAvailable ? 'unavailable' : ''}`}>
-                  <div className="plan-emoji">{PLAN_EMOJI[tree.plan]}</div>
-                  <div className="plan-name">{tree.name}</div>
-                  <div className="plan-price">₹{tree.pricePerSeason.toLocaleString()} <span>/ season</span></div>
-                  <div className="plan-yield">{tree.yieldMin}–{tree.yieldMax} kg mangoes</div>
-                  <div className="plan-loc">📍 {tree.location}</div>
-                  {tree.isAvailable
-                    ? <button className="btn-primary full" onClick={() => { setRentForm(f => ({ ...f, treeId: tree._id })); setView(user ? 'dashboard' : 'register'); }}>{user ? 'Rent This Tree' : 'Sign Up to Rent'}</button>
-                    : <div className="unavail-badge">Rented Out</div>}
-                </div>
-              ))}
+              {trees.length === 0 ? <p className="empty">No trees available — seed the backend first!</p> :
+                Object.values(trees.reduce((acc, tree) => { acc[tree.plan] = acc[tree.plan] || tree; return acc; }, {} as Record<string, typeof trees[0]>))
+                .map(tree => {
+                  const available = trees.filter(t => t.plan === tree.plan && t.isAvailable).length;
+                  return (
+                    <div key={tree.plan} className={`plan-card ${available === 0 ? 'unavailable' : ''}`}>
+                      <div className="plan-emoji">{PLAN_EMOJI[tree.plan]}</div>
+                      <div className="plan-name">{tree.name}</div>
+                      <div className="plan-price">₹{tree.pricePerSeason.toLocaleString()} <span>/ season</span></div>
+                      <div className="plan-yield">{tree.yieldMin}–{tree.yieldMax} kg yield</div>
+                      <div className="plan-loc">📍 {tree.location}</div>
+                      <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
+                      {available > 0
+                        ? <button className="btn-primary full" onClick={() => { setRentForm(f => ({ ...f, treeId: '' })); setView(user ? 'dashboard' : 'register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
+                        : <div className="unavail-badge">Fully Booked</div>}
+                    </div>
+                  );
+                })
+              }
             </div>
           </section>
 
           <section className="section reviews-section" id="reviews">
-            <div className="section-title"><h2>What Our Tree Owners Say</h2><p>Real reviews from real mango lovers.</p></div>
-            {user ? (
-              <div className="review-form-card">
-                <h3>Leave a Review</h3>
-                <div className="star-row">
-                  {[1,2,3,4,5].map(n => (
-                    <span key={n} className={`star ${n <= reviewForm.rating ? 'filled' : ''}`} onClick={() => setReviewForm(f => ({ ...f, rating: n }))}>★</span>
-                  ))}
-                </div>
-                <textarea placeholder="Share your experience..." value={reviewForm.comment} onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))} />
-                <label className="upload-label">
-                  📷 Add Photos / Videos
-                  <input type="file" multiple accept="image/*,video/*" onChange={e => setReviewFiles(e.target.files)} />
-                </label>
-                {reviewFiles && <p className="file-count">{reviewFiles.length} file(s) selected</p>}
-                <button className="btn-primary" onClick={handleReview}>Post Review</button>
+            <div className="section-title"><h2>What Our Tree Owners Say</h2><p>Real reviews from real tree owners.</p></div>
+            <div className="review-form-card">
+              <h3>Leave a Review</h3>
+              {!user && <input placeholder="Your Name" value={reviewForm.name} onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))} />}
+              <div className="star-row">
+                {[1,2,3,4,5].map(n => (
+                  <span key={n} className={`star ${n <= reviewForm.rating ? 'filled' : ''}`} onClick={() => setReviewForm(f => ({ ...f, rating: n }))}>★</span>
+                ))}
               </div>
-            ) : (
-              <p className="review-login-hint"><span onClick={() => setView('login')}>Login</span> to leave a review.</p>
-            )}
+              <textarea placeholder="Share your experience..." value={reviewForm.comment} onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))} />
+              <label className="upload-label">
+                📷 Add Photos / Videos
+                <input type="file" multiple accept="image/*,video/*" onChange={e => setReviewFiles(e.target.files)} />
+              </label>
+              {reviewFiles && <p className="file-count">{reviewFiles.length} file(s) selected</p>}
+              <button className="btn-primary" onClick={handleReview}>Post Review</button>
+            </div>
             <div className="reviews-grid">
               {reviews.length === 0 ? <p className="empty">No reviews yet — be the first!</p> : reviews.map(r => (
                 <div key={r._id} className="review-card">
@@ -206,8 +235,8 @@ export default function App() {
           </section>
 
           <div className="cta-bottom">
-            <h2>Your Mango Tree is Waiting 🥭</h2>
-            <p>Get fresh, chemical-free mangoes from our Ramnagar farm delivered every season.</p>
+            <h2>Your Tree is Waiting 🌳</h2>
+            <p>Get fresh, chemical-free produce from our Ramnagar farm delivered every season.</p>
             <button className="btn-primary" onClick={() => setView(user ? 'dashboard' : 'register')}>Rent a Tree Now →</button>
           </div>
         </>
@@ -265,7 +294,40 @@ export default function App() {
                       <span>Est. Yield: {r.estimatedYield} kg</span>
                       <span>📍 {r.deliveryAddress}</span>
                     </div>
-                    {r.status === 'active' && <button className="btn-cancel" onClick={() => cancelRental(r._id)}>Cancel Rental</button>}
+                    <div className="rental-actions">
+                      {r.status === 'active' && <button className="btn-cancel" onClick={() => cancelRental(r._id)}>Cancel Rental</button>}
+                      <button className="btn-updates" onClick={() => loadUpdates(r._id)}>
+                        {expandedRental === r._id ? 'Hide Updates' : '📷 View Farm Updates'}
+                      </button>
+                    </div>
+                    {expandedRental === r._id && (
+                      <div className="farm-updates">
+                        <div className="update-upload">
+                          <input placeholder="Caption (optional)" value={updateCaption} onChange={e => setUpdateCaption(e.target.value)} />
+                          <label className="upload-label">
+                            📷 Upload Photos / Videos
+                            <input type="file" multiple accept="image/*,video/*" onChange={e => setUpdateFiles(e.target.files)} />
+                          </label>
+                          {updateFiles && <p className="file-count">{updateFiles.length} file(s) selected</p>}
+                          <button className="btn-primary" onClick={() => postFarmUpdate(r._id)}>Post Update</button>
+                        </div>
+                        {(updates[r._id] || []).length === 0
+                          ? <p className="empty">No updates yet — check back soon!</p>
+                          : (updates[r._id] || []).map(u => (
+                            <div key={u._id} className="update-card">
+                              <p className="update-date">{new Date(u.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                              {u.caption && <p className="update-caption">{u.caption}</p>}
+                              {u.media.length > 0 && (
+                                <div className="review-media">
+                                  {u.media.map((m, i) => m.type === 'image'
+                                    ? <img key={i} src={`${API_BASE}${m.url}`} alt="update" />
+                                    : <video key={i} src={`${API_BASE}${m.url}`} controls />)}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -275,7 +337,7 @@ export default function App() {
       )}
 
       <footer>
-        <p><strong>MangoMine</strong> © 2025 — Grown with love in Ramnagar, Uttarakhand 🌿</p>
+        <p><strong>MyTree</strong> © 2025 — Grown with love in Ramnagar, Uttarakhand 🌿</p>
       </footer>
     </div>
   );

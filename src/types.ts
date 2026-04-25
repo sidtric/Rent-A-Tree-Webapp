@@ -25,6 +25,14 @@ export interface User {
   email: string;
 }
 
+export interface FarmUpdate {
+  _id: string;
+  rental: string;
+  caption: string;
+  media: { url: string; type: 'image' | 'video' }[];
+  createdAt: string;
+}
+
 export interface Review {
   _id: string;
   name: string;
