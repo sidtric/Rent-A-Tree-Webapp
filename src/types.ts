@@ -24,3 +24,12 @@ export interface User {
   name: string;
   email: string;
 }
+
+export interface Review {
+  _id: string;
+  name: string;
+  rating: number;
+  comment: string;
+  media: { url: string; type: 'image' | 'video' }[];
+  createdAt: string;
+}
