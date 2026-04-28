@@ -25,6 +25,14 @@ export interface User {
   email: string;
 }
 
+export interface Video {
+  _id: string;
+  title: string;
+  description: string;
+  url: string;
+  createdAt: string;
+}
+
 export interface FarmUpdate {
   _id: string;
   rental: string;
