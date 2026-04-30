@@ -616,7 +616,7 @@ export default function App() {
             <h4>Contact</h4>
             <p className="footer-contact-line">hello@yourorchard.in</p>
             <p className="footer-contact-line dim">Ramnagar, Uttarakhand</p>
-            <button className="footer-reserve-btn" onClick={() => setView(user ? 'dashboard' : 'register')}>Rent a Tree →</button>
+            <button className="footer-reserve-btn" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree →</button>
           </div>
         </div>
         <div className="footer-bottom">
