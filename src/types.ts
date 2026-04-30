@@ -5,6 +5,8 @@ export interface Tree {
   location: string;
   yieldMin: number;
   yieldMax: number;
+  priceMin: number;
+  priceMax: number;
   pricePerSeason: number;
   isAvailable: boolean;
 }

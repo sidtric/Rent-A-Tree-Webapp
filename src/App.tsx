@@ -3,7 +3,8 @@ import { api } from './api';
 import type { Tree, Rental, User, Review, FarmUpdate, Video } from './types';
 import './App.css';
 
-const PLAN_EMOJI: Record<string, string> = { sapling: '🌱', adult: '🌳', grand: '🏔️' };
+const PLAN_EMOJI:  Record<string, string> = { sapling: '🌳', adult: '🌳', grand: '🌳' };
+const PLAN_LABEL:  Record<string, string> = { sapling: 'Small Tree Pack', adult: 'Medium Tree Pack', grand: 'Premium Tree Pack' };
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
 const STEPS = [
@@ -58,6 +59,12 @@ export default function App() {
   const [updateCaption, setUpdateCaption] = useState('');
   const [expandedRental, setExpandedRental] = useState<string | null>(null);
   const [msg, setMsg] = useState('');
+  const [featIdx, setFeatIdx] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setFeatIdx(i => (i + 1) % FEATURES.length), 3500);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     api.get('/trees').then(setTrees).catch(() => {});
@@ -214,15 +221,6 @@ export default function App() {
             </div>
           </section>
 
-          <div className="stats-strip">
-            <div className="stat-item"><span className="stat-num">120+</span><span className="stat-label">Trees in Orchard</span></div>
-            <div className="stat-divider" />
-            <div className="stat-item"><span className="stat-num">3</span><span className="stat-label">Seasons Running</span></div>
-            <div className="stat-divider" />
-            <div className="stat-item"><span className="stat-num">450+</span><span className="stat-label">kg Delivered</span></div>
-            <div className="stat-divider" />
-            <div className="stat-item"><span className="stat-num">98%</span><span className="stat-label">Happy Owners</span></div>
-          </div>
 
           <section className="section how-it-works" id="how-it-works">
             <div className="section-title">
@@ -255,19 +253,40 @@ export default function App() {
               <h2>Our Promise, <span>Every Season</span></h2>
               <p>We don't just deliver produce — we deliver trust, transparency, and taste you can trace back to your tree.</p>
             </div>
-            <div className="features-grid">
-              {FEATURES.map(f => (
-                <div key={f.num} className={`feature-card ${f.cls}`}>
-                  <div className="feature-card-top">
-                    <span className="feature-num">{f.num}</span>
-                    <div className="feature-icon-wrap">{f.icon}</div>
-                  </div>
-                  <div className="feature-body">
-                    <div className="feature-title">{f.title}</div>
-                    <div className="feature-desc">{f.desc}</div>
-                    <div className="feature-tag"><span className="feature-tag-dot" />{f.tag}</div>
-                  </div>
+
+            <div className="feat-tabs">
+              {FEATURES.map((f, i) => (
+                <button key={f.num} className={`feat-tab ${i === featIdx ? 'active' : ''}`} onClick={() => setFeatIdx(i)}>
+                  <span>{f.icon}</span>{f.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="feat-carousel">
+              <button className="feat-arrow" onClick={() => setFeatIdx(i => (i - 1 + FEATURES.length) % FEATURES.length)}>‹</button>
+              <div className="feat-track-wrap">
+                <div className="feat-track" style={{ transform: `translateX(-${featIdx * 100}%)` }}>
+                  {FEATURES.map(f => (
+                    <div key={f.num} className={`feat-slide ${f.cls}`}>
+                      <div className="feat-slide-top">
+                        <span className="feat-slide-num">{f.num}</span>
+                        <div className="feat-slide-icon">{f.icon}</div>
+                      </div>
+                      <div className="feat-slide-body">
+                        <div className="feat-slide-title">{f.title}</div>
+                        <div className="feat-slide-desc">{f.desc}</div>
+                        <div className="feature-tag"><span className="feature-tag-dot" />{f.tag}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </div>
+              <button className="feat-arrow" onClick={() => setFeatIdx(i => (i + 1) % FEATURES.length)}>›</button>
+            </div>
+
+            <div className="feat-dots">
+              {FEATURES.map((_, i) => (
+                <button key={i} className={`feat-dot ${i === featIdx ? 'active' : ''}`} onClick={() => setFeatIdx(i)} />
               ))}
             </div>
           </section>
@@ -301,11 +320,11 @@ export default function App() {
                   <div key={tree.plan} className={`plan-card plan-${tree.plan} ${available === 0 ? 'unavailable' : ''}`}>
                     <div className="plan-card-header" style={{ backgroundImage: `url(${PLAN_IMAGES[tree.plan]})` }}>
                       <span className="plan-emoji">{PLAN_EMOJI[tree.plan]}</span>
-                      <div className="plan-name">{tree.name}</div>
+                      <div className="plan-name">{PLAN_LABEL[tree.plan]}</div>
                     </div>
                     <div className="plan-card-body">
-                      <div className="plan-price">₹{tree.pricePerSeason.toLocaleString()} <span>/ season</span></div>
-                      <div className="plan-yield">{tree.yieldMin}–{tree.yieldMax} kg yield</div>
+                      <div className="plan-price">₹{tree.priceMin.toLocaleString()} <span>– ₹{tree.priceMax.toLocaleString()}</span></div>
+                      <div className="plan-yield">{tree.yieldMin}–{tree.yieldMax} kg / season</div>
                       <div className="plan-loc">📍 {tree.location}</div>
                       <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
                       {available > 0
@@ -318,37 +337,6 @@ export default function App() {
             </div>
           </section>
 
-          <section className="section all-trees-section" id="all-trees">
-            <div className="section-title">
-              <span className="section-label">Our Orchard</span>
-              <h2>Every Tree, <span>Available Now</span></h2>
-              <p>Each tree is individually tagged and cared for — pick the one you want to own.</p>
-            </div>
-            <div className="trees-grid">
-              {trees.length === 0 ? <p className="empty">No trees listed yet.</p> : trees.map(tree => {
-                const sameplan = trees.filter(t => t.plan === tree.plan);
-                const treeNum = sameplan.findIndex(t => t._id === tree._id) + 1;
-                return (
-                  <div key={tree._id} className={`tree-card tree-tier-${tree.plan} ${tree.isAvailable ? '' : 'tree-card-booked'}`}>
-                    <div className="tree-card-banner" />
-                    <div className="tree-card-inner">
-                      <div className="tree-card-top">
-                        <span className="tree-card-emoji">{PLAN_EMOJI[tree.plan]}</span>
-                        <span className={`tree-plan-tag tree-plan-${tree.plan}`}>{tree.plan}</span>
-                      </div>
-                      <div className="tree-card-name">{tree.name} <span className="tree-num">#{treeNum}</span></div>
-                      <div className="tree-card-yield">{tree.yieldMin}–{tree.yieldMax} kg yield</div>
-                      <div className="tree-card-price">₹{tree.pricePerSeason.toLocaleString()} <span>/ season</span></div>
-                      <div className="tree-card-loc">📍 {tree.location}</div>
-                      {tree.isAvailable
-                        ? <button className="btn-primary full" onClick={() => { setRentForm(f => ({ ...f, treeId: tree._id })); setView(user ? 'dashboard' : 'register'); }}>Rent This Tree →</button>
-                        : <div className="tree-booked-badge">Already Rented</div>}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
 
           <section className="section videos-section" id="videos">
             <div className="section-title">
