@@ -205,15 +205,15 @@ export default function App() {
         <>
           <section className="hero">
             <div className="hero-text">
-              <div className="hero-label">● Ramnagar, Uttarakhand</div>
+              <div className="hero-label">● Orchard to Doorstep</div>
               <p className="hero-brand">YourOrchard</p>
               <div className="hero-tagline">
-                {'City mein baithe baithe, apna aamba khao.'.split(' ').map((word, i) => (
+                {'Have you city kids tasted the real mangoes?'.split(' ').map((word, i) => (
                   <span key={i} className="hero-word" style={{ animationDelay: `${i * 0.12}s` }}>{word}</span>
                 ))}
               </div>
-              <h1 className="hero-heading">Your tree. <span>Your harvest.</span></h1>
-              <p className="hero-sub">Adopt a mango tree on our family farm in Ramnagar, Uttarakhand. We tend it all season, send you weekly photos, and deliver the harvest fresh to your doorstep.</p>
+              <h1 className="hero-heading">Rent a <span>Tree.</span></h1>
+              <p className="hero-sub">Own the harvest without owning the farm. Rent your own tree in Ramnagar, Uttarakhand and enjoy fresh produce delivered straight to your door.</p>
               <div className="hero-btns">
                 <button className="btn-primary" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees →</button>
                 <button className="btn-outline" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>How it works</button>
@@ -227,8 +227,8 @@ export default function App() {
             <div className="hero-visual">
               <div className="hero-img-wrap">
                 <img className="hero-img" src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=680&q=85" alt="Fresh mangoes from our Ramnagar orchard" />
-                <div className="hero-img-badge">📍 Ramnagar, Uttarakhand</div>
-                <div className="hero-img-pill">Season 2025 Open</div>
+                <div className="hero-img-badge">🌿 Ramnagar, Uttarakhand</div>
+                <div className="hero-img-pill">🥭 Mango Season 2025</div>
               </div>
             </div>
           </section>
@@ -237,8 +237,8 @@ export default function App() {
           <section className="section how-it-works" id="how-it-works">
             <div className="section-title">
               <span className="section-label">How It Works</span>
-              <h2>Simple as <span>Picking a Mango</span></h2>
-              <p>Four steps and your tree is yours for the season — we handle everything else from the farm.</p>
+              <h2>From Tree to Your <span>Table</span> — Simply</h2>
+              <p>Four simple steps stand between you and a season full of fresh, naturally ripened produce.</p>
             </div>
             <div className="steps">
               {STEPS.map((s, i) => (
@@ -262,8 +262,8 @@ export default function App() {
           <section className="section features-section">
             <div className="section-title">
               <span className="section-label">Why YourOrchard</span>
-              <h2>Grown with care, <span>delivered with honesty</span></h2>
-              <p>No middlemen, no cold storage, no guesswork — just your tree, your farmer, and your fruit.</p>
+              <h2>Our Promise, <span>Every Season</span></h2>
+              <p>We don't just deliver produce — we deliver trust, transparency, and taste you can trace back to your tree.</p>
             </div>
 
             <div className="feat-tabs">
@@ -305,9 +305,9 @@ export default function App() {
 
           <section className="section orchard-gallery">
             <div className="section-title">
-              <span className="section-label">From Our Farm</span>
-              <h2>The orchard that <span>feeds your home</span></h2>
-              <p>Snapshots from the ground in Ramnagar — the same orchard where your tree grows.</p>
+              <span className="section-label">Life on the Farm</span>
+              <h2>From the <span>Orchard Floor</span></h2>
+              <p>A peek into your tree's world — mangoes ripening under the Himalayan sun in Ramnagar.</p>
             </div>
             <div className="gallery-grid">
               {GALLERY_PHOTOS.map((p, i) => (
@@ -321,9 +321,9 @@ export default function App() {
 
           <section className="section plans-section" id="plans">
             <div className="section-title">
-              <span className="section-label">Adopt a Tree</span>
-              <h2>Pick the tree <span>that's right for you</span></h2>
-              <p>Three sizes based on tree age and expected yield. All plans include free delivery at harvest time.</p>
+              <span className="section-label">Seasonal Plans</span>
+              <h2>Choose Your <span>Tree</span></h2>
+              <p>Pick a plan — pricing and yield details are on each card. All plans include free home delivery.</p>
             </div>
             <div className="plans">
               {trees.length === 0 ? <p className="empty">No trees available right now — check back soon!</p> : planCards.map(tree => {
@@ -351,9 +351,9 @@ export default function App() {
 
           <section className="section mango-box-section" id="boxes">
             <div className="section-title">
-              <span className="section-label">No Tree? No Problem.</span>
-              <h2>Order a fresh <span>10 kg box</span></h2>
-              <p>Not ready to adopt a tree? Pick your variety and get a handpicked 10 kg box shipped straight from our farm.</p>
+              <span className="section-label">Just Want Mangoes?</span>
+              <h2>Order a <span>10 kg Box</span></h2>
+              <p>No tree rental needed. Pick your variety and get a fresh 10 kg box delivered straight from Ramnagar.</p>
             </div>
             <div className="mango-boxes">
               {MANGO_BOXES.map(box => (
@@ -398,9 +398,9 @@ export default function App() {
 
           <section className="section reviews-section" id="reviews">
             <div className="section-title">
-              <span className="section-label">From Our Community</span>
-              <h2>Families who've <span>tasted the difference</span></h2>
-              <p>Unfiltered words from people who adopted a tree and got their harvest home.</p>
+              <span className="section-label">Tree Owner Reviews</span>
+              <h2>What Our <span>Owners Say</span></h2>
+              <p>Honest reviews from real tree owners across India.</p>
             </div>
             <div className="review-form-card">
               <h3>Leave a Review</h3>
@@ -442,9 +442,9 @@ export default function App() {
           </section>
 
           <div className="cta-bottom">
-            <h2>A tree with your name on it.</h2>
-            <p>Every season, a family in Ramnagar tends your tree and ships the harvest straight to you.</p>
-            <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Adopt Your Tree →</button>
+            <h2>Your Tree is Waiting 🌳</h2>
+            <p>Get fresh produce from our Ramnagar orchard delivered every season.</p>
+            <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree Now →</button>
           </div>
         </>
       )}
