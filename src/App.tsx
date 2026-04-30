@@ -50,7 +50,7 @@ export default function App() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog'>('home');
+  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2025' });
@@ -653,6 +653,125 @@ export default function App() {
         </div>
       )}
 
+      {view === 'terms' && (
+        <div className="info-page">
+          <div className="info-hero">
+            <h1>Terms & Conditions</h1>
+            <p>Last updated: April 2025. Please read these terms carefully before renting a tree.</p>
+          </div>
+          <div className="policy-body">
+            <div className="policy-section">
+              <h3>1. The Tree Rental Agreement</h3>
+              <p>When you rent a tree on YourOrchard, you are reserving the exclusive harvest yield of a specific, tagged mango tree on our farm in Ramnagar, Uttarakhand for one full season. The tree remains on our land and under our care at all times. You do not acquire any ownership, land rights, or physical access to the tree.</p>
+            </div>
+            <div className="policy-section">
+              <h3>2. Yield & Harvest</h3>
+              <p>The yield ranges shown (e.g., 15–20 kg, 25–35 kg) are honest estimates based on tree age, historical output, and typical seasonal conditions. They are not guaranteed quantities. Natural factors — weather, rainfall, pest activity, or disease — can affect the final yield. In the rare event that a tree produces significantly below the minimum estimate (less than 70% of the lower bound), we will offer a proportional credit or partial refund at our discretion.</p>
+            </div>
+            <div className="policy-section">
+              <h3>3. Weekly Updates</h3>
+              <p>We commit to sending at least one photo or video update of your specific tree every week during the active growing season (April–July). Updates are shared through your dashboard. Delays of up to 3 days may occasionally occur due to connectivity issues in Ramnagar.</p>
+            </div>
+            <div className="policy-section">
+              <h3>4. Delivery</h3>
+              <p>Harvest is dispatched within 24–48 hours of picking, via a reputable courier partner. Delivery is available across India. You are responsible for providing an accurate and complete delivery address. YourOrchard is not liable for delays caused by incorrect addresses or courier issues beyond our control.</p>
+            </div>
+            <div className="policy-section">
+              <h3>5. User Responsibilities</h3>
+              <p>You agree to provide accurate personal and delivery information. You must be at least 18 years old to rent a tree. You agree not to misuse the platform, including fraudulent payment attempts or false claims about delivery or yield.</p>
+            </div>
+            <div className="policy-section">
+              <h3>6. Payments</h3>
+              <p>All payments are processed securely via Razorpay. YourOrchard does not store your card or banking details. The rental fee is charged in full at the time of booking. Applicable taxes are included in the displayed price.</p>
+            </div>
+            <div className="policy-section">
+              <h3>7. Governing Law</h3>
+              <p>These terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Uttarakhand, India.</p>
+            </div>
+            <div className="policy-section">
+              <h3>8. Changes to Terms</h3>
+              <p>We may update these terms from time to time. Continued use of the platform after changes constitutes acceptance of the new terms.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {view === 'privacy' && (
+        <div className="info-page">
+          <div className="info-hero">
+            <h1>Privacy Policy</h1>
+            <p>Last updated: April 2025. Your privacy matters to us.</p>
+          </div>
+          <div className="policy-body">
+            <div className="policy-section">
+              <h3>1. What We Collect</h3>
+              <p>We collect only what's necessary to operate the service: your name, email address, phone number (optional), and delivery address. We also collect basic usage data to improve the platform.</p>
+            </div>
+            <div className="policy-section">
+              <h3>2. How We Use It</h3>
+              <p>Your information is used to manage your tree rental, send you weekly orchard updates, process your harvest delivery, and communicate service-related information. We do not use your data for unrelated marketing without your consent.</p>
+            </div>
+            <div className="policy-section">
+              <h3>3. Sharing of Data</h3>
+              <p>We do not sell or share your personal data with third parties except: (a) our delivery partner, who receives your name and address to complete your shipment, and (b) Razorpay, for payment processing. Both are bound by their own privacy policies.</p>
+            </div>
+            <div className="policy-section">
+              <h3>4. Data Storage & Security</h3>
+              <p>Your data is stored securely on MongoDB Atlas servers. Passwords are hashed using bcrypt and are never stored in plain text. We use HTTPS across the platform.</p>
+            </div>
+            <div className="policy-section">
+              <h3>5. Your Rights</h3>
+              <p>You can request access to, correction of, or deletion of your personal data at any time by emailing hello@yourorchard.in. We will respond within 7 business days.</p>
+            </div>
+            <div className="policy-section">
+              <h3>6. Cookies</h3>
+              <p>We use minimal cookies — only those necessary for authentication (keeping you logged in). We do not use advertising or tracking cookies.</p>
+            </div>
+            <div className="policy-section">
+              <h3>7. Contact</h3>
+              <p>For any privacy-related concerns, write to us at hello@yourorchard.in.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {view === 'refund' && (
+        <div className="info-page">
+          <div className="info-hero">
+            <h1>Refund & Cancellation Policy</h1>
+            <p>Last updated: April 2025. We want you to rent with confidence.</p>
+          </div>
+          <div className="policy-body">
+            <div className="policy-section">
+              <h3>Cancellation Window</h3>
+              <p>We understand plans change. Here's how cancellations work:</p>
+              <ul>
+                <li><strong>Within 48 hours of payment:</strong> Full refund, no questions asked.</li>
+                <li><strong>3–7 days after payment:</strong> 75% refund. A 25% charge covers the tagging, documentation, and early-season care already invested in your tree.</li>
+                <li><strong>After 7 days:</strong> No refund once the season is underway and your tree has been actively tended for your rental.</li>
+              </ul>
+            </div>
+            <div className="policy-section">
+              <h3>Poor Yield Situations</h3>
+              <p>If your tree yields less than 70% of the minimum estimated quantity due to factors within our control, we will issue a store credit equal to the shortfall value, usable on your next season's rental.</p>
+              <p>If the tree is completely unable to produce due to an act of nature (flood, disease outbreak, fire), you will receive a full credit for the following season.</p>
+            </div>
+            <div className="policy-section">
+              <h3>Delivery Issues</h3>
+              <p>If your harvest box arrives damaged, with significant spoilage, or does not arrive within 5 days of dispatch, contact us at hello@yourorchard.in with your order details and a photo. We will arrange a replacement shipment or issue a refund for the affected portion within 5 business days.</p>
+            </div>
+            <div className="policy-section">
+              <h3>How Refunds Are Processed</h3>
+              <p>Approved refunds are credited to your original payment method within 5–7 business days, depending on your bank. Razorpay processes all refund transactions.</p>
+            </div>
+            <div className="policy-section">
+              <h3>Contact for Refunds</h3>
+              <p>Email hello@yourorchard.in with your registered email and order details. Our team will get back to you within 2 business days.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <footer>
         <div className="footer-grid">
           <div>
@@ -682,7 +801,11 @@ export default function App() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© 2025 <strong>YourOrchard</strong>. All rights reserved.</p>
+          <p>© 2025 <strong>YourOrchard</strong>. All rights reserved. &nbsp;·&nbsp;
+            <span className="footer-policy-link" onClick={() => setView('terms')}>Terms & Conditions</span> &nbsp;·&nbsp;
+            <span className="footer-policy-link" onClick={() => setView('privacy')}>Privacy Policy</span> &nbsp;·&nbsp;
+            <span className="footer-policy-link" onClick={() => setView('refund')}>Refund Policy</span>
+          </p>
         </div>
       </footer>
     </div>
