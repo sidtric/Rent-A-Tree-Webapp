@@ -38,6 +38,12 @@ const FEATURES = [
   { num: '06', icon: '👨‍🌾', title: 'Expert Orchardists',    desc: 'Seasoned farmers in Ramnagar, Uttarakhand care for your tree year-round with love.',        tag: 'Professional care',    cls: 'fc6' },
 ];
 
+const MANGO_BOXES = [
+  { id: 'langra',   name: 'Langra Mango',   desc: 'The sweet-tangy classic from Varanasi — buttery, fiberless, and deeply aromatic.',  price: 999,  img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=400&q=80' },
+  { id: 'dasheri',  name: 'Dasheri Mango',  desc: 'Delicate, honey-sweet, and thin-skinned. The favourite of Lucknow\'s nawabs.',        price: 1099, img: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=400&q=80' },
+  { id: 'chausa',   name: 'Chausa Mango',   desc: 'Rich, golden, and intensely sweet — best enjoyed by sucking straight from the skin.', price: 1199, img: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=400&q=80' },
+];
+
 const authFetch = (url: string, body: FormData) =>
   fetch(url, { method: 'POST', headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }, body }).then(r => r.json());
 
@@ -232,7 +238,7 @@ export default function App() {
             <div className="section-title">
               <span className="section-label">How It Works</span>
               <h2>From Tree to Your <span>Table</span> — Simply</h2>
-              <p>Three simple steps stand between you and a season full of fresh, naturally ripened produce.</p>
+              <p>Four simple steps stand between you and a season full of fresh, naturally ripened produce.</p>
             </div>
             <div className="steps">
               {STEPS.map((s, i) => (
@@ -317,10 +323,10 @@ export default function App() {
             <div className="section-title">
               <span className="section-label">Seasonal Plans</span>
               <h2>Choose Your <span>Tree</span></h2>
-              <p>Pick a plan — key details and pricing on each card. All include free home delivery.</p>
+              <p>Pick a plan — pricing and yield details are on each card. All plans include free home delivery.</p>
             </div>
             <div className="plans">
-              {trees.length === 0 ? <p className="empty">No trees available — seed the backend first!</p> : planCards.map(tree => {
+              {trees.length === 0 ? <p className="empty">No trees available right now — check back soon!</p> : planCards.map(tree => {
                 const available = trees.filter(t => t.plan === tree.plan && t.isAvailable).length;
                 return (
                   <div key={tree.plan} className={`plan-card plan-${tree.plan} ${available === 0 ? 'unavailable' : ''}`}>
@@ -343,12 +349,37 @@ export default function App() {
             </div>
           </section>
 
+          <section className="section mango-box-section" id="boxes">
+            <div className="section-title">
+              <span className="section-label">Just Want Mangoes?</span>
+              <h2>Order a <span>10 kg Box</span></h2>
+              <p>No tree rental needed. Pick your variety and get a fresh 10 kg box delivered straight from Ramnagar.</p>
+            </div>
+            <div className="mango-boxes">
+              {MANGO_BOXES.map(box => (
+                <div key={box.id} className="box-card">
+                  <div className="box-card-img" style={{ backgroundImage: `url(${box.img})` }}>
+                    <div className="box-weight-badge">10 kg</div>
+                  </div>
+                  <div className="box-card-body">
+                    <div className="box-name">{box.name}</div>
+                    <p className="box-desc">{box.desc}</p>
+                    <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
+                    <button className="btn-primary full" onClick={() => { if (user) setMsg(`${box.name} box order received! We'll contact you to confirm delivery.`); else setAuthModal('register'); }}>
+                      {user ? 'Order This Box' : 'Sign Up to Order'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
 
           <section className="section videos-section" id="videos">
             <div className="section-title">
               <span className="section-label">From Our Orchard</span>
               <h2>A Glimpse Into <span>Your Tree's Home</span></h2>
-              <p>Watch our orchard in action — every week, straight from Ramnagar.</p>
+              <p>Watch our orchard in action — fresh videos every week, straight from Ramnagar.</p>
             </div>
             {videos.length === 0 ? <p className="empty">No videos yet — check back soon!</p> : (
               <div className="videos-grid">
@@ -369,7 +400,7 @@ export default function App() {
             <div className="section-title">
               <span className="section-label">Tree Owner Reviews</span>
               <h2>What Our <span>Owners Say</span></h2>
-              <p>Real reviews from real tree owners.</p>
+              <p>Honest reviews from real tree owners across India.</p>
             </div>
             <div className="review-form-card">
               <h3>Leave a Review</h3>

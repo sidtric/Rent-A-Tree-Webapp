@@ -273,6 +273,19 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .unavail-badge { background: #fee2e2; color: #dc2626; padding: 10px 20px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; text-align: center; }
 .empty { text-align: center; color: var(--gray); padding: 40px; }
 
+/* ── Mango Boxes ── */
+.mango-box-section { background: var(--bg); }
+.mango-boxes { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+.box-card { background: #fff; border-radius: 24px; overflow: hidden; border: 1px solid rgba(0,0,0,0.07); width: 300px; display: flex; flex-direction: column; transition: transform 0.22s, box-shadow 0.22s; }
+.box-card:hover { transform: translateY(-5px); box-shadow: 0 14px 36px rgba(0,0,0,0.09); }
+.box-card-img { height: 190px; background-size: cover; background-position: center; position: relative; }
+.box-weight-badge { position: absolute; bottom: 12px; left: 12px; background: var(--green); color: #fff; font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 50px; letter-spacing: 0.5px; }
+.box-card-body { padding: 22px 24px 28px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.box-name { font-size: 1.1rem; font-weight: 800; color: var(--dark); }
+.box-desc { font-size: 0.85rem; color: var(--gray); line-height: 1.5; flex: 1; margin: 4px 0 10px; }
+.box-price { font-size: 2rem; font-weight: 900; color: var(--dark); letter-spacing: -1px; line-height: 1.1; margin-bottom: 14px; }
+.box-price span { font-size: 0.82rem; font-weight: 400; color: var(--gray); letter-spacing: 0; }
+
 /* ── All Trees ── */
 .all-trees-section { background: var(--bg); }
 .trees-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
