@@ -7,10 +7,34 @@ const PLAN_EMOJI: Record<string, string> = { sapling: '🌱', adult: '🌳', gra
 const API_BASE = 'http://localhost:5000';
 
 const STEPS = [
-  { n: 1, icon: '🛒', h: 'Pick Your Plan',      p: 'Choose a tree size — Sapling, Adult, or Grand.' },
-  { n: 2, icon: '🌳', h: 'We Assign Your Tree', p: 'A dedicated tree is tagged with your name on our Ramnagar orchard.' },
-  { n: 3, icon: '👨‍🌾', h: 'We Care For It',      p: 'Our orchardists nurture your tree year-round — weekly photos & videos sent straight to your dashboard.' },
-  { n: 4, icon: '📦', h: 'Harvest Delivered',   p: 'Fresh produce handpicked and shipped to your home within 24 hours.' },
+  { n: 1, icon: '🌳', h: 'Choose Your Tree',   p: 'Pick a plan — Sapling, Adult, or Grand — from our Ramnagar orchard.' },
+  { n: 2, icon: '💳', h: 'Rent the Yield',     p: 'Pay once and reserve your tree\'s harvest for the entire season.' },
+  { n: 3, icon: '👨‍🌾', h: 'We Grow & Care',    p: 'Our orchardists nurture your tagged tree and send weekly photos & videos.' },
+  { n: 4, icon: '📦', h: 'Harvest Delivered',  p: 'Fresh produce handpicked and shipped to your door within 24 hours.' },
+];
+
+const PLAN_IMAGES: Record<string, string> = {
+  sapling: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=400&q=80',
+  adult:   'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=400&q=80',
+  grand:   'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=400&q=80',
+};
+
+const GALLERY_PHOTOS = [
+  { url: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=900&q=80', label: 'Fresh Mangoes' },
+  { url: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=500&q=80', label: 'Yellow Alphonso' },
+  { url: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=500&q=80', label: 'Orchard Canopy' },
+  { url: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=900&q=80', label: 'Our Farm' },
+  { url: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=500&q=80', label: 'Open Fields' },
+  { url: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=500&q=80', label: 'Harvest Basket' },
+];
+
+const FEATURES = [
+  { num: '01', icon: '🌿', title: 'Natural Farming',        desc: 'No chemicals, no shortcuts. Your tree grows the way nature intended, all season long.',   tag: 'Certified natural',    cls: 'fc1' },
+  { num: '02', icon: '☀️', title: 'Tree-Ripened Harvest',   desc: 'Left on the tree until peak ripeness — never treated or artificially ripened.',             tag: 'Naturally ripened',    cls: 'fc2' },
+  { num: '03', icon: '🚚', title: 'Farm-to-Home',           desc: 'Harvested and dispatched within 24 hours of picking. No cold storage, no delays.',          tag: 'Same-day dispatch',    cls: 'fc3' },
+  { num: '04', icon: '📷', title: 'Weekly Updates',         desc: 'Photos and videos of your specific tree, sent to your dashboard every single week.',         tag: 'Your tree, live',      cls: 'fc4' },
+  { num: '05', icon: '🏷️', title: 'Named Tree',             desc: 'Your tree is tagged with your name. You own it exclusively for the full season.',            tag: 'Exclusive ownership',  cls: 'fc5' },
+  { num: '06', icon: '👨‍🌾', title: 'Expert Orchardists',    desc: 'Seasoned farmers in Ramnagar, Uttarakhand care for your tree year-round with love.',        tag: 'Professional care',    cls: 'fc6' },
 ];
 
 const authFetch = (url: string, body: FormData) =>
@@ -132,19 +156,19 @@ export default function App() {
   return (
     <div className="app">
       <nav className="nav">
-        <div className="logo" onClick={() => setView('home')}>MyTree 🌳</div>
+        <div className="logo" onClick={() => setView('home')}>YourOrchard</div>
         <div className="nav-center">
           <span className="nav-link" onClick={() => setView('home')}>Home</span>
           <span className="nav-link" onClick={() => setView('about')}>About</span>
           <span className="nav-link" onClick={() => setView('blog')}>Blog</span>
           <span className="nav-link" onClick={() => setView('contact')}>Contact</span>
+          {user && <span className="nav-link" onClick={() => setView('dashboard')}>My Tree</span>}
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
         </div>
         <div className="nav-links">
           {user ? (
             <>
               <span className="nav-greeting">Hi, {user.name.split(' ')[0]}</span>
-              <button className="btn-sm" onClick={() => setView('dashboard')}>Dashboard</button>
               <button className="btn-sm outline" onClick={logout}>Logout</button>
             </>
           ) : (
@@ -162,51 +186,164 @@ export default function App() {
         <>
           <section className="hero">
             <div className="hero-text">
-              <div className="hero-question">
+              <div className="hero-label">● Orchard to Doorstep</div>
+              <p className="hero-brand">YourOrchard</p>
+              <div className="hero-tagline">
                 {'Have you city kids tasted the real mangoes?'.split(' ').map((word, i) => (
                   <span key={i} className="hero-word" style={{ animationDelay: `${i * 0.12}s` }}>{word}</span>
                 ))}
               </div>
-              <div className="badge">🌿 Orchard-to-Door Experience</div>
-              <h1>Own a <span>Tree.</span><br />Get Fresh Produce Every Season.</h1>
-              <p>Rent a real tree on our Ramnagar orchard. We grow it, you enjoy the harvest — fresh produce delivered to your door.</p>
+              <h1 className="hero-heading">Rent a <span>Tree.</span></h1>
+              <p className="hero-sub">Own the harvest without owning the farm. Rent your own tree in Ramnagar, Uttarakhand and enjoy fresh produce delivered straight to your door.</p>
               <div className="hero-btns">
-                <button className="btn-primary" onClick={() => setView(user ? 'dashboard' : 'register')}>Rent My Tree →</button>
-                <button className="btn-outline" onClick={() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' })}>See Plans</button>
+                <button className="btn-primary" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees →</button>
+                <button className="btn-outline" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>How it works</button>
+              </div>
+              <div className="hero-trust">
+                <div className="trust-item"><span>📷</span> Weekly Updates</div>
+                <div className="trust-item"><span>🌿</span> Natural Farming</div>
+                <div className="trust-item"><span>🚚</span> Free Delivery</div>
               </div>
             </div>
-            <div className="hero-emoji">🌳</div>
+            <div className="hero-visual">
+              <div className="hero-img-wrap">
+                <img className="hero-img" src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=680&q=85" alt="Fresh mangoes from our Ramnagar orchard" />
+                <div className="hero-img-badge">🌿 Ramnagar, Uttarakhand</div>
+                <div className="hero-img-pill">🥭 Mango Season 2025</div>
+              </div>
+            </div>
           </section>
 
-          <section className="section how-it-works">
-            <div className="section-title"><h2>How It Works</h2><p>Simple, transparent, rewarding.</p></div>
+          <div className="stats-strip">
+            <div className="stat-item"><span className="stat-num">120+</span><span className="stat-label">Trees in Orchard</span></div>
+            <div className="stat-divider" />
+            <div className="stat-item"><span className="stat-num">3</span><span className="stat-label">Seasons Running</span></div>
+            <div className="stat-divider" />
+            <div className="stat-item"><span className="stat-num">450+</span><span className="stat-label">kg Delivered</span></div>
+            <div className="stat-divider" />
+            <div className="stat-item"><span className="stat-num">98%</span><span className="stat-label">Happy Owners</span></div>
+          </div>
+
+          <section className="section how-it-works" id="how-it-works">
+            <div className="section-title">
+              <span className="section-label">How It Works</span>
+              <h2>From Tree to Your <span>Table</span> — Simply</h2>
+              <p>Three simple steps stand between you and a season full of fresh, naturally ripened produce.</p>
+            </div>
             <div className="steps">
-              {STEPS.map(s => (
-                <div key={s.n} className="step">
-                  <div className="step-num">{s.n}</div>
-                  <div className="step-icon">{s.icon}</div>
-                  <h3>{s.h}</h3><p>{s.p}</p>
+              {STEPS.map((s, i) => (
+                <div key={s.n} className="step-wrapper">
+                  <div className="step">
+                    <div className="step-label">STEP 0{s.n}</div>
+                    <div className="step-icon-wrap">{s.icon}</div>
+                    <h3>{s.h}</h3>
+                    <p>{s.p}</p>
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div className="step-connector">
+                      <div className="step-connector-arrow">→</div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="section features-section">
+            <div className="section-title">
+              <span className="section-label">Why YourOrchard</span>
+              <h2>Our Promise, <span>Every Season</span></h2>
+              <p>We don't just deliver produce — we deliver trust, transparency, and taste you can trace back to your tree.</p>
+            </div>
+            <div className="features-grid">
+              {FEATURES.map(f => (
+                <div key={f.num} className={`feature-card ${f.cls}`}>
+                  <div className="feature-card-top">
+                    <span className="feature-num">{f.num}</span>
+                    <div className="feature-icon-wrap">{f.icon}</div>
+                  </div>
+                  <div className="feature-body">
+                    <div className="feature-title">{f.title}</div>
+                    <div className="feature-desc">{f.desc}</div>
+                    <div className="feature-tag"><span className="feature-tag-dot" />{f.tag}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="section orchard-gallery">
+            <div className="section-title">
+              <span className="section-label">Life on the Farm</span>
+              <h2>From the <span>Orchard Floor</span></h2>
+              <p>A peek into your tree's world — mangoes ripening under the Himalayan sun in Ramnagar.</p>
+            </div>
+            <div className="gallery-grid">
+              {GALLERY_PHOTOS.map((p, i) => (
+                <div key={i} className={`gallery-item gi-${i + 1}`}>
+                  <img src={p.url} alt={p.label} />
+                  <div className="gallery-label">{p.label}</div>
                 </div>
               ))}
             </div>
           </section>
 
           <section className="section plans-section" id="plans">
-            <div className="section-title"><h2>Choose Your Tree</h2><p>All plans include free home delivery.</p></div>
+            <div className="section-title">
+              <span className="section-label">Seasonal Plans</span>
+              <h2>Choose Your <span>Tree</span></h2>
+              <p>Pick a plan — key details and pricing on each card. All include free home delivery.</p>
+            </div>
             <div className="plans">
               {trees.length === 0 ? <p className="empty">No trees available — seed the backend first!</p> : planCards.map(tree => {
                 const available = trees.filter(t => t.plan === tree.plan && t.isAvailable).length;
                 return (
-                  <div key={tree.plan} className={`plan-card ${available === 0 ? 'unavailable' : ''}`}>
-                    <div className="plan-emoji">{PLAN_EMOJI[tree.plan]}</div>
-                    <div className="plan-name">{tree.name}</div>
-                    <div className="plan-price">₹{tree.pricePerSeason.toLocaleString()} <span>/ season</span></div>
-                    <div className="plan-yield">{tree.yieldMin}–{tree.yieldMax} kg yield</div>
-                    <div className="plan-loc">📍 {tree.location}</div>
-                    <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
-                    {available > 0
-                      ? <button className="btn-primary full" onClick={() => { setRentForm(f => ({ ...f, treeId: '' })); setView(user ? 'dashboard' : 'register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
-                      : <div className="unavail-badge">Fully Booked</div>}
+                  <div key={tree.plan} className={`plan-card plan-${tree.plan} ${available === 0 ? 'unavailable' : ''}`}>
+                    <div className="plan-card-header" style={{ backgroundImage: `url(${PLAN_IMAGES[tree.plan]})` }}>
+                      <span className="plan-emoji">{PLAN_EMOJI[tree.plan]}</span>
+                      <div className="plan-name">{tree.name}</div>
+                    </div>
+                    <div className="plan-card-body">
+                      <div className="plan-price">₹{tree.pricePerSeason.toLocaleString()} <span>/ season</span></div>
+                      <div className="plan-yield">{tree.yieldMin}–{tree.yieldMax} kg yield</div>
+                      <div className="plan-loc">📍 {tree.location}</div>
+                      <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
+                      {available > 0
+                        ? <button className="btn-primary full" onClick={() => { setRentForm(f => ({ ...f, treeId: '' })); setView(user ? 'dashboard' : 'register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
+                        : <div className="unavail-badge">Fully Booked</div>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="section all-trees-section" id="all-trees">
+            <div className="section-title">
+              <span className="section-label">Our Orchard</span>
+              <h2>Every Tree, <span>Available Now</span></h2>
+              <p>Each tree is individually tagged and cared for — pick the one you want to own.</p>
+            </div>
+            <div className="trees-grid">
+              {trees.length === 0 ? <p className="empty">No trees listed yet.</p> : trees.map(tree => {
+                const sameplan = trees.filter(t => t.plan === tree.plan);
+                const treeNum = sameplan.findIndex(t => t._id === tree._id) + 1;
+                return (
+                  <div key={tree._id} className={`tree-card tree-tier-${tree.plan} ${tree.isAvailable ? '' : 'tree-card-booked'}`}>
+                    <div className="tree-card-banner" />
+                    <div className="tree-card-inner">
+                      <div className="tree-card-top">
+                        <span className="tree-card-emoji">{PLAN_EMOJI[tree.plan]}</span>
+                        <span className={`tree-plan-tag tree-plan-${tree.plan}`}>{tree.plan}</span>
+                      </div>
+                      <div className="tree-card-name">{tree.name} <span className="tree-num">#{treeNum}</span></div>
+                      <div className="tree-card-yield">{tree.yieldMin}–{tree.yieldMax} kg yield</div>
+                      <div className="tree-card-price">₹{tree.pricePerSeason.toLocaleString()} <span>/ season</span></div>
+                      <div className="tree-card-loc">📍 {tree.location}</div>
+                      {tree.isAvailable
+                        ? <button className="btn-primary full" onClick={() => { setRentForm(f => ({ ...f, treeId: tree._id })); setView(user ? 'dashboard' : 'register'); }}>Rent This Tree →</button>
+                        : <div className="tree-booked-badge">Already Rented</div>}
+                    </div>
                   </div>
                 );
               })}
@@ -214,8 +351,12 @@ export default function App() {
           </section>
 
           <section className="section videos-section" id="videos">
-            <div className="section-title"><h2>From Our Orchard</h2><p>Watch our orchard in action.</p></div>
-            {videos.length === 0 ? <p className="empty" style={{ color: 'rgba(255,255,255,0.6)' }}>No videos yet — check back soon!</p> : (
+            <div className="section-title">
+              <span className="section-label">From Our Orchard</span>
+              <h2>A Glimpse Into <span>Your Tree's Home</span></h2>
+              <p>Watch our orchard in action — every week, straight from Ramnagar.</p>
+            </div>
+            {videos.length === 0 ? <p className="empty">No videos yet — check back soon!</p> : (
               <div className="videos-grid">
                 {videos.map(v => (
                   <div key={v._id} className="video-card">
@@ -231,7 +372,11 @@ export default function App() {
           </section>
 
           <section className="section reviews-section" id="reviews">
-            <div className="section-title"><h2>What Our Tree Owners Say</h2><p>Real reviews from real tree owners.</p></div>
+            <div className="section-title">
+              <span className="section-label">Tree Owner Reviews</span>
+              <h2>What Our <span>Owners Say</span></h2>
+              <p>Real reviews from real tree owners.</p>
+            </div>
             <div className="review-form-card">
               <h3>Leave a Review</h3>
               {!user && <input placeholder="Your Name" value={reviewForm.name} onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))} />}
@@ -298,7 +443,7 @@ export default function App() {
 
       {view === 'dashboard' && user && (
         <div className="dashboard">
-          <h2>My Dashboard</h2>
+          <h2>My Tree</h2>
           <div className="dash-section">
             <h3>Rent a Tree</h3>
             <div className="rent-form">
@@ -361,47 +506,20 @@ export default function App() {
               </div>
             )}
           </div>
-          <div className="dash-section farmer-panel">
-            <h3>🎬 Orchard Panel — Upload Video</h3>
-            <div className="rent-form" style={{ marginBottom: '28px' }}>
-              <input placeholder="Video Title" value={videoForm.title} onChange={e => setVideoForm(f => ({ ...f, title: e.target.value }))} />
-              <input placeholder="Description (optional)" value={videoForm.description} onChange={e => setVideoForm(f => ({ ...f, description: e.target.value }))} />
-              <label className="upload-label">
-                🎥 Select Video
-                <input type="file" accept="video/*" onChange={e => setVideoFile(e.target.files?.[0] || null)} />
-              </label>
-              {videoFile && <p className="file-count">{videoFile.name}</p>}
-              <button className="btn-primary" onClick={uploadVideo}>Upload Video</button>
-            </div>
-            <h3>🌾 Post Weekly Orchard Update</h3>
-            <div className="rent-form">
-              <select value={expandedRental || ''} onChange={e => setExpandedRental(e.target.value || null)}>
-                <option value="">Select a rental...</option>
-                {rentals.map(r => <option key={r._id} value={r._id}>{PLAN_EMOJI[r.tree?.plan]} {r.tree?.name} — {r.season}</option>)}
-              </select>
-              <input placeholder="Caption (optional)" value={updateCaption} onChange={e => setUpdateCaption(e.target.value)} />
-              <label className="upload-label">
-                📷 Upload Photos / Videos
-                <input type="file" multiple accept="image/*,video/*" onChange={e => setUpdateFiles(e.target.files)} />
-              </label>
-              {updateFiles && <p className="file-count">{updateFiles.length} file(s) selected</p>}
-              <button className="btn-primary" onClick={() => expandedRental && postFarmUpdate(expandedRental)} disabled={!expandedRental}>Post Update</button>
-            </div>
-          </div>
         </div>
       )}
 
       {view === 'about' && (
         <div className="info-page">
           <div className="info-hero">
-            <h1>About MyTree 🌳</h1>
+            <h1>About YourOrchard 🌳</h1>
             <p>We connect city families with real trees on our Ramnagar orchard in Uttarakhand.</p>
           </div>
           <div className="info-content">
             <div className="info-card">
               <div className="info-icon">🌿</div>
               <h3>Our Story</h3>
-              <p>MyTree was born from a simple idea — city kids should know where their food comes from. We started with a small orchard in Ramnagar and a big dream: let every family own a tree, no matter where they live.</p>
+              <p>YourOrchard was born from a simple idea — city kids should know where their food comes from. We started with a small orchard in Ramnagar and a big dream: let every family own a tree, no matter where they live.</p>
             </div>
             <div className="info-card">
               <div className="info-icon">👨‍🌾</div>
@@ -477,7 +595,36 @@ export default function App() {
       )}
 
       <footer>
-        <p><strong>MyTree</strong> © 2025 — Grown with love in Ramnagar, Uttarakhand 🌿</p>
+        <div className="footer-grid">
+          <div>
+            <div className="footer-logo">YourOrchard</div>
+            <p className="footer-brand-desc">Fresh produce from our Ramnagar orchard to your door. Rent a tree for the season — simple, transparent, real.</p>
+            <div className="footer-social">
+              <div className="footer-social-btn">📞</div>
+              <div className="footer-social-btn">✉️</div>
+              <div className="footer-social-btn">📍</div>
+            </div>
+          </div>
+          <div className="footer-col">
+            <h4>Explore</h4>
+            <ul className="footer-links">
+              <li onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How it works</li>
+              <li onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Our Trees</li>
+              <li onClick={() => setView('about')}>About</li>
+              <li onClick={() => setView('blog')}>Blog</li>
+              <li onClick={() => setView('contact')}>Contact</li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Contact</h4>
+            <p className="footer-contact-line">hello@yourorchard.in</p>
+            <p className="footer-contact-line dim">Ramnagar, Uttarakhand</p>
+            <button className="footer-reserve-btn" onClick={() => setView(user ? 'dashboard' : 'register')}>Rent a Tree →</button>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <p>© 2025 <strong>YourOrchard</strong>. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
