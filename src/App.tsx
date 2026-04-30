@@ -794,6 +794,14 @@ export default function App() {
             </ul>
           </div>
           <div className="footer-col">
+            <h4>Legal</h4>
+            <ul className="footer-links">
+              <li onClick={() => setView('terms')}>Terms & Conditions</li>
+              <li onClick={() => setView('privacy')}>Privacy Policy</li>
+              <li onClick={() => setView('refund')}>Refund Policy</li>
+            </ul>
+          </div>
+          <div className="footer-col">
             <h4>Contact</h4>
             <p className="footer-contact-line">hello@yourorchard.in</p>
             <p className="footer-contact-line dim">Ramnagar, Uttarakhand</p>
@@ -801,11 +809,7 @@ export default function App() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© 2025 <strong>YourOrchard</strong>. All rights reserved. &nbsp;·&nbsp;
-            <span className="footer-policy-link" onClick={() => setView('terms')}>Terms & Conditions</span> &nbsp;·&nbsp;
-            <span className="footer-policy-link" onClick={() => setView('privacy')}>Privacy Policy</span> &nbsp;·&nbsp;
-            <span className="footer-policy-link" onClick={() => setView('refund')}>Refund Policy</span>
-          </p>
+          <p>© 2025 <strong>YourOrchard</strong>. All rights reserved.</p>
         </div>
       </footer>
     </div>

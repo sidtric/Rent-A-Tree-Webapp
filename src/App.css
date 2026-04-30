@@ -467,7 +467,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 
 /* ── Footer ── */
 footer { background: var(--green-dark); color: rgba(255,255,255,0.55); padding: 64px 80px 32px; }
-.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
 .footer-logo { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
 .footer-brand-desc { font-size: 0.88rem; line-height: 1.7; max-width: 280px; margin-bottom: 24px; }
 .footer-social { display: flex; gap: 10px; }
