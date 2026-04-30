@@ -54,6 +54,7 @@ export default function App() {
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2025' });
+  const [rentModal, setRentModal] = useState<Tree | null>(null);
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
   const [reviewFiles, setReviewFiles] = useState<FileList | null>(null);
   const [updates, setUpdates] = useState<Record<string, FarmUpdate[]>>({});
@@ -100,13 +101,49 @@ export default function App() {
 
   const handleRent = async () => {
     if (!rentForm.treeId || !rentForm.deliveryAddress) { setMsg('Fill all fields'); return; }
-    const res = await api.post('/rentals', rentForm);
-    if (res._id) {
-      setMsg('Tree rented successfully!');
-      api.get('/trees').then(setTrees);
-      api.get('/rentals/my').then(setRentals);
-      setRentForm({ treeId: '', deliveryAddress: '', season: '2025' });
-    } else setMsg(res.message || 'Error');
+    const tree = trees.find(t => t._id === rentForm.treeId);
+    if (!tree) return;
+    await openRazorpay(tree, rentForm.deliveryAddress, rentForm.season);
+  };
+
+  const openRazorpay = async (tree: Tree, deliveryAddress: string, season: string) => {
+    if (!deliveryAddress.trim()) { setMsg('Please enter a delivery address'); return; }
+    try {
+      const order = await api.post('/payments/create-order', { treeId: tree._id });
+      if (!order.orderId) { setMsg(order.message || 'Could not initiate payment'); return; }
+
+      const rzp = new (window as any).Razorpay({
+        key:         import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount:      order.amount,
+        currency:    order.currency,
+        name:        'YourOrchard',
+        description: `${tree.name} — Season ${season}`,
+        order_id:    order.orderId,
+        prefill:     { name: user?.name, email: user?.email },
+        theme:       { color: '#2d6a4f' },
+        handler: async (response: any) => {
+          const rental = await api.post('/payments/verify', {
+            ...response,
+            treeId: tree._id,
+            deliveryAddress,
+            season,
+          });
+          if (rental._id) {
+            setMsg('Tree rented! Welcome to YourOrchard 🌳');
+            setRentModal(null);
+            setRentForm({ treeId: '', deliveryAddress: '', season: '2025' });
+            api.get('/trees').then(setTrees);
+            api.get('/rentals/my').then(setRentals);
+            setView('dashboard');
+          } else {
+            setMsg(rental.message || 'Payment received but rental creation failed. Contact support.');
+          }
+        },
+      });
+      rzp.open();
+    } catch {
+      setMsg('Payment failed. Please try again.');
+    }
   };
 
   const handleReview = async () => {
@@ -313,7 +350,7 @@ export default function App() {
                       <div className="plan-loc">📍 {tree.location}</div>
                       <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
                       {available > 0
-                        ? <button className="btn-primary full" onClick={() => { setRentForm(f => ({ ...f, treeId: '' })); if (user) setView('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
+                        ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(tree); else setAuthModal('register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
                         : <div className="unavail-badge">Fully Booked</div>}
                     </div>
                   </div>
@@ -437,6 +474,28 @@ export default function App() {
               {authModal === 'login' ? "Don't have an account? " : 'Already have an account? '}
               <span onClick={() => setAuthModal(authModal === 'login' ? 'register' : 'login')}>{authModal === 'login' ? 'Sign Up' : 'Login'}</span>
             </p>
+          </div>
+        </div>
+      )}
+
+      {rentModal && (
+        <div className="auth-overlay" onClick={(e) => { if (e.target === e.currentTarget) setRentModal(null); }}>
+          <div className="auth-modal">
+            <button className="auth-close" onClick={() => setRentModal(null)}>✕</button>
+            <h2>Rent {PLAN_LABEL[rentModal.plan]}</h2>
+            <p className="auth-sub">₹{rentModal.pricePerSeason.toLocaleString()} · {rentModal.yieldMin}–{rentModal.yieldMax} kg · Season 2025</p>
+            <input
+              placeholder="Full delivery address"
+              value={rentForm.deliveryAddress}
+              onChange={e => setRentForm(f => ({ ...f, treeId: rentModal._id, deliveryAddress: e.target.value }))}
+            />
+            <select value={rentForm.season} onChange={e => setRentForm(f => ({ ...f, season: e.target.value }))}>
+              <option value="2025">Season 2025</option>
+              <option value="2026">Season 2026</option>
+            </select>
+            <button className="btn-primary full" onClick={() => openRazorpay(rentModal, rentForm.deliveryAddress, rentForm.season)}>
+              Pay ₹{rentModal.pricePerSeason.toLocaleString()} →
+            </button>
           </div>
         </div>
       )}
