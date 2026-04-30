@@ -375,17 +375,17 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 
 /* ── CTA ── */
 .cta-bottom {
-  background: var(--green-dark);
+  background: #fff;
   background-image: url('https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=1600&q=55');
   background-size: contain; background-position: center; background-repeat: no-repeat;
-  text-align: center; padding: 100px 80px; color: #fff; position: relative;
+  text-align: center; padding: 100px 80px; color: var(--dark); position: relative;
 }
-.cta-bottom::before { content: ''; position: absolute; inset: 0; background: rgba(11,26,17,0.82); }
+.cta-bottom::before { display: none; }
 .cta-bottom > * { position: relative; z-index: 1; }
-.cta-bottom h2 { font-size: 3rem; font-weight: 900; margin-bottom: 14px; letter-spacing: -1px; }
-.cta-bottom p { font-size: 1rem; margin-bottom: 36px; opacity: 0.7; }
-.cta-bottom .btn-primary { background: #fff; color: var(--green-dark); font-size: 1rem; padding: 16px 36px; }
-.cta-bottom .btn-primary:hover { background: #f0f0f0; }
+.cta-bottom h2 { font-size: 3rem; font-weight: 900; margin-bottom: 14px; letter-spacing: -1px; color: var(--dark); }
+.cta-bottom p { font-size: 1rem; margin-bottom: 36px; opacity: 0.7; color: var(--gray); }
+.cta-bottom .btn-primary { background: var(--green); color: #fff; font-size: 1rem; padding: 16px 36px; }
+.cta-bottom .btn-primary:hover { background: var(--green-dark); }
 
 /* ── Auth Modal ── */
 .auth-overlay { position: fixed; inset: 0; background: rgba(14,32,21,0.55); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
