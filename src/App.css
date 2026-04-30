@@ -244,7 +244,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .feat-dot.active { background: var(--green); width: 24px; border-radius: 4px; }
 
 /* ── Orchard Gallery ── */
-.orchard-gallery { background: var(--green-dark); padding-top: 100px; padding-bottom: 100px; }
+.orchard-gallery { background: #1C1008; padding-top: 100px; padding-bottom: 100px; }
 .orchard-gallery .section-title h2 { color: #fff; }
 .orchard-gallery .section-title h2 span { color: #FBBF24; }
 .orchard-gallery .section-title p { color: rgba(255,255,255,0.5); }
@@ -431,7 +431,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 
 /* ── Info Pages ── */
 .info-page { flex: 1; }
-.info-hero { background: var(--green-dark); color: #fff; text-align: center; padding: 100px 80px; }
+.info-hero { background: #1C1008; color: #fff; text-align: center; padding: 100px 80px; }
 .info-hero h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 14px; letter-spacing: -1px; }
 .info-hero p { font-size: 1.05rem; color: rgba(255,255,255,0.65); }
 .info-content { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; padding: 80px; background: var(--bg); }
@@ -466,7 +466,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .footer-policy-link:hover { color: #fff; }
 
 /* ── Footer ── */
-footer { background: var(--green-dark); color: rgba(255,255,255,0.55); padding: 64px 80px 32px; }
+footer { background: #1C1008; color: rgba(255,255,255,0.5); padding: 64px 80px 32px; }
 .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
 .footer-logo { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
 .footer-brand-desc { font-size: 0.88rem; line-height: 1.7; max-width: 280px; margin-bottom: 24px; }
