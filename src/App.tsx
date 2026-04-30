@@ -49,7 +49,8 @@ export default function App() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoForm, setVideoForm] = useState({ title: '', description: '' });
-  const [view, setView] = useState<'home' | 'login' | 'register' | 'dashboard' | 'about' | 'contact' | 'blog'>('home');
+  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog'>('home');
+  const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2025' });
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
@@ -80,17 +81,18 @@ export default function App() {
 
   const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setView('home'); };
 
-  const handleAuth = async (type: 'login' | 'register') => {
+  const handleAuth = async () => {
+    if (!authModal) return;
     try {
-      const res = await api.post(`/auth/${type}`, form);
+      const res = await api.post(`/auth/${authModal}`, form);
       if (!res.token) { setMsg(res.message || 'Something went wrong. Try again.'); return; }
-      if (type === 'register') {
-        setMsg('Account created! Redirecting to login...');
-        setTimeout(() => { setMsg(''); setForm({ name: '', email: '', password: '', phone: '' }); setView('login'); }, 2000);
+      if (authModal === 'register') {
+        setMsg('Account created! Please log in.');
+        setTimeout(() => { setMsg(''); setForm({ name: '', email: '', password: '', phone: '' }); setAuthModal('login'); }, 1800);
       } else {
         localStorage.setItem('token', res.token);
         localStorage.setItem('user', JSON.stringify(res.user));
-        setUser(res.user); setView('dashboard'); setMsg('');
+        setUser(res.user); setAuthModal(null); setView('home'); setMsg('');
       }
     } catch {
       setMsg('Could not connect to server. Please try again.');
@@ -184,8 +186,8 @@ export default function App() {
             </>
           ) : (
             <>
-              <button className="btn-sm outline" onClick={() => setView('login')}>Login</button>
-              <button className="btn-sm" onClick={() => setView('register')}>Sign Up</button>
+              <button className="btn-sm outline" onClick={() => setAuthModal('login')}>Login</button>
+              <button className="btn-sm" onClick={() => setAuthModal('register')}>Sign Up</button>
             </>
           )}
         </div>
@@ -332,7 +334,7 @@ export default function App() {
                       <div className="plan-loc">📍 {tree.location}</div>
                       <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
                       {available > 0
-                        ? <button className="btn-primary full" onClick={() => { setRentForm(f => ({ ...f, treeId: '' })); setView(user ? 'dashboard' : 'register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
+                        ? <button className="btn-primary full" onClick={() => { setRentForm(f => ({ ...f, treeId: '' })); if (user) setView('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
                         : <div className="unavail-badge">Fully Booked</div>}
                     </div>
                   </div>
@@ -411,23 +413,25 @@ export default function App() {
           <div className="cta-bottom">
             <h2>Your Tree is Waiting 🌳</h2>
             <p>Get fresh produce from our Ramnagar orchard delivered every season.</p>
-            <button className="btn-primary" onClick={() => setView(user ? 'dashboard' : 'register')}>Rent a Tree Now →</button>
+            <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree Now →</button>
           </div>
         </>
       )}
 
-      {(view === 'login' || view === 'register') && (
-        <div className="auth-page">
-          <div className="auth-card">
-            <h2>{view === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
-            {view === 'register' && <input placeholder="Full Name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />}
+      {authModal && (
+        <div className="auth-overlay" onClick={(e) => { if (e.target === e.currentTarget) setAuthModal(null); }}>
+          <div className="auth-modal">
+            <button className="auth-close" onClick={() => setAuthModal(null)}>✕</button>
+            <h2>{authModal === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
+            <p className="auth-sub">{authModal === 'login' ? 'Log in to manage your tree' : 'Start your orchard journey'}</p>
+            {authModal === 'register' && <input placeholder="Full Name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />}
             <input placeholder="Email" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
             <input placeholder="Password" type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
-            {view === 'register' && <input placeholder="Phone (optional)" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />}
-            <button className="btn-primary full" onClick={() => handleAuth(view)}>{view === 'login' ? 'Login' : 'Create Account'}</button>
+            {authModal === 'register' && <input placeholder="Phone (optional)" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />}
+            <button className="btn-primary full" onClick={handleAuth}>{authModal === 'login' ? 'Login' : 'Create Account'}</button>
             <p className="auth-toggle">
-              {view === 'login' ? "Don't have an account? " : 'Already have an account? '}
-              <span onClick={() => setView(view === 'login' ? 'register' : 'login')}>{view === 'login' ? 'Sign Up' : 'Login'}</span>
+              {authModal === 'login' ? "Don't have an account? " : 'Already have an account? '}
+              <span onClick={() => setAuthModal(authModal === 'login' ? 'register' : 'login')}>{authModal === 'login' ? 'Sign Up' : 'Login'}</span>
             </p>
           </div>
         </div>
