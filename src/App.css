@@ -32,7 +32,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .btn-sm.outline:hover { border-color: var(--green); color: var(--green); background: transparent; }
 
 /* ── Toast ── */
-.toast { background: var(--green); color: #fff; text-align: center; padding: 12px 24px; cursor: pointer; font-size: 0.9rem; }
+.toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 14px 32px; border-radius: 50px; cursor: pointer; font-size: 0.95rem; z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,0.2); white-space: nowrap; }
 
 /* ── Section Label ── */
 .section-label {

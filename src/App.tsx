@@ -81,15 +81,19 @@ export default function App() {
   const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setView('home'); };
 
   const handleAuth = async (type: 'login' | 'register') => {
-    const res = await api.post(`/auth/${type}`, form);
-    if (!res.token) { setMsg(res.message || 'Error'); return; }
-    if (type === 'register') {
-      setMsg('Signup successful! Your baby tree is waiting for you 🌱');
-      setTimeout(() => { setMsg(''); setForm({ name: '', email: '', password: '', phone: '' }); setView('login'); }, 2500);
-    } else {
-      localStorage.setItem('token', res.token);
-      localStorage.setItem('user', JSON.stringify(res.user));
-      setUser(res.user); setView('dashboard'); setMsg('');
+    try {
+      const res = await api.post(`/auth/${type}`, form);
+      if (!res.token) { setMsg(res.message || 'Something went wrong. Try again.'); return; }
+      if (type === 'register') {
+        setMsg('Account created! Redirecting to login...');
+        setTimeout(() => { setMsg(''); setForm({ name: '', email: '', password: '', phone: '' }); setView('login'); }, 2000);
+      } else {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        setUser(res.user); setView('dashboard'); setMsg('');
+      }
+    } catch {
+      setMsg('Could not connect to server. Please try again.');
     }
   };
 
