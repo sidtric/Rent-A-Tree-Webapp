@@ -44,17 +44,12 @@ const MANGO_BOXES = [
   { id: 'chausa',   name: 'Chausa Mango',   desc: 'Rich, golden, and intensely sweet — best enjoyed by sucking straight from the skin.', price: 1199, img: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=400&q=80' },
 ];
 
-const authFetch = (url: string, body: FormData) =>
-  fetch(url, { method: 'POST', headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }, body }).then(r => r.json());
-
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [trees, setTrees] = useState<Tree[]>([]);
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [videoForm, setVideoForm] = useState({ title: '', description: '' });
   const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
@@ -62,8 +57,6 @@ export default function App() {
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
   const [reviewFiles, setReviewFiles] = useState<FileList | null>(null);
   const [updates, setUpdates] = useState<Record<string, FarmUpdate[]>>({});
-  const [updateFiles, setUpdateFiles] = useState<FileList | null>(null);
-  const [updateCaption, setUpdateCaption] = useState('');
   const [expandedRental, setExpandedRental] = useState<string | null>(null);
   const [msg, setMsg] = useState('');
   const [featIdx, setFeatIdx] = useState(0);
@@ -130,35 +123,12 @@ export default function App() {
     } else setMsg(res.message || 'Error posting review');
   };
 
-  const uploadVideo = async () => {
-    if (!videoFile) { setMsg('Please select a video'); return; }
-    const data = new FormData();
-    data.append('video', videoFile);
-    data.append('title', videoForm.title || 'Orchard Video');
-    data.append('description', videoForm.description);
-    const res = await authFetch(`${API_BASE}/api/videos`, data);
-    if (res._id) {
-      setVideos(v => [res, ...v]); setVideoFile(null); setVideoForm({ title: '', description: '' }); setMsg('Video uploaded!');
-    } else setMsg(res.message || 'Upload failed');
-  };
-
   const loadUpdates = async (rentalId: string) => {
     if (expandedRental === rentalId) { setExpandedRental(null); return; }
     setExpandedRental(rentalId);
     if (!updates[rentalId]) {
       const data = await api.get(`/farm-updates/${rentalId}`);
       setUpdates(u => ({ ...u, [rentalId]: data }));
-    }
-  };
-
-  const postFarmUpdate = async (rentalId: string) => {
-    const data = new FormData();
-    data.append('caption', updateCaption);
-    if (updateFiles) Array.from(updateFiles).forEach(f => data.append('media', f));
-    const res = await authFetch(`${API_BASE}/api/farm-updates/${rentalId}`, data);
-    if (res._id) {
-      setUpdates(u => ({ ...u, [rentalId]: [res, ...(u[rentalId] || [])] }));
-      setUpdateCaption(''); setUpdateFiles(null); setMsg('Update posted!');
     }
   };
 
