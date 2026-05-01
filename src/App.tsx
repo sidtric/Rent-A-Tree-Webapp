@@ -233,6 +233,16 @@ export default function App() {
         </div>
       )}
 
+      <div className="ticker-wrap">
+        <div className="ticker-track">
+          {[...Array(6)].map((_, i) => (
+            <span key={i} className="ticker-item">
+              🌿 Coming soon — Litchi from Uttarakhand &nbsp;·&nbsp; 🍑 Peaches from Mukteshwar &nbsp;·&nbsp; 🍐 Pears from Ranikhet &nbsp;·&nbsp; 🍊 Citrus from the Kumaon Hills &nbsp;·&nbsp; 🫐 More fruits, same promise &nbsp;&nbsp;&nbsp;
+            </span>
+          ))}
+        </div>
+      </div>
+
       {msg && <div className="toast" onClick={() => setMsg('')}>{msg}</div>}
 
       {view === 'home' && (
