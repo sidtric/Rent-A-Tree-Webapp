@@ -25,6 +25,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .nav-links { display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
 .nav-link { color: var(--dark); font-size: 0.78rem; font-weight: 600; cursor: pointer; opacity: 0.6; transition: opacity 0.2s; text-transform: uppercase; letter-spacing: 0.8px; }
 .nav-link:hover { opacity: 1; color: var(--green); }
+.nav-link-admin { opacity: 1 !important; color: var(--green) !important; background: rgba(45,106,79,0.1); padding: 5px 12px; border-radius: 99px; font-size: 0.72rem; }
 .nav-greeting { color: var(--gray); font-size: 0.88rem; }
 .btn-sm { padding: 9px 22px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; border: none; cursor: pointer; background: var(--green); color: #fff; transition: background 0.2s; font-family: inherit; }
 .btn-sm:hover { background: var(--green-dark); }

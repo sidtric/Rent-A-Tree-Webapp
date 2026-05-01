@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from './api';
 import type { Tree, Rental, User, Review, FarmUpdate, Video } from './types';
+import AdminDashboard from './AdminDashboard';
 import './App.css';
 
 const PLAN_EMOJI:  Record<string, string> = { sapling: '🌳', adult: '🌳', grand: '🌳' };
@@ -50,7 +51,7 @@ export default function App() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm'>('home');
+  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
@@ -181,6 +182,14 @@ export default function App() {
     trees.reduce((acc, t) => { acc[t.plan] = acc[t.plan] || t; return acc; }, {} as Record<string, Tree>)
   );
 
+  if (view === 'admin' && user) {
+    return (
+      <div className="app">
+        <AdminDashboard user={user} onExit={() => setView('home')} />
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       <nav className="nav">
@@ -193,6 +202,7 @@ export default function App() {
           <span className="nav-link" onClick={() => setView('contact')}>Contact</span>
           {user && <span className="nav-link" onClick={() => setView('dashboard')}>My Tree</span>}
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
+          {user?.role === 'admin' && <span className="nav-link nav-link-admin" onClick={() => setView('admin')}>⚙ Admin</span>}
         </div>
         <div className="nav-links">
           {user ? (
