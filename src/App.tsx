@@ -870,22 +870,6 @@ export default function App() {
             </div>
           </div>
 
-          <div className="farm-facts-strip">
-            {[
-              { icon: '🌳', num: '120+', label: 'Mango Trees' },
-              { icon: '📍', num: '2nd gen', label: 'Orchardist Family' },
-              { icon: '🏔️', num: '360m', label: 'Altitude (asl)' },
-              { icon: '🌧️', num: 'Himalayan', label: 'Water Source' },
-              { icon: '🥭', num: '3 seasons', label: 'Of Harvests' },
-            ].map(f => (
-              <div key={f.label} className="farm-fact">
-                <div className="farm-fact-icon">{f.icon}</div>
-                <div className="farm-fact-num">{f.num}</div>
-                <div className="farm-fact-label">{f.label}</div>
-              </div>
-            ))}
-          </div>
-
           <div className="farm-videos section">
             <div className="section-title">
               <span className="section-label">Live From the Orchard</span>
