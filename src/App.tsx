@@ -323,6 +323,32 @@ export default function App() {
             </div>
           </section>
 
+          <section className="section mango-box-section" id="boxes">
+            <div className="section-title">
+              <span className="section-label">Just Want Mangoes?</span>
+              <h2>Order a <span>10 kg Box</span></h2>
+              <p>No tree rental needed. Pick your variety and get a fresh 10 kg box delivered straight from Ramnagar.</p>
+            </div>
+            <div className="mango-boxes">
+              {MANGO_BOXES.map(box => (
+                <div key={box.id} className="box-card">
+                  <div className="box-card-img" style={{ backgroundImage: `url(${box.img})` }}>
+                    <div className="box-weight-badge">10 kg</div>
+                    <div className="box-tag-popup">{box.tag}</div>
+                  </div>
+                  <div className="box-card-body">
+                    <div className="box-name">{box.name}</div>
+                    <p className="box-desc">{box.desc}</p>
+                    <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
+                    <button className="btn-primary full" onClick={() => { if (user) setMsg(`${box.name} box order received! We'll contact you to confirm delivery.`); else setAuthModal('register'); }}>
+                      {user ? 'Order This Box' : 'Sign Up to Order'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
           <section className="section features-section">
             <div className="section-title">
               <span className="section-label">Why YourOrchard</span>
@@ -369,33 +395,6 @@ export default function App() {
               ))}
             </div>
           </section>
-
-          <section className="section mango-box-section" id="boxes">
-            <div className="section-title">
-              <span className="section-label">Just Want Mangoes?</span>
-              <h2>Order a <span>10 kg Box</span></h2>
-              <p>No tree rental needed. Pick your variety and get a fresh 10 kg box delivered straight from Ramnagar.</p>
-            </div>
-            <div className="mango-boxes">
-              {MANGO_BOXES.map(box => (
-                <div key={box.id} className="box-card">
-                  <div className="box-card-img" style={{ backgroundImage: `url(${box.img})` }}>
-                    <div className="box-weight-badge">10 kg</div>
-                    <div className="box-tag-popup">{box.tag}</div>
-                  </div>
-                  <div className="box-card-body">
-                    <div className="box-name">{box.name}</div>
-                    <p className="box-desc">{box.desc}</p>
-                    <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
-                    <button className="btn-primary full" onClick={() => { if (user) setMsg(`${box.name} box order received! We'll contact you to confirm delivery.`); else setAuthModal('register'); }}>
-                      {user ? 'Order This Box' : 'Sign Up to Order'}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
 
           <div className="cta-bottom">
             <img className="cta-mango-img" src="https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80" alt="" />
