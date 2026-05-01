@@ -50,7 +50,7 @@ export default function App() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping'>('home');
+  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
@@ -187,6 +187,7 @@ export default function App() {
         <div className="nav-center">
           <span className="nav-link" onClick={() => setView('home')}>Home</span>
           <span className="nav-link" onClick={() => setView('about')}>About</span>
+          <span className="nav-link" onClick={() => setView('farm')}>Life on Farm</span>
           <span className="nav-link" onClick={() => setView('blog')}>Blog</span>
           <span className="nav-link" onClick={() => setView('contact')}>Contact</span>
           {user && <span className="nav-link" onClick={() => setView('dashboard')}>My Tree</span>}
@@ -213,6 +214,7 @@ export default function App() {
         <div className="mobile-menu">
           <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); }}>Home</span>
           <span className="mobile-nav-link" onClick={() => { setView('about'); setMobileMenu(false); }}>About</span>
+          <span className="mobile-nav-link" onClick={() => { setView('farm'); setMobileMenu(false); }}>Life on Farm</span>
           <span className="mobile-nav-link" onClick={() => { setView('blog'); setMobileMenu(false); }}>Blog</span>
           <span className="mobile-nav-link" onClick={() => { setView('contact'); setMobileMenu(false); }}>Contact</span>
           {user && <span className="mobile-nav-link" onClick={() => { setView('dashboard'); setMobileMenu(false); }}>My Tree</span>}
@@ -841,6 +843,90 @@ export default function App() {
               <h3>Shipping Charges</h3>
               <p>Shipping is included in the price of all tree rental plans and mango box orders. There are no hidden delivery charges.</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {view === 'farm' && (
+        <div className="info-page farm-page">
+          <div className="info-hero farm-hero">
+            <span className="section-label">Ramnagar, Uttarakhand</span>
+            <h1>Life on the Farm 🌿</h1>
+            <p>Step inside our orchard. This is where your mangoes grow, ripen, and begin their journey to you.</p>
+          </div>
+
+          <div className="farm-intro section">
+            <div className="farm-intro-grid">
+              <div className="farm-intro-text">
+                <span className="section-label">Our Bagiche</span>
+                <h2>A Living, <span>Breathing Orchard</span></h2>
+                <p>Nestled in the foothills of the Himalayas, our orchard in Ramnagar sits at the edge of Corbett country. The soil is rich, the water is clean, and the air carries the scent of mango blossoms every spring.</p>
+                <p style={{ marginTop: '16px' }}>Our orchardists have been growing mangoes here for two generations. No chemicals, no shortcuts — just traditional farming, patient hands, and deep knowledge of the land.</p>
+              </div>
+              <div className="farm-intro-img">
+                <img src="https://images.unsplash.com/photo-1759162339512-c2e0f23d4dff?auto=format&fit=crop&w=600&q=85" alt="Mango orchard" />
+              </div>
+            </div>
+          </div>
+
+          <div className="farm-moments section">
+            <div className="section-title">
+              <span className="section-label">From the Orchard Floor</span>
+              <h2>Moments From <span>Our Farm</span></h2>
+              <p>Unfiltered glimpses of daily life at the bagiche — the people, the trees, and the harvest.</p>
+            </div>
+            <div className="farm-grid">
+              <div className="farm-img farm-img-wide"><img src="https://images.unsplash.com/photo-1755842546298-d5cb56b5afee?auto=format&fit=crop&w=800&q=80" alt="Mangoes on tree" /></div>
+              <div className="farm-img"><img src="https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80" alt="Mango basket" /></div>
+              <div className="farm-img"><img src="https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80" alt="Fresh mangoes" /></div>
+              <div className="farm-img"><img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=400&q=80" alt="Orchard trees" /></div>
+              <div className="farm-img farm-img-wide"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80" alt="Farm landscape" /></div>
+            </div>
+          </div>
+
+          <div className="farm-facts-strip">
+            {[
+              { icon: '🌳', num: '120+', label: 'Mango Trees' },
+              { icon: '📍', num: '2nd gen', label: 'Orchardist Family' },
+              { icon: '🏔️', num: '360m', label: 'Altitude (asl)' },
+              { icon: '🌧️', num: 'Himalayan', label: 'Water Source' },
+              { icon: '🥭', num: '3 seasons', label: 'Of Harvests' },
+            ].map(f => (
+              <div key={f.label} className="farm-fact">
+                <div className="farm-fact-icon">{f.icon}</div>
+                <div className="farm-fact-num">{f.num}</div>
+                <div className="farm-fact-label">{f.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="farm-videos section">
+            <div className="section-title">
+              <span className="section-label">Live From the Orchard</span>
+              <h2>Videos From <span>the Bagiche</span></h2>
+              <p>Our orchardist films the trees, the harvest, and the farm every week.</p>
+            </div>
+            {videos.length === 0 ? (
+              <p className="empty" style={{ textAlign: 'center' }}>No videos yet — our orchardist is filming! Check back soon.</p>
+            ) : (
+              <div className="videos-grid">
+                {videos.map(v => (
+                  <div key={v._id} className="video-card">
+                    <video src={`${API_BASE}${v.url}`} controls />
+                    <div className="video-info">
+                      <div className="video-title">{v.title}</div>
+                      {v.description && <div className="video-desc">{v.description}</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="farm-cta">
+            <h2>Own a Piece of This Orchard 🌳</h2>
+            <p>Rent a tree, get weekly updates from this very farm, and receive your harvest at home.</p>
+            <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree This Season →</button>
           </div>
         </div>
       )}
