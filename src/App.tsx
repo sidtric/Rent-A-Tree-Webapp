@@ -535,6 +535,31 @@ export default function App() {
               <p>Every harvest is handpicked at peak ripeness and shipped directly to your door within 24 hours — no middlemen, no cold storage, just fresh produce straight from the orchard.</p>
             </div>
           </div>
+
+          <div className="team-section">
+            <div className="section-title">
+              <span className="section-label">The Team</span>
+              <h2>Roots in <span>Uttarakhand</span></h2>
+              <p>We're a bunch of techies, marketers, and builders — all from Uttarakhand, all with farming in our blood.</p>
+            </div>
+            <div className="team-grid">
+              {[
+                { name: 'Arjun Rawat',    role: 'Co-Founder & Tech',     bg: '#d1f5e0', emoji: '💻', desc: 'Full-stack dev from Haldwani. Grew up picking mangoes before he ever touched a keyboard.' },
+                { name: 'Priya Bisht',    role: 'Growth & Marketing',    bg: '#fef9c3', emoji: '📣', desc: 'Digital marketer from Nainital. Knows the hills and the algorithms equally well.' },
+                { name: 'Rohan Joshi',    role: 'Operations & Logistics', bg: '#fee2e2', emoji: '🚚', desc: 'Supply chain guy from Almora. Has personally driven mangoes from Ramnagar to Delhi.' },
+                { name: 'Sunita Negi',    role: 'Head Orchardist',        bg: '#e0f2fe', emoji: '🌳', desc: 'Second-generation farmer from Ramnagar. 20 years of mango farming, knows every tree by name.' },
+                { name: 'Deepak Pandey', role: 'Product & Design',       bg: '#f3e8ff', emoji: '🎨', desc: 'Designer from Dehradun. Left a Bangalore startup to build something rooted in home.' },
+                { name: 'Kavita Verma',  role: 'Customer & Community',   bg: '#fce7f3', emoji: '🤝', desc: 'From Rudrapur. Handles every tree owner personally — she knows your name before you rent.' },
+              ].map(m => (
+                <div key={m.name} className="team-card">
+                  <div className="team-avatar" style={{ background: m.bg }}>{m.emoji}</div>
+                  <div className="team-name">{m.name}</div>
+                  <div className="team-role">{m.role}</div>
+                  <p className="team-desc">{m.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
