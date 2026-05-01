@@ -233,7 +233,7 @@ export default function App() {
             </div>
             <div className="hero-visual">
               <div className="hero-img-wrap">
-                <img className="hero-img" src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=680&q=85" alt="Fresh mangoes from our Ramnagar orchard" />
+                <img className="hero-img" src="https://images.unsplash.com/photo-1759162339512-c2e0f23d4dff?auto=format&fit=crop&w=680&q=85" alt="Fresh mangoes from our Ramnagar orchard" />
                 <div className="hero-img-badge">🌿 Ramnagar, Uttarakhand</div>
                 <div className="hero-img-pill">🥭 Mango Season 2025</div>
               </div>
