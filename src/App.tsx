@@ -39,9 +39,9 @@ const FEATURES = [
 ];
 
 const MANGO_BOXES = [
-  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1199, img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80' },
+  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80' },
   { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80' },
-  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1199, img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80' },
+  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80' },
 ];
 
 const VARIETIES = [
@@ -98,6 +98,7 @@ export default function App() {
   const [msg, setMsg] = useState('');
   const [featIdx, setFeatIdx] = useState(0);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [activeBlog, setActiveBlog] = useState<{ emoji: string; title: string; date: string; desc: string } | null>(null);
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
 
@@ -198,6 +199,20 @@ export default function App() {
         setMsg('Review posted! Thank you 🌳'); setReviewForm({ rating: 5, comment: '', name: '' }); setReviewFiles(null);
         api.get('/reviews').then(setReviews).catch(() => {});
       } else setMsg(res.message || 'Error posting review');
+    } catch {
+      setMsg('Could not connect to server. Please try again.');
+    }
+  };
+
+  const handleContact = async () => {
+    const { name, email, message } = contactForm;
+    if (!name.trim() || !email.trim() || !message.trim()) { setMsg('Please fill all fields'); return; }
+    try {
+      const res = await api.post('/contact', { name, email, message });
+      if (res.message?.includes('received')) {
+        setMsg('Message sent! We\'ll get back to you soon 🌿');
+        setContactForm({ name: '', email: '', message: '' });
+      } else setMsg(res.message || 'Something went wrong');
     } catch {
       setMsg('Could not connect to server. Please try again.');
     }
@@ -642,10 +657,10 @@ export default function App() {
           <div className="contact-form-wrap">
             <h2>Send a Message</h2>
             <div className="contact-form">
-              <input placeholder="Your Name" />
-              <input placeholder="Email Address" type="email" />
-              <textarea placeholder="Your message..." rows={5} />
-              <button className="btn-primary">Send Message</button>
+              <input placeholder="Your Name" value={contactForm.name} onChange={e => setContactForm(f => ({ ...f, name: e.target.value }))} />
+              <input placeholder="Email Address" type="email" value={contactForm.email} onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))} />
+              <textarea placeholder="Your message..." rows={5} value={contactForm.message} onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))} />
+              <button className="btn-primary" onClick={handleContact}>Send Message</button>
             </div>
           </div>
           <section className="section reviews-section" id="reviews">
