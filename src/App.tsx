@@ -536,30 +536,6 @@ export default function App() {
             </div>
           </div>
 
-          <div className="team-section">
-            <div className="section-title">
-              <span className="section-label">The Team</span>
-              <h2>Roots in <span>Uttarakhand</span></h2>
-              <p>We're a bunch of techies, marketers, and builders — all from Uttarakhand, all with farming in our blood.</p>
-            </div>
-            <div className="team-grid">
-              {[
-                { name: 'Arjun Rawat',    role: 'Co-Founder & Tech',     bg: '#d1f5e0', emoji: '💻', desc: 'Full-stack dev from Haldwani. Grew up picking mangoes before he ever touched a keyboard.' },
-                { name: 'Priya Bisht',    role: 'Growth & Marketing',    bg: '#fef9c3', emoji: '📣', desc: 'Digital marketer from Nainital. Knows the hills and the algorithms equally well.' },
-                { name: 'Rohan Joshi',    role: 'Operations & Logistics', bg: '#fee2e2', emoji: '🚚', desc: 'Supply chain guy from Almora. Has personally driven mangoes from Ramnagar to Delhi.' },
-                { name: 'Sunita Negi',    role: 'Head Orchardist',        bg: '#e0f2fe', emoji: '🌳', desc: 'Second-generation farmer from Ramnagar. 20 years of mango farming, knows every tree by name.' },
-                { name: 'Deepak Pandey', role: 'Product & Design',       bg: '#f3e8ff', emoji: '🎨', desc: 'Designer from Dehradun. Left a Bangalore startup to build something rooted in home.' },
-                { name: 'Kavita Verma',  role: 'Customer & Community',   bg: '#fce7f3', emoji: '🤝', desc: 'From Rudrapur. Handles every tree owner personally — she knows your name before you rent.' },
-              ].map(m => (
-                <div key={m.name} className="team-card">
-                  <div className="team-avatar" style={{ background: m.bg }}>{m.emoji}</div>
-                  <div className="team-name">{m.name}</div>
-                  <div className="team-role">{m.role}</div>
-                  <p className="team-desc">{m.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       )}
 
@@ -650,6 +626,7 @@ export default function App() {
           </div>
           <div className="blog-grid">
             {[
+              { emoji: '👨‍💻', title: 'We\'re a Bunch of Techies from Uttarakhand — and That\'s Exactly Why We Built This', date: 'April 2026', desc: 'We are a bunch of techies, marketers, and builders — all from Uttarakhand, all with farming somewhere in our roots. Growing up, our dads and uncles had bagichas. We watched mangoes get picked, packed in old wooden crates, and sold for nothing at the local mandi. We moved to cities, learned to code, learned to run ads, learned to build products. But we never stopped thinking about those trees. YourOrchard is our way back. Not to leave the city — but to connect it, honestly, to the farm we grew up around. We are not romanticising farming. We know it is hard, unpredictable, and underpaid. That is exactly why we built this — so the orchardist earns more, the city family eats better, and the tree gets the care it deserves. This is home, built into a product.' },
               { emoji: '🌸', title: 'How We Care for Your Tree Through Winter', date: 'March 2026', desc: 'Winter in Ramnagar can be cold, but our trees love it. Here\'s how we prepare them for the best spring bloom.' },
               { emoji: '💧', title: 'Why Orchard Water Tastes Different', date: 'February 2026', desc: 'The streams flowing from the Himalayas give our orchard a natural advantage. We break it down for you.' },
               { emoji: '📦', title: 'From Tree to Doorstep in 24 Hours', date: 'January 2026', desc: 'A behind-the-scenes look at how we pick, pack, and ship your harvest the same day it\'s plucked.' },
