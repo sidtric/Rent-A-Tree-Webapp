@@ -275,7 +275,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .feat-dot.active { background: var(--green); width: 24px; border-radius: 4px; }
 
 /* ── Orchard Gallery ── */
-.orchard-gallery { background: #1C1008; padding-top: 100px; padding-bottom: 100px; }
+.orchard-gallery { background: var(--green-dark); padding-top: 100px; padding-bottom: 100px; }
 .orchard-gallery .section-title h2 { color: #fff; }
 .orchard-gallery .section-title h2 span { color: #FBBF24; }
 .orchard-gallery .section-title p { color: rgba(255,255,255,0.5); }
@@ -325,15 +325,33 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .plan-name { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.35); }
 .plan-perks { font-size: 0.82rem; color: var(--gray); line-height: 1.55; margin: 4px 0 6px; }
 
-/* Variety tabs */
-.variety-tabs { display: flex; gap: 14px; justify-content: center; margin-bottom: 36px; flex-wrap: wrap; }
-.variety-tab { display: flex; align-items: center; gap: 12px; padding: 10px 18px 10px 10px; border-radius: 60px; border: 2px solid rgba(0,0,0,0.1); background: #fff; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; }
-.variety-tab:hover { border-color: var(--green); transform: translateY(-2px); }
-.variety-tab.active { border-color: var(--green); box-shadow: 0 4px 16px rgba(45,106,79,0.18); background: var(--bg); }
-.variety-tab-img { width: 44px; height: 44px; border-radius: 50%; background-size: cover; background-position: center; flex-shrink: 0; }
-.variety-tab-info { display: flex; flex-direction: column; align-items: flex-start; }
-.variety-tab-name { font-size: 0.95rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
-.variety-tab-tagline { font-size: 0.72rem; color: var(--gray); }
+/* Variety row + tree size popup */
+.variety-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+.variety-card { display: flex; align-items: center; gap: 14px; padding: 12px 20px 12px 12px; border-radius: 60px; border: 2px solid rgba(0,0,0,0.1); background: #fff; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; min-width: 220px; flex: 1; max-width: 300px; }
+.variety-card:hover { border-color: var(--green); transform: translateY(-2px); }
+.variety-card.active { border-color: var(--green); box-shadow: 0 4px 18px rgba(45,106,79,0.2); background: var(--bg); }
+.variety-card-img { width: 52px; height: 52px; border-radius: 50%; background-size: cover; background-position: center; flex-shrink: 0; }
+.variety-card-info { display: flex; flex-direction: column; flex: 1; }
+.variety-card-name { font-size: 1rem; font-weight: 800; color: var(--dark); line-height: 1.2; }
+.variety-card-tagline { font-size: 0.72rem; color: var(--gray); }
+.variety-card-arrow { font-size: 0.65rem; color: var(--gray); margin-left: auto; }
+
+.tree-size-popup { background: #fff; border: 1px solid rgba(0,0,0,0.09); border-radius: 24px; overflow: hidden; animation: popupIn 0.22s ease; margin-top: 4px; }
+.tree-size-popup-header { background: var(--green-dark); color: #fff; padding: 14px 28px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.3px; }
+.tree-size-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+@keyframes popupIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+.tsize-card { border-right: 1px solid rgba(0,0,0,0.07); display: flex; flex-direction: column; transition: background 0.18s; }
+.tsize-card:last-child { border-right: none; }
+.tsize-card:hover { background: var(--bg); }
+.tsize-card.unavailable { opacity: 0.55; }
+.tsize-img { height: 190px; background-size: cover; background-position: center; position: relative; }
+.tsize-badge { position: absolute; bottom: 12px; left: 12px; background: rgba(14,32,21,0.8); color: #fff; font-size: 0.78rem; font-weight: 800; padding: 5px 14px; border-radius: 50px; }
+.tsize-body { padding: 20px 22px 26px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.tsize-yield { display: inline-block; background: var(--bg); color: var(--green); padding: 3px 12px; border-radius: 50px; font-size: 0.78rem; font-weight: 700; width: fit-content; }
+.tsize-price { font-size: 1.7rem; font-weight: 900; color: var(--dark); letter-spacing: -0.8px; line-height: 1.1; margin: 4px 0; }
+.tsize-price span { font-size: 0.82rem; font-weight: 400; color: var(--gray); }
+.tsize-perks { font-size: 0.82rem; color: var(--gray); line-height: 1.55; margin: 0 0 4px; }
 .plan-card-body { padding: 22px 24px 28px; display: flex; flex-direction: column; gap: 5px; flex: 1; }
 .plan-price { font-size: 2.6rem; font-weight: 900; color: var(--dark); letter-spacing: -1.5px; line-height: 1.1; }
 .plan-price span { font-size: 0.88rem; font-weight: 400; color: var(--gray); letter-spacing: 0; }
@@ -504,7 +522,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .team-name { font-size: 1rem; font-weight: 800; color: var(--dark); margin-bottom: 4px; }
 .team-role { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--green); margin-bottom: 12px; }
 .team-desc { font-size: 0.87rem; color: var(--gray); line-height: 1.65; }
-.info-hero { background: #1C1008; color: #fff; text-align: center; padding: 100px 80px; }
+.info-hero { background: var(--green-dark); color: #fff; text-align: center; padding: 100px 80px; }
 .info-hero h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 14px; letter-spacing: -1px; }
 .info-hero p { font-size: 1.05rem; color: rgba(255,255,255,0.65); }
 .info-content { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; padding: 80px; background: var(--bg); }
@@ -605,7 +623,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 }
 
 /* ── Footer ── */
-footer { background: #1C1008; color: rgba(255,255,255,0.5); padding: 64px max(80px, calc((100vw - 1440px) / 2 + 80px)) 32px; }
+footer { background: var(--green-dark); color: rgba(255,255,255,0.5); padding: 64px max(80px, calc((100vw - 1440px) / 2 + 80px)) 32px; }
 .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
 .footer-logo { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
 .footer-brand-desc { font-size: 0.88rem; line-height: 1.7; max-width: 280px; margin-bottom: 24px; }

@@ -45,15 +45,39 @@ const MANGO_BOXES = [
 ];
 
 const VARIETIES = [
-  { id: 'chausa',  name: 'Chausa',  tagline: 'Jewel of Ramnagar',   img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80' },
-  { id: 'dasheri', name: 'Dasheri', tagline: 'People\'s Favourite', img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80' },
-  { id: 'langra',  name: 'Langra',  tagline: 'Most Fulfilling',     img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80' },
+  {
+    id: 'chausa',  name: 'Chausa',  tagline: 'Jewel of Ramnagar',
+    img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1629637272678-9b0d5a41b1e5?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1772984613890-e3bfbca7f245?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1622955658214-d05c1c6fcf84?auto=format&fit=crop&w=600&q=80',
+    ],
+  },
+  {
+    id: 'dasheri', name: 'Dasheri', tagline: 'People\'s Favourite',
+    img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1685478677113-8c4a58503230?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1688492596644-b0e68aa86477?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1685478676925-05548b7bc317?auto=format&fit=crop&w=600&q=80',
+    ],
+  },
+  {
+    id: 'langra',  name: 'Langra',  tagline: 'Most Fulfilling',
+    img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1655168339435-af59c878e17a?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1680008702821-e1b598db30f3?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1734163075572-8948e799e42c?auto=format&fit=crop&w=600&q=80',
+    ],
+  },
 ];
 
 const TREE_SIZES = [
-  { plan: 'sapling', label: 'Small Tree', icon: '🌱', yield: '15–20 kg', perks: 'Perfect for a small family. One young tree, full season harvest.' },
-  { plan: 'adult',   label: 'Mid Tree',   icon: '🌳', yield: '30–45 kg', perks: 'The sweet spot — generous yield, great value for a family of 4.' },
-  { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.' },
+  { plan: 'sapling', label: 'Small Tree', icon: '🌱', yield: '15–20 kg', perks: 'Perfect for a small family. One young tree, full season harvest.',   img: 'https://images.unsplash.com/photo-1624223097551-43a133903591?auto=format&fit=crop&w=400&q=80' },
+  { plan: 'adult',   label: 'Mid Tree',   icon: '🌳', yield: '30–45 kg', perks: 'The sweet spot — generous yield, great value for a family of 4.',     img: 'https://images.unsplash.com/photo-1558261515-72bff9896df1?auto=format&fit=crop&w=400&q=80' },
+  { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: 'https://images.unsplash.com/photo-1692102972494-7852d3e21d3f?auto=format&fit=crop&w=400&q=80' },
 ];
 
 export default function App() {
@@ -75,7 +99,7 @@ export default function App() {
   const [featIdx, setFeatIdx] = useState(0);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [activeBlog, setActiveBlog] = useState<{ emoji: string; title: string; date: string; desc: string } | null>(null);
-  const [selectedVariety, setSelectedVariety] = useState('chausa');
+  const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
 
   useEffect(() => {
     const t = setInterval(() => setFeatIdx(i => (i + 1) % FEATURES.length), 3500);
@@ -334,55 +358,58 @@ export default function App() {
             <div className="section-title">
               <span className="section-label">Seasonal Plans</span>
               <h2>Choose Your <span>Tree</span></h2>
-              <p>Pick your mango variety, then choose a tree size. All plans include free home delivery of your full harvest.</p>
+              <p>Pick a variety, then choose your tree size. All plans include free home delivery.</p>
             </div>
 
-            <div className="variety-tabs">
-              {VARIETIES.map(v => (
-                <button key={v.id} className={`variety-tab ${selectedVariety === v.id ? 'active' : ''}`} onClick={() => setSelectedVariety(v.id)}>
-                  <div className="variety-tab-img" style={{ backgroundImage: `url(${v.img})` }} />
-                  <div className="variety-tab-info">
-                    <span className="variety-tab-name">{v.name}</span>
-                    <span className="variety-tab-tagline">{v.tagline}</span>
+            <div className="variety-row">
+              {VARIETIES.map(variety => (
+                <div
+                  key={variety.id}
+                  className={`variety-card ${selectedVariety === variety.id ? 'active' : ''}`}
+                  onClick={() => setSelectedVariety(selectedVariety === variety.id ? null : variety.id)}
+                >
+                  <div className="variety-card-img" style={{ backgroundImage: `url(${variety.img})` }} />
+                  <div className="variety-card-info">
+                    <span className="variety-card-name">{variety.name} Aam</span>
+                    <span className="variety-card-tagline">{variety.tagline}</span>
                   </div>
-                </button>
+                  <span className="variety-card-arrow">{selectedVariety === variety.id ? '▲' : '▼'}</span>
+                </div>
               ))}
             </div>
 
-            <div className="plans">
-              {TREE_SIZES.map(size => {
-                const available = trees.filter(t => t.plan === size.plan && t.isAvailable).length;
-                const treeRef = planCards.find(t => t.plan === size.plan);
-                return (
-                  <div key={size.plan} className={`plan-card plan-${size.plan} ${available === 0 ? 'unavailable' : ''}`}>
-                    <div className="plan-card-header" style={{ backgroundImage: `url(${VARIETIES.find(v => v.id === selectedVariety)?.img})` }}>
-                      <span className="plan-size-icon">{size.icon}</span>
-                      <div className="plan-name">{size.label}</div>
-                    </div>
-                    <div className="plan-card-body">
-                      {treeRef
-                        ? <>
-                            <div className="plan-price">₹{treeRef.priceMin.toLocaleString()} <span>– ₹{treeRef.priceMax.toLocaleString()}</span></div>
-                            <div className="plan-yield">{treeRef.yieldMin}–{treeRef.yieldMax} kg / season</div>
-                          </>
-                        : <div className="plan-yield">{size.yield} / season</div>
-                      }
-                      <p className="plan-perks">{size.perks}</p>
-                      <div className="plan-loc">📍 Ramnagar, Uttarakhand</div>
-                      {treeRef
-                        ? <>
-                            <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
-                            {available > 0
+            {selectedVariety && (
+              <div className="tree-size-popup">
+                <div className="tree-size-popup-header">
+                  {VARIETIES.find(v => v.id === selectedVariety)?.name} Aam — Choose Tree Size
+                </div>
+                <div className="tree-size-grid">
+                  {TREE_SIZES.map(size => {
+                    const available = trees.filter(t => t.plan === size.plan && t.isAvailable).length;
+                    const treeRef = planCards.find(t => t.plan === size.plan);
+                    return (
+                      <div key={size.plan} className={`tsize-card ${available === 0 ? 'unavailable' : ''}`}>
+                        <div className="tsize-img" style={{ backgroundImage: `url(${size.img})` }}>
+                          <span className="tsize-badge">{size.icon} {size.label}</span>
+                        </div>
+                        <div className="tsize-body">
+                          <div className="tsize-yield">{treeRef ? `${treeRef.yieldMin}–${treeRef.yieldMax}` : size.yield} kg / season</div>
+                          <p className="tsize-perks">{size.perks}</p>
+                          {treeRef && <div className="tsize-price">₹{treeRef.priceMin.toLocaleString()} <span>– ₹{treeRef.priceMax.toLocaleString()}</span></div>}
+                          <div className="plan-loc">📍 Ramnagar, Uttarakhand</div>
+                          {treeRef
+                            ? available > 0
                               ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(treeRef); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
-                              : <div className="unavail-badge">Fully Booked</div>}
-                          </>
-                        : <button className="btn-primary full" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
-                      }
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                              : <div className="unavail-badge">Fully Booked</div>
+                            : <button className="btn-primary full" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
+                          }
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </section>
 
           <section className="section mango-box-section" id="boxes">
