@@ -15,7 +15,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 
 /* ── Nav ── */
 .nav {
-  background: #fff; padding: 22px 60px;
+  background: #fff; padding: 22px max(60px, calc((100vw - 1440px) / 2 + 60px));
   display: grid; grid-template-columns: 1fr auto 1fr;
   align-items: center; position: sticky; top: 0; z-index: 100;
   border-bottom: 1px solid rgba(0,0,0,0.07);
@@ -43,7 +43,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 }
 
 /* ── Sections ── */
-.section { padding: 100px 80px; }
+.section { padding: 100px 80px; max-width: 1440px; margin-left: auto; margin-right: auto; width: 100%; }
 .section-title { text-align: center; margin-bottom: 64px; display: flex; flex-direction: column; align-items: center; }
 .section-title h2 { font-size: 3.2rem; font-weight: 900; color: var(--dark); line-height: 1.05; margin-bottom: 16px; letter-spacing: -1px; }
 .section-title h2 span { color: var(--green); }
@@ -54,6 +54,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
   background: var(--bg); padding: 80px 80px 60px;
   display: flex; align-items: center; justify-content: space-between;
   gap: 40px; min-height: 92vh;
+  max-width: 1440px; margin-left: auto; margin-right: auto;
 }
 .hero-text { max-width: 580px; }
 .hero-label {
@@ -117,7 +118,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .btn-outline:hover { border-color: var(--green); color: var(--green); }
 
 /* ── Stats Strip ── */
-.stats-strip { background: var(--green); padding: 28px 80px; display: flex; align-items: center; justify-content: center; }
+.stats-strip { background: var(--green); padding: 28px max(80px, calc((100vw - 1440px) / 2 + 80px)); display: flex; align-items: center; justify-content: center; }
 .stat-item { display: flex; flex-direction: column; align-items: center; padding: 0 52px; }
 .stat-num { font-size: 2.2rem; font-weight: 900; color: #fff; letter-spacing: -1.5px; line-height: 1; }
 .stat-label { font-size: 0.72rem; font-weight: 600; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 1.2px; margin-top: 5px; }
@@ -486,7 +487,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .footer-policy-link:hover { color: #fff; }
 
 /* ── Footer ── */
-footer { background: #1C1008; color: rgba(255,255,255,0.5); padding: 64px 80px 32px; }
+footer { background: #1C1008; color: rgba(255,255,255,0.5); padding: 64px max(80px, calc((100vw - 1440px) / 2 + 80px)) 32px; }
 .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
 .footer-logo { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
 .footer-brand-desc { font-size: 0.88rem; line-height: 1.7; max-width: 280px; margin-bottom: 24px; }
