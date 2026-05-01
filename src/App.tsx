@@ -369,22 +369,6 @@ export default function App() {
             </div>
           </section>
 
-          <section className="section orchard-gallery">
-            <div className="section-title">
-              <span className="section-label">Life on the Farm</span>
-              <h2>From the <span>Orchard Floor</span></h2>
-              <p>A peek into your tree's world — mangoes ripening under the Himalayan sun in Ramnagar.</p>
-            </div>
-            <div className="gallery-grid">
-              {GALLERY_PHOTOS.map((p, i) => (
-                <div key={i} className={`gallery-item gi-${i + 1}`}>
-                  <img src={p.url} alt={p.label} />
-                  <div className="gallery-label">{p.label}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-
           <section className="section mango-box-section" id="boxes">
             <div className="section-title">
               <span className="section-label">Just Want Mangoes?</span>
