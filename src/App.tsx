@@ -50,7 +50,7 @@ export default function App() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund'>('home');
+  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
@@ -795,6 +795,56 @@ export default function App() {
         </div>
       )}
 
+      {view === 'shipping' && (
+        <div className="info-page">
+          <div className="info-hero">
+            <h1>Shipping & Delivery 📦</h1>
+            <p>How your harvest travels from our Ramnagar bagiche to your door.</p>
+          </div>
+          <div className="policy-body">
+            <p>Last updated: April 2026. We take great care to ensure your mangoes arrive fresh and on time.</p>
+            <div className="policy-section">
+              <h3>Harvest & Dispatch</h3>
+              <p>Your mangoes are harvested by hand at peak ripeness and dispatched within 24 hours of picking. We do not use cold storage — your box goes straight from the tree to the courier. This ensures maximum freshness and flavour when it arrives at your door.</p>
+            </div>
+            <div className="policy-section">
+              <h3>Delivery Timeline</h3>
+              <ul>
+                <li><strong>Northern India (Delhi, UP, Uttarakhand, Punjab, Haryana):</strong> 1–2 business days after dispatch.</li>
+                <li><strong>Western & Central India (Mumbai, Pune, Rajasthan, MP, Gujarat):</strong> 2–3 business days after dispatch.</li>
+                <li><strong>Southern India (Bengaluru, Chennai, Hyderabad, Kerala):</strong> 3–4 business days after dispatch.</li>
+                <li><strong>Eastern India (Kolkata, Odisha, Bihar, Northeast):</strong> 3–5 business days after dispatch.</li>
+              </ul>
+              <p>All timelines are estimates and may vary due to courier delays, weather, or local public holidays.</p>
+            </div>
+            <div className="policy-section">
+              <h3>Delivery Partners</h3>
+              <p>We ship via trusted courier partners including DTDC, Delhivery, and Blue Dart depending on your location. A tracking number will be shared with you via email or WhatsApp once your box is dispatched.</p>
+            </div>
+            <div className="policy-section">
+              <h3>Packaging</h3>
+              <p>Each mango box is packed in ventilated cardboard boxes with cushioning to protect the fruit during transit. The packaging is designed to maintain airflow and prevent bruising. We use minimal plastic and prefer eco-friendly materials wherever possible.</p>
+            </div>
+            <div className="policy-section">
+              <h3>Delivery Address</h3>
+              <p>Please ensure your delivery address is accurate and complete at the time of rental or box order. We are not responsible for delays or non-delivery caused by incorrect or incomplete addresses. Address changes after dispatch are not possible.</p>
+            </div>
+            <div className="policy-section">
+              <h3>Failed Delivery</h3>
+              <p>If a delivery attempt fails (no one available to receive), the courier will attempt re-delivery once. If the second attempt also fails, the box will be held at the nearest courier hub for 48 hours. After that, the box may be returned. Perishable nature of the goods means we cannot re-ship returned boxes, but we will review each case individually — write to us at hello@yourorchard.in.</p>
+            </div>
+            <div className="policy-section">
+              <h3>Damaged or Spoiled Delivery</h3>
+              <p>If your box arrives with significant damage or spoilage, photograph the box and contents immediately and email hello@yourorchard.in within 24 hours of delivery. We will arrange a replacement or refund for the affected portion. Claims made after 24 hours of delivery may not be accepted.</p>
+            </div>
+            <div className="policy-section">
+              <h3>Shipping Charges</h3>
+              <p>Shipping is included in the price of all tree rental plans and mango box orders. There are no hidden delivery charges.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <footer>
         <div className="footer-grid">
           <div>
@@ -822,6 +872,7 @@ export default function App() {
               <li onClick={() => setView('terms')}>Terms & Conditions</li>
               <li onClick={() => setView('privacy')}>Privacy Policy</li>
               <li onClick={() => setView('refund')}>Refund Policy</li>
+              <li onClick={() => setView('shipping')}>Shipping & Delivery</li>
             </ul>
           </div>
           <div className="footer-col">
