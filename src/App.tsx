@@ -39,9 +39,9 @@ const FEATURES = [
 ];
 
 const MANGO_BOXES = [
-  { id: 'langra',   name: 'Langra Mango',   desc: 'The sweet-tangy classic from Varanasi — buttery, fiberless, and deeply aromatic.',  price: 999,  img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=400&q=80' },
-  { id: 'dasheri',  name: 'Dasheri Mango',  desc: 'Delicate, honey-sweet, and thin-skinned. The favourite of Lucknow\'s nawabs.',        price: 1099, img: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=400&q=80' },
-  { id: 'chausa',   name: 'Chausa Mango',   desc: 'Rich, golden, and intensely sweet — best enjoyed by sucking straight from the skin.', price: 1199, img: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=400&q=80' },
+  { id: 'langra',   name: 'Langra Mango',   desc: 'Straight from our Ramnagar bagiche — buttery, fiberless, and deeply aromatic. Tree-ripened for the purest taste.',  price: 999,  img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=400&q=80' },
+  { id: 'dasheri',  name: 'Dasheri Mango',  desc: 'Plucked at peak ripeness from our Ramnagar orchard — honey-sweet, thin-skinned, and full of fragrance.',              price: 1099, img: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=400&q=80' },
+  { id: 'chausa',   name: 'Chausa Mango',   desc: 'Grown in our Ramnagar bagiche and harvested by hand — rich, golden, and intensely sweet straight from the farm.',      price: 1199, img: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=400&q=80' },
 ];
 
 export default function App() {
