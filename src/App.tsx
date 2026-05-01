@@ -290,6 +290,36 @@ export default function App() {
             </div>
           </section>
 
+          <section className="section plans-section" id="plans">
+            <div className="section-title">
+              <span className="section-label">Seasonal Plans</span>
+              <h2>Choose Your <span>Tree</span></h2>
+              <p>Pick a plan — pricing and yield details are on each card. All plans include free home delivery.</p>
+            </div>
+            <div className="plans">
+              {trees.length === 0 ? <p className="empty">No trees available right now — check back soon!</p> : planCards.map(tree => {
+                const available = trees.filter(t => t.plan === tree.plan && t.isAvailable).length;
+                return (
+                  <div key={tree.plan} className={`plan-card plan-${tree.plan} ${available === 0 ? 'unavailable' : ''}`}>
+                    <div className="plan-card-header" style={{ backgroundImage: `url(${PLAN_IMAGES[tree.plan]})` }}>
+                      <span className="plan-emoji">{PLAN_EMOJI[tree.plan]}</span>
+                      <div className="plan-name">{PLAN_LABEL[tree.plan]}</div>
+                    </div>
+                    <div className="plan-card-body">
+                      <div className="plan-price">₹{tree.priceMin.toLocaleString()} <span>– ₹{tree.priceMax.toLocaleString()}</span></div>
+                      <div className="plan-yield">{tree.yieldMin}–{tree.yieldMax} kg / season</div>
+                      <div className="plan-loc">📍 {tree.location}</div>
+                      <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
+                      {available > 0
+                        ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(tree); else setAuthModal('register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
+                        : <div className="unavail-badge">Fully Booked</div>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
           <section className="section features-section">
             <div className="section-title">
               <span className="section-label">Why YourOrchard</span>
@@ -350,36 +380,6 @@ export default function App() {
                   <div className="gallery-label">{p.label}</div>
                 </div>
               ))}
-            </div>
-          </section>
-
-          <section className="section plans-section" id="plans">
-            <div className="section-title">
-              <span className="section-label">Seasonal Plans</span>
-              <h2>Choose Your <span>Tree</span></h2>
-              <p>Pick a plan — pricing and yield details are on each card. All plans include free home delivery.</p>
-            </div>
-            <div className="plans">
-              {trees.length === 0 ? <p className="empty">No trees available right now — check back soon!</p> : planCards.map(tree => {
-                const available = trees.filter(t => t.plan === tree.plan && t.isAvailable).length;
-                return (
-                  <div key={tree.plan} className={`plan-card plan-${tree.plan} ${available === 0 ? 'unavailable' : ''}`}>
-                    <div className="plan-card-header" style={{ backgroundImage: `url(${PLAN_IMAGES[tree.plan]})` }}>
-                      <span className="plan-emoji">{PLAN_EMOJI[tree.plan]}</span>
-                      <div className="plan-name">{PLAN_LABEL[tree.plan]}</div>
-                    </div>
-                    <div className="plan-card-body">
-                      <div className="plan-price">₹{tree.priceMin.toLocaleString()} <span>– ₹{tree.priceMax.toLocaleString()}</span></div>
-                      <div className="plan-yield">{tree.yieldMin}–{tree.yieldMax} kg / season</div>
-                      <div className="plan-loc">📍 {tree.location}</div>
-                      <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
-                      {available > 0
-                        ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(tree); else setAuthModal('register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
-                        : <div className="unavail-badge">Fully Booked</div>}
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </section>
 
