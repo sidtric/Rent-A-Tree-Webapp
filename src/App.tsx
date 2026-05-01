@@ -39,9 +39,9 @@ const FEATURES = [
 ];
 
 const MANGO_BOXES = [
-  { id: 'chausa',   name: 'Chausa Mango',   desc: 'The jewel of our Ramnagar bagiche — velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin.',  price: 1199, img: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=400&q=80' },
-  { id: 'dasheri',  name: 'Dasheri Mango',  desc: 'The people\'s favourite — plucked fresh from our Ramnagar orchard, honey-sweet, thin-skinned, and loved by everyone.',         price: 1099, img: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=400&q=80' },
-  { id: 'langra',   name: 'Langra Mango',   desc: 'The most fulfilling mango from our Ramnagar bagiche — buttery, fiberless, and deeply aromatic. One box and you\'re satisfied.',  price: 999,  img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=400&q=80' },
+  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1199, img: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=400&q=80' },
+  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1099, img: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=400&q=80' },
+  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 999,  img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=400&q=80' },
 ];
 
 export default function App() {
@@ -370,6 +370,7 @@ export default function App() {
                 <div key={box.id} className="box-card">
                   <div className="box-card-img" style={{ backgroundImage: `url(${box.img})` }}>
                     <div className="box-weight-badge">10 kg</div>
+                    <div className="box-tag-popup">{box.tag}</div>
                   </div>
                   <div className="box-card-body">
                     <div className="box-name">{box.name}</div>
