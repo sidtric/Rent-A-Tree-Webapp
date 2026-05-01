@@ -53,7 +53,7 @@ export default function App() {
   const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
-  const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2025' });
+  const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
   const [rentModal, setRentModal] = useState<Tree | null>(null);
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
   const [reviewFiles, setReviewFiles] = useState<FileList | null>(null);
@@ -131,7 +131,7 @@ export default function App() {
           if (rental._id) {
             setMsg('Tree rented! Welcome to YourOrchard 🌳');
             setRentModal(null);
-            setRentForm({ treeId: '', deliveryAddress: '', season: '2025' });
+            setRentForm({ treeId: '', deliveryAddress: '', season: '2026' });
             api.get('/trees').then(setTrees);
             api.get('/rentals/my').then(setRentals);
             setView('dashboard');
@@ -235,7 +235,7 @@ export default function App() {
               <div className="hero-img-wrap">
                 <img className="hero-img" src="https://images.unsplash.com/photo-1759162339512-c2e0f23d4dff?auto=format&fit=crop&w=680&q=85" alt="Fresh mangoes from our Ramnagar orchard" />
                 <div className="hero-img-badge">🌿 Ramnagar, Uttarakhand</div>
-                <div className="hero-img-pill">🥭 Mango Season 2025</div>
+                <div className="hero-img-pill">🥭 Mango Season 2026</div>
               </div>
             </div>
           </section>
@@ -485,14 +485,13 @@ export default function App() {
           <div className="auth-modal">
             <button className="auth-close" onClick={() => setRentModal(null)}>✕</button>
             <h2>Rent {PLAN_LABEL[rentModal.plan]}</h2>
-            <p className="auth-sub">₹{rentModal.pricePerSeason.toLocaleString()} · {rentModal.yieldMin}–{rentModal.yieldMax} kg · Season 2025</p>
+            <p className="auth-sub">₹{rentModal.pricePerSeason.toLocaleString()} · {rentModal.yieldMin}–{rentModal.yieldMax} kg · Season 2026</p>
             <input
               placeholder="Full delivery address"
               value={rentForm.deliveryAddress}
               onChange={e => setRentForm(f => ({ ...f, treeId: rentModal._id, deliveryAddress: e.target.value }))}
             />
             <select value={rentForm.season} onChange={e => setRentForm(f => ({ ...f, season: e.target.value }))}>
-              <option value="2025">Season 2025</option>
               <option value="2026">Season 2026</option>
             </select>
             <button className="btn-primary full" onClick={() => openRazorpay(rentModal, rentForm.deliveryAddress, rentForm.season)}>
@@ -516,7 +515,6 @@ export default function App() {
               </select>
               <input placeholder="Delivery Address" value={rentForm.deliveryAddress} onChange={e => setRentForm(f => ({ ...f, deliveryAddress: e.target.value }))} />
               <select value={rentForm.season} onChange={e => setRentForm(f => ({ ...f, season: e.target.value }))}>
-                <option value="2025">Season 2025</option>
                 <option value="2026">Season 2026</option>
               </select>
               <button className="btn-primary" onClick={handleRent}>Confirm Rental</button>
@@ -639,9 +637,9 @@ export default function App() {
           </div>
           <div className="blog-grid">
             {[
-              { emoji: '🌸', title: 'How We Care for Your Tree Through Winter', date: 'March 2025', desc: 'Winter in Ramnagar can be cold, but our trees love it. Here\'s how we prepare them for the best spring bloom.' },
-              { emoji: '💧', title: 'Why Orchard Water Tastes Different', date: 'February 2025', desc: 'The streams flowing from the Himalayas give our orchard a natural advantage. We break it down for you.' },
-              { emoji: '📦', title: 'From Tree to Doorstep in 24 Hours', date: 'January 2025', desc: 'A behind-the-scenes look at how we pick, pack, and ship your harvest the same day it\'s plucked.' },
+              { emoji: '🌸', title: 'How We Care for Your Tree Through Winter', date: 'March 2026', desc: 'Winter in Ramnagar can be cold, but our trees love it. Here\'s how we prepare them for the best spring bloom.' },
+              { emoji: '💧', title: 'Why Orchard Water Tastes Different', date: 'February 2026', desc: 'The streams flowing from the Himalayas give our orchard a natural advantage. We break it down for you.' },
+              { emoji: '📦', title: 'From Tree to Doorstep in 24 Hours', date: 'January 2026', desc: 'A behind-the-scenes look at how we pick, pack, and ship your harvest the same day it\'s plucked.' },
             ].map(post => (
               <div key={post.title} className="blog-card">
                 <div className="blog-emoji">{post.emoji}</div>
@@ -659,7 +657,7 @@ export default function App() {
         <div className="info-page">
           <div className="info-hero">
             <h1>Terms & Conditions</h1>
-            <p>Last updated: April 2025. Please read these terms carefully before renting a tree.</p>
+            <p>Last updated: April 2026. Please read these terms carefully before renting a tree.</p>
           </div>
           <div className="policy-body">
             <div className="policy-section">
@@ -702,7 +700,7 @@ export default function App() {
         <div className="info-page">
           <div className="info-hero">
             <h1>Privacy Policy</h1>
-            <p>Last updated: April 2025. Your privacy matters to us.</p>
+            <p>Last updated: April 2026. Your privacy matters to us.</p>
           </div>
           <div className="policy-body">
             <div className="policy-section">
@@ -741,7 +739,7 @@ export default function App() {
         <div className="info-page">
           <div className="info-hero">
             <h1>Refund & Cancellation Policy</h1>
-            <p>Last updated: April 2025. We want you to rent with confidence.</p>
+            <p>Last updated: April 2026. We want you to rent with confidence.</p>
           </div>
           <div className="policy-body">
             <div className="policy-section">
@@ -811,7 +809,7 @@ export default function App() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© 2025 <strong>YourOrchard</strong>. All rights reserved.</p>
+          <p>© 2026 <strong>YourOrchard</strong>. All rights reserved.</p>
         </div>
       </footer>
     </div>
