@@ -558,7 +558,9 @@ footer { background: #1C1008; color: rgba(255,255,255,0.5); padding: 64px max(80
   .trust-item { border-radius: 12px !important; }
   .section { padding: 60px 24px; }
   .steps { flex-direction: column; align-items: center; }
-  .step-connector { transform: rotate(90deg); }
+  .step-wrapper { flex-direction: column; align-items: center; }
+  .step-connector { transform: rotate(90deg); padding: 0; }
+  .step { width: 100%; max-width: 320px; }
   .features-grid { grid-template-columns: 1fr; }
   .section-title h2 { font-size: 2.4rem; }
   .dashboard { padding: 40px 24px; }
