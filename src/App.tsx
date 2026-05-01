@@ -366,13 +366,6 @@ export default function App() {
               <p>We don't just deliver produce — we deliver trust, transparency, and taste you can trace back to your tree.</p>
             </div>
 
-            <div className="feat-tabs">
-              {FEATURES.map((f, i) => (
-                <button key={f.num} className={`feat-tab ${i === featIdx ? 'active' : ''}`} onClick={() => setFeatIdx(i)}>
-                  <span>{f.icon}</span>{f.title}
-                </button>
-              ))}
-            </div>
 
             <div className="feat-coverflow-wrap">
               <button className="feat-arrow" onClick={() => setFeatIdx(i => (i - 1 + FEATURES.length) % FEATURES.length)}>‹</button>
@@ -406,12 +399,6 @@ export default function App() {
             </div>
           </section>
 
-          <div className="cta-bottom">
-            <img className="cta-mango-img" src="https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80" alt="" />
-            <h2>Your Tree is Waiting 🌳</h2>
-            <p>Get fresh produce from our Ramnagar orchard delivered every season.</p>
-            <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree Now →</button>
-          </div>
         </>
       )}
 
