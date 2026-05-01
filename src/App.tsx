@@ -412,27 +412,6 @@ export default function App() {
           </section>
 
 
-          <section className="section videos-section" id="videos">
-            <div className="section-title">
-              <span className="section-label">From Our Orchard</span>
-              <h2>A Glimpse Into <span>Your Tree's Home</span></h2>
-              <p>Watch our orchard in action — fresh videos every week, straight from Ramnagar.</p>
-            </div>
-            {videos.length === 0 ? <p className="empty">No videos yet — check back soon!</p> : (
-              <div className="videos-grid">
-                {videos.map(v => (
-                  <div key={v._id} className="video-card">
-                    <video src={`${API_BASE}${v.url}`} controls />
-                    <div className="video-info">
-                      <div className="video-title">{v.title}</div>
-                      {v.description && <div className="video-desc">{v.description}</div>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
           <div className="cta-bottom">
             <img className="cta-mango-img" src="https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80" alt="" />
             <h2>Your Tree is Waiting 🌳</h2>
