@@ -61,6 +61,7 @@ export default function App() {
   const [expandedRental, setExpandedRental] = useState<string | null>(null);
   const [msg, setMsg] = useState('');
   const [featIdx, setFeatIdx] = useState(0);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setFeatIdx(i => (i + 1) % FEATURES.length), 3500);
@@ -182,7 +183,7 @@ export default function App() {
   return (
     <div className="app">
       <nav className="nav">
-        <div className="logo" onClick={() => setView('home')}>YourOrchard</div>
+        <div className="logo" onClick={() => { setView('home'); setMobileMenu(false); }}>YourOrchard</div>
         <div className="nav-center">
           <span className="nav-link" onClick={() => setView('home')}>Home</span>
           <span className="nav-link" onClick={() => setView('about')}>About</span>
@@ -204,7 +205,30 @@ export default function App() {
             </>
           )}
         </div>
+        <button className="nav-hamburger" onClick={() => setMobileMenu(m => !m)}>
+          {mobileMenu ? '✕' : '☰'}
+        </button>
       </nav>
+      {mobileMenu && (
+        <div className="mobile-menu">
+          <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); }}>Home</span>
+          <span className="mobile-nav-link" onClick={() => { setView('about'); setMobileMenu(false); }}>About</span>
+          <span className="mobile-nav-link" onClick={() => { setView('blog'); setMobileMenu(false); }}>Blog</span>
+          <span className="mobile-nav-link" onClick={() => { setView('contact'); setMobileMenu(false); }}>Contact</span>
+          {user && <span className="mobile-nav-link" onClick={() => { setView('dashboard'); setMobileMenu(false); }}>My Tree</span>}
+          <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
+          <div className="mobile-menu-auth">
+            {user ? (
+              <button className="btn-sm outline" onClick={() => { logout(); setMobileMenu(false); }}>Logout</button>
+            ) : (
+              <>
+                <button className="btn-sm outline" onClick={() => { setAuthModal('login'); setMobileMenu(false); }}>Login</button>
+                <button className="btn-sm" onClick={() => { setAuthModal('register'); setMobileMenu(false); }}>Sign Up</button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {msg && <div className="toast" onClick={() => setMsg('')}>{msg}</div>}
 
