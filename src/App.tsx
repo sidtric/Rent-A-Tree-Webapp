@@ -62,6 +62,7 @@ export default function App() {
   const [msg, setMsg] = useState('');
   const [featIdx, setFeatIdx] = useState(0);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [activeBlog, setActiveBlog] = useState<{ emoji: string; title: string; date: string; desc: string } | null>(null);
 
   useEffect(() => {
     const t = setInterval(() => setFeatIdx(i => (i + 1) % FEATURES.length), 3500);
@@ -637,10 +638,22 @@ export default function App() {
                 <div className="blog-emoji">{post.emoji}</div>
                 <div className="blog-date">{post.date}</div>
                 <h3>{post.title}</h3>
-                <p>{post.desc}</p>
-                <span className="blog-read">Read more →</span>
+                <p className="blog-excerpt">{post.desc.slice(0, 110)}…</p>
+                <span className="blog-read" onClick={() => setActiveBlog(post)}>Read more →</span>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {activeBlog && (
+        <div className="blog-overlay" onClick={e => { if (e.target === e.currentTarget) setActiveBlog(null); }}>
+          <div className="blog-modal">
+            <button className="blog-modal-close" onClick={() => setActiveBlog(null)}>✕</button>
+            <div className="blog-modal-emoji">{activeBlog.emoji}</div>
+            <div className="blog-modal-date">{activeBlog.date}</div>
+            <h2 className="blog-modal-title">{activeBlog.title}</h2>
+            <p className="blog-modal-body">{activeBlog.desc}</p>
           </div>
         </div>
       )}
