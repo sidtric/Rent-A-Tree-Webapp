@@ -452,6 +452,7 @@ export default function App() {
           </section>
 
           <div className="cta-bottom">
+            <img className="cta-mango-img" src="https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80" alt="" />
             <h2>Your Tree is Waiting 🌳</h2>
             <p>Get fresh produce from our Ramnagar orchard delivered every season.</p>
             <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree Now →</button>
