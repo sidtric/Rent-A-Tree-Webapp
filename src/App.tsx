@@ -431,51 +431,6 @@ export default function App() {
             )}
           </section>
 
-          <section className="section reviews-section" id="reviews">
-            <div className="section-title">
-              <span className="section-label">Tree Owner Reviews</span>
-              <h2>What Our <span>Owners Say</span></h2>
-              <p>Honest reviews from real tree owners across India.</p>
-            </div>
-            <div className="review-form-card">
-              <h3>Leave a Review</h3>
-              {!user && <input placeholder="Your Name" value={reviewForm.name} onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))} />}
-              <div className="star-row">
-                {[1,2,3,4,5].map(n => (
-                  <span key={n} className={`star ${n <= reviewForm.rating ? 'filled' : ''}`} onClick={() => setReviewForm(f => ({ ...f, rating: n }))}>★</span>
-                ))}
-              </div>
-              <textarea placeholder="Share your experience..." value={reviewForm.comment} onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))} />
-              <label className="upload-label">
-                📷 Add Photos / Videos
-                <input type="file" multiple accept="image/*,video/*" onChange={e => setReviewFiles(e.target.files)} />
-              </label>
-              {reviewFiles && <p className="file-count">{reviewFiles.length} file(s) selected</p>}
-              <button className="btn-primary" onClick={handleReview}>Post Review</button>
-            </div>
-            <div className="reviews-grid">
-              {reviews.length === 0 ? <p className="empty">No reviews yet — be the first!</p> : reviews.map(r => (
-                <div key={r._id} className="review-card">
-                  <div className="review-header">
-                    <div className="reviewer-avatar">{r.name[0].toUpperCase()}</div>
-                    <div>
-                      <div className="reviewer-name">{r.name}</div>
-                      <div className="review-stars">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
-                    </div>
-                  </div>
-                  <p className="review-comment">{r.comment}</p>
-                  {r.media.length > 0 && (
-                    <div className="review-media">
-                      {r.media.map((m, i) => m.type === 'image'
-                        ? <img key={i} src={`${API_BASE}${m.url}`} alt="review" />
-                        : <video key={i} src={`${API_BASE}${m.url}`} controls />)}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-
           <div className="cta-bottom">
             <img className="cta-mango-img" src="https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80" alt="" />
             <h2>Your Tree is Waiting 🌳</h2>
@@ -650,6 +605,50 @@ export default function App() {
               <button className="btn-primary">Send Message</button>
             </div>
           </div>
+          <section className="section reviews-section" id="reviews">
+            <div className="section-title">
+              <span className="section-label">Tree Owner Reviews</span>
+              <h2>What Our <span>Owners Say</span></h2>
+              <p>Honest reviews from real tree owners across India.</p>
+            </div>
+            <div className="review-form-card">
+              <h3>Leave a Review</h3>
+              {!user && <input placeholder="Your Name" value={reviewForm.name} onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))} />}
+              <div className="star-row">
+                {[1,2,3,4,5].map(n => (
+                  <span key={n} className={`star ${n <= reviewForm.rating ? 'filled' : ''}`} onClick={() => setReviewForm(f => ({ ...f, rating: n }))}>★</span>
+                ))}
+              </div>
+              <textarea placeholder="Share your experience..." value={reviewForm.comment} onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))} />
+              <label className="upload-label">
+                📷 Add Photos / Videos
+                <input type="file" multiple accept="image/*,video/*" onChange={e => setReviewFiles(e.target.files)} />
+              </label>
+              {reviewFiles && <p className="file-count">{reviewFiles.length} file(s) selected</p>}
+              <button className="btn-primary" onClick={handleReview}>Post Review</button>
+            </div>
+            <div className="reviews-grid">
+              {reviews.length === 0 ? <p className="empty">No reviews yet — be the first!</p> : reviews.map(r => (
+                <div key={r._id} className="review-card">
+                  <div className="review-header">
+                    <div className="reviewer-avatar">{r.name[0].toUpperCase()}</div>
+                    <div>
+                      <div className="reviewer-name">{r.name}</div>
+                      <div className="review-stars">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
+                    </div>
+                  </div>
+                  <p className="review-comment">{r.comment}</p>
+                  {r.media.length > 0 && (
+                    <div className="review-media">
+                      {r.media.map((m, i) => m.type === 'image'
+                        ? <img key={i} src={`${API_BASE}${m.url}`} alt="review" />
+                        : <video key={i} src={`${API_BASE}${m.url}`} controls />)}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       )}
 
