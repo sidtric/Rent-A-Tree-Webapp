@@ -176,7 +176,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .step p { color: var(--gray); font-size: 0.87rem; line-height: 1.6; }
 
 /* ── Features ── */
-.features-section { background: var(--bg); padding-top: 0; }
+.features-section { background: var(--bg); padding-top: 0; overflow: hidden; }
 .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; width: 100%; }
 .feature-card { background: #fff; border-radius: 24px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); }
 .feature-card-top { height: 130px; padding: 16px 20px; position: relative; display: flex; align-items: flex-end; justify-content: flex-end; }
@@ -211,10 +211,11 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .feat-tab:hover { border-color: var(--green); color: var(--green); }
 .feat-tab.active { background: var(--green); color: #fff; border-color: var(--green); }
 
-.feat-coverflow-wrap { display: flex; align-items: center; gap: 16px; }
+.feat-coverflow-wrap { display: flex; align-items: center; gap: 16px; overflow: hidden; }
 .feat-coverflow {
   flex: 1; position: relative; height: 400px;
   perspective: 1400px; display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
 }
 
 /* each slide sits absolutely in the 3D space */
