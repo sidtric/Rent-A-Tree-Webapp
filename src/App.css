@@ -637,8 +637,8 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.5); padding: 6
 .footer-links li:hover { color: #fff; }
 .footer-contact-line { font-size: 0.9rem; color: rgba(255,255,255,0.75); margin-bottom: 8px; font-weight: 500; }
 .footer-contact-line.dim { color: rgba(255,255,255,0.45); font-weight: 400; font-size: 0.85rem; }
-.footer-reserve-btn { margin-top: 20px; background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.28); border-radius: 50px; padding: 12px 28px; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; transition: border-color 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-.footer-reserve-btn:hover { border-color: rgba(255,255,255,0.75); }
+.footer-reserve-btn { margin-top: 20px; background: #fff; color: var(--green-dark); border: none; border-radius: 50px; padding: 12px 28px; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.15s; display: inline-flex; align-items: center; gap: 8px; }
+.footer-reserve-btn:hover { background: #e8f0ea; transform: translateY(-1px); }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; font-size: 0.82rem; }
 .footer-bottom strong { color: #fff; }
 

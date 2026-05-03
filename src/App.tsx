@@ -646,12 +646,12 @@ export default function App() {
             <div className="contact-card">
               <div className="info-icon">📧</div>
               <h3>Email Us</h3>
-              <p>hello@mytree.in<br />support@mytree.in</p>
+              <p>hello@yourorchard.in<br />support@yourorchard.in</p>
             </div>
             <div className="contact-card">
               <div className="info-icon">📞</div>
               <h3>Call Us</h3>
-              <p>+91 98765 43210<br />Mon–Sat, 9am–6pm</p>
+              <p>+91 75358 50398<br />Mon–Sat, 9am–6pm</p>
             </div>
           </div>
           <div className="contact-form-wrap">
@@ -671,7 +671,7 @@ export default function App() {
             </div>
             <div className="review-form-card">
               <h3>Leave a Review</h3>
-              {!user && <input placeholder="Your Name" value={reviewForm.name} onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))} />}
+              <input placeholder="Your Name" value={user ? user.name : reviewForm.name} onChange={e => { if (!user) setReviewForm(f => ({ ...f, name: e.target.value })); }} readOnly={!!user} />
               <div className="star-row">
                 {[1,2,3,4,5].map(n => (
                   <span key={n} className={`star ${n <= reviewForm.rating ? 'filled' : ''}`} onClick={() => setReviewForm(f => ({ ...f, rating: n }))}>★</span>
@@ -1017,7 +1017,7 @@ export default function App() {
             <h4>Contact</h4>
             <p className="footer-contact-line">hello@yourorchard.in</p>
             <p className="footer-contact-line dim">Ramnagar, Uttarakhand</p>
-            <button className="footer-reserve-btn" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree →</button>
+            <button className="footer-reserve-btn" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Rent a Tree →</button>
           </div>
         </div>
         <div className="footer-bottom">
