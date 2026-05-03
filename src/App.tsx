@@ -16,7 +16,7 @@ const STEPS = [
   { n: 1, icon: '🌳', h: 'Choose Your Tree',   p: 'Pick a plan — Sapling, Adult, or Grand — from our Ramnagar orchard.' },
   { n: 2, icon: '💳', h: 'Rent the Yield',     p: 'Pay once and reserve your tree\'s harvest for the entire season.' },
   { n: 3, icon: '👨‍🌾', h: 'We Grow & Care',    p: 'Our orchardists nurture your tagged tree and send weekly photos & videos.' },
-  { n: 4, icon: '📦', h: 'Harvest Delivered',  p: 'Fresh produce handpicked and shipped to your door within 24 hours.' },
+  { n: 4, icon: '📦', h: 'Harvest Delivered',  p: 'Handpicked from your tree, packed fresh, and dispatched straight to your door.' },
 ];
 
 const PLAN_IMAGES: Record<string, string> = {
@@ -44,9 +44,45 @@ const FEATURES = [
 ];
 
 const MANGO_BOXES = [
-  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1199, img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80' },
-  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1099, img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80' },
-  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 999,  img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80' },
+  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80' },
+  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80' },
+  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80' },
+];
+
+const VARIETIES = [
+  {
+    id: 'chausa',  name: 'Chausa',  tagline: 'Jewel of Ramnagar',
+    img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1629637272678-9b0d5a41b1e5?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1772984613890-e3bfbca7f245?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1622955658214-d05c1c6fcf84?auto=format&fit=crop&w=600&q=80',
+    ],
+  },
+  {
+    id: 'dasheri', name: 'Dasheri', tagline: 'People\'s Favourite',
+    img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1685478677113-8c4a58503230?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1688492596644-b0e68aa86477?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1685478676925-05548b7bc317?auto=format&fit=crop&w=600&q=80',
+    ],
+  },
+  {
+    id: 'langra',  name: 'Langra',  tagline: 'Most Fulfilling',
+    img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1655168339435-af59c878e17a?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1680008702821-e1b598db30f3?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1734163075572-8948e799e42c?auto=format&fit=crop&w=600&q=80',
+    ],
+  },
+];
+
+const TREE_SIZES = [
+  { plan: 'sapling', label: 'Small Tree', icon: '🌱', yield: '15–20 kg', perks: 'Perfect for a small family. One young tree, full season harvest.',   img: 'https://images.unsplash.com/photo-1624223097551-43a133903591?auto=format&fit=crop&w=400&q=80' },
+  { plan: 'adult',   label: 'Mid Tree',   icon: '🌳', yield: '30–45 kg', perks: 'The sweet spot — generous yield, great value for a family of 4.',     img: 'https://images.unsplash.com/photo-1558261515-72bff9896df1?auto=format&fit=crop&w=400&q=80' },
+  { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: 'https://images.unsplash.com/photo-1692102972494-7852d3e21d3f?auto=format&fit=crop&w=400&q=80' },
 ];
 
 export default function App() {
@@ -67,7 +103,9 @@ export default function App() {
   const [msg, setMsg] = useState('');
   const [featIdx, setFeatIdx] = useState(0);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [activeBlog, setActiveBlog] = useState<{ emoji: string; title: string; date: string; desc: string } | null>(null);
+  const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
 
   useEffect(() => {
     const t = setInterval(() => setFeatIdx(i => (i + 1) % FEATURES.length), 3500);
@@ -155,16 +193,34 @@ export default function App() {
 
   const handleReview = async () => {
     if (!reviewForm.comment.trim()) { setMsg('Please write a comment'); return; }
-    const data = new FormData();
-    data.append('rating', String(reviewForm.rating));
-    data.append('comment', reviewForm.comment);
-    data.append('name', user?.name || reviewForm.name || 'Anonymous');
-    if (reviewFiles) Array.from(reviewFiles).forEach(f => data.append('media', f));
-    const res = await fetch(`${API_BASE}/api/reviews`, { method: 'POST', body: data }).then(r => r.json());
-    if (res._id) {
-      setMsg('Review posted!'); setReviewForm({ rating: 5, comment: '', name: '' }); setReviewFiles(null);
-      api.get('/reviews').then(setReviews);
-    } else setMsg(res.message || 'Error posting review');
+    try {
+      const data = new FormData();
+      data.append('rating', String(reviewForm.rating));
+      data.append('comment', reviewForm.comment);
+      data.append('name', user?.name || reviewForm.name || 'Anonymous');
+      if (reviewFiles) Array.from(reviewFiles).forEach(f => data.append('media', f));
+      const res = await fetch(`${API_BASE}/api/reviews`, { method: 'POST', body: data }).then(r => r.json());
+      if (res._id) {
+        setMsg('Review posted! Thank you 🌳'); setReviewForm({ rating: 5, comment: '', name: '' }); setReviewFiles(null);
+        api.get('/reviews').then(setReviews).catch(() => {});
+      } else setMsg(res.message || 'Error posting review');
+    } catch {
+      setMsg('Could not connect to server. Please try again.');
+    }
+  };
+
+  const handleContact = async () => {
+    const { name, email, message } = contactForm;
+    if (!name.trim() || !email.trim() || !message.trim()) { setMsg('Please fill all fields'); return; }
+    try {
+      const res = await api.post('/contact', { name, email, message });
+      if (res.message?.includes('received')) {
+        setMsg('Message sent! We\'ll get back to you soon 🌿');
+        setContactForm({ name: '', email: '', message: '' });
+      } else setMsg(res.message || 'Something went wrong');
+    } catch {
+      setMsg('Could not connect to server. Please try again.');
+    }
   };
 
   const loadUpdates = async (rentalId: string) => {
@@ -331,30 +387,58 @@ export default function App() {
             <div className="section-title">
               <span className="section-label">Seasonal Plans</span>
               <h2>Choose Your <span>Tree</span></h2>
-              <p>Pick a plan — pricing and yield details are on each card. All plans include free home delivery.</p>
+              <p>Pick a variety, then choose your tree size. All plans include free home delivery.</p>
             </div>
-            <div className="plans">
-              {trees.length === 0 ? <p className="empty">No trees available right now — check back soon!</p> : planCards.map(tree => {
-                const available = trees.filter(t => t.plan === tree.plan && t.isAvailable).length;
-                return (
-                  <div key={tree.plan} className={`plan-card plan-${tree.plan} ${available === 0 ? 'unavailable' : ''}`}>
-                    <div className="plan-card-header" style={{ backgroundImage: `url(${PLAN_IMAGES[tree.plan]})` }}>
-                      <span className="plan-emoji">{PLAN_EMOJI[tree.plan]}</span>
-                      <div className="plan-name">{PLAN_LABEL[tree.plan]}</div>
-                    </div>
-                    <div className="plan-card-body">
-                      <div className="plan-price">₹{tree.priceMin.toLocaleString()} <span>– ₹{tree.priceMax.toLocaleString()}</span></div>
-                      <div className="plan-yield">{tree.yieldMin}–{tree.yieldMax} kg / season</div>
-                      <div className="plan-loc">📍 {tree.location}</div>
-                      <div className="plan-avail">{available} tree{available !== 1 ? 's' : ''} available</div>
-                      {available > 0
-                        ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(tree); else setAuthModal('register'); }}>{user ? 'Rent This Plan' : 'Sign Up to Rent'}</button>
-                        : <div className="unavail-badge">Fully Booked</div>}
-                    </div>
+
+            <div className="variety-row">
+              {VARIETIES.map(variety => (
+                <div
+                  key={variety.id}
+                  className={`variety-card ${selectedVariety === variety.id ? 'active' : ''}`}
+                  onClick={() => setSelectedVariety(selectedVariety === variety.id ? null : variety.id)}
+                >
+                  <div className="variety-card-img" style={{ backgroundImage: `url(${variety.img})` }} />
+                  <div className="variety-card-info">
+                    <span className="variety-card-name">{variety.name} Aam</span>
+                    <span className="variety-card-tagline">{variety.tagline}</span>
                   </div>
-                );
-              })}
+                  <span className="variety-card-arrow">{selectedVariety === variety.id ? '▲' : '▼'}</span>
+                </div>
+              ))}
             </div>
+
+            {selectedVariety && (
+              <div className="tree-size-popup">
+                <div className="tree-size-popup-header">
+                  {VARIETIES.find(v => v.id === selectedVariety)?.name} Aam — Choose Tree Size
+                </div>
+                <div className="tree-size-grid">
+                  {TREE_SIZES.map(size => {
+                    const available = trees.filter(t => t.plan === size.plan && t.isAvailable).length;
+                    const treeRef = planCards.find(t => t.plan === size.plan);
+                    return (
+                      <div key={size.plan} className={`tsize-card ${available === 0 ? 'unavailable' : ''}`}>
+                        <div className="tsize-img" style={{ backgroundImage: `url(${size.img})` }}>
+                          <span className="tsize-badge">{size.icon} {size.label}</span>
+                        </div>
+                        <div className="tsize-body">
+                          <div className="tsize-yield">{treeRef ? `${treeRef.yieldMin}–${treeRef.yieldMax}` : size.yield} kg / season</div>
+                          <p className="tsize-perks">{size.perks}</p>
+                          {treeRef && <div className="tsize-price">₹{treeRef.priceMin.toLocaleString()} <span>– ₹{treeRef.priceMax.toLocaleString()}</span></div>}
+                          <div className="plan-loc">📍 Ramnagar, Uttarakhand</div>
+                          {treeRef
+                            ? available > 0
+                              ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(treeRef); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
+                              : <div className="unavail-badge">Fully Booked</div>
+                            : <button className="btn-primary full" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
+                          }
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </section>
 
           <section className="section mango-box-section" id="boxes">
@@ -362,6 +446,7 @@ export default function App() {
               <span className="section-label">Just Want Mangoes?</span>
               <h2>Order a <span>10 kg Box</span></h2>
               <p>No tree rental needed. Pick your variety and get a fresh 10 kg box delivered straight from Ramnagar.</p>
+              <div className="prebook-banner">🌿 Prebook now — Harvest starts May 15</div>
             </div>
             <div className="mango-boxes">
               {MANGO_BOXES.map(box => (
@@ -375,7 +460,7 @@ export default function App() {
                     <p className="box-desc">{box.desc}</p>
                     <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
                     <button className="btn-primary full" onClick={() => { if (user) setMsg(`${box.name} box order received! We'll contact you to confirm delivery.`); else setAuthModal('register'); }}>
-                      {user ? 'Order This Box' : 'Sign Up to Order'}
+                      {user ? 'Prebook Now' : 'Prebook — Harvest from May 15'}
                     </button>
                   </div>
                 </div>
@@ -575,21 +660,21 @@ export default function App() {
             <div className="contact-card">
               <div className="info-icon">📧</div>
               <h3>Email Us</h3>
-              <p>hello@mytree.in<br />support@mytree.in</p>
+              <p>hello@yourorchard.in<br />support@yourorchard.in</p>
             </div>
             <div className="contact-card">
               <div className="info-icon">📞</div>
               <h3>Call Us</h3>
-              <p>+91 98765 43210<br />Mon–Sat, 9am–6pm</p>
+              <p>+91 75358 50398<br />Mon–Sat, 9am–6pm</p>
             </div>
           </div>
           <div className="contact-form-wrap">
             <h2>Send a Message</h2>
             <div className="contact-form">
-              <input placeholder="Your Name" />
-              <input placeholder="Email Address" type="email" />
-              <textarea placeholder="Your message..." rows={5} />
-              <button className="btn-primary">Send Message</button>
+              <input placeholder="Your Name" value={contactForm.name} onChange={e => setContactForm(f => ({ ...f, name: e.target.value }))} />
+              <input placeholder="Email Address" type="email" value={contactForm.email} onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))} />
+              <textarea placeholder="Your message..." rows={5} value={contactForm.message} onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))} />
+              <button className="btn-primary" onClick={handleContact}>Send Message</button>
             </div>
           </div>
           <section className="section reviews-section" id="reviews">
@@ -600,7 +685,7 @@ export default function App() {
             </div>
             <div className="review-form-card">
               <h3>Leave a Review</h3>
-              {!user && <input placeholder="Your Name" value={reviewForm.name} onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))} />}
+              <input placeholder="Your Name" value={user ? user.name : reviewForm.name} onChange={e => { if (!user) setReviewForm(f => ({ ...f, name: e.target.value })); }} readOnly={!!user} />
               <div className="star-row">
                 {[1,2,3,4,5].map(n => (
                   <span key={n} className={`star ${n <= reviewForm.rating ? 'filled' : ''}`} onClick={() => setReviewForm(f => ({ ...f, rating: n }))}>★</span>
@@ -918,9 +1003,9 @@ export default function App() {
             <div className="footer-logo">YourOrchard</div>
             <p className="footer-brand-desc">Fresh produce from our Ramnagar orchard to your door. Rent a tree for the season — simple, transparent, real.</p>
             <div className="footer-social">
-              <div className="footer-social-btn">📞</div>
-              <div className="footer-social-btn">✉️</div>
-              <div className="footer-social-btn">📍</div>
+              <a className="footer-social-btn" href="tel:+917535850398">📞</a>
+              <a className="footer-social-btn" href="mailto:hello@yourorchard.in">✉️</a>
+              <a className="footer-social-btn" href="https://maps.google.com/?q=Ramnagar,Uttarakhand,India" target="_blank" rel="noopener noreferrer">📍</a>
             </div>
           </div>
           <div className="footer-col">
@@ -946,7 +1031,7 @@ export default function App() {
             <h4>Contact</h4>
             <p className="footer-contact-line">hello@yourorchard.in</p>
             <p className="footer-contact-line dim">Ramnagar, Uttarakhand</p>
-            <button className="footer-reserve-btn" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree →</button>
+            <button className="footer-reserve-btn" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Rent a Tree →</button>
           </div>
         </div>
         <div className="footer-bottom">
