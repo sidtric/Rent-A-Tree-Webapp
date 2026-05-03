@@ -7,10 +7,10 @@ import './App.css';
 const PLAN_EMOJI:  Record<string, string> = { sapling: '🌳', adult: '🌳', grand: '🌳' };
 const PLAN_LABEL:  Record<string, string> = { sapling: 'Small Tree Pack', adult: 'Medium Tree Pack', grand: 'Premium Tree Pack' };
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || '';
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '').split(',').map((e: string) => e.trim().toLowerCase()).filter(Boolean);
 
 const isAdmin = (user: { email: string } | null) =>
-  !!user && !!ADMIN_EMAIL && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  !!user && ADMIN_EMAILS.includes(user.email.toLowerCase());
 
 const STEPS = [
   { n: 1, icon: '🌳', h: 'Choose Your Tree',   p: 'Pick a plan — Sapling, Adult, or Grand — from our Ramnagar orchard.' },
@@ -121,7 +121,16 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (user) api.get('/rentals/my').then(setRentals).catch(() => {});
+    if (user) {
+      api.get('/rentals/my').then((data: Rental[]) => {
+        setRentals(data);
+        data.forEach((r: Rental) => {
+          api.get(`/farm-updates/${r._id}`).then((u: FarmUpdate[]) =>
+            setUpdates(prev => ({ ...prev, [r._id]: Array.isArray(u) ? u : [] }))
+          ).catch(() => {});
+        });
+      }).catch(() => {});
+    }
   }, [user]);
 
   const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setView('home'); };
@@ -224,13 +233,13 @@ export default function App() {
   };
 
   const loadUpdates = async (rentalId: string) => {
-    if (expandedRental === rentalId) { setExpandedRental(null); return; }
-    setExpandedRental(rentalId);
     if (!updates[rentalId]) {
       const data = await api.get(`/farm-updates/${rentalId}`);
-      setUpdates(u => ({ ...u, [rentalId]: data }));
+      setUpdates(u => ({ ...u, [rentalId]: Array.isArray(data) ? data : [] }));
     }
   };
+
+  const mediaUrl = (url: string) => url.startsWith('http') ? url : `${API_BASE}${url}`;
 
   const cancelRental = async (id: string) => {
     await api.patch(`/rentals/${id}/cancel`);
@@ -585,31 +594,31 @@ export default function App() {
                       <span>Est. Yield: {r.estimatedYield} kg</span>
                       <span>📍 {r.deliveryAddress}</span>
                     </div>
-                    <div className="rental-actions">
-                      {r.status === 'active' && <button className="btn-cancel" onClick={() => cancelRental(r._id)}>Cancel Rental</button>}
-                      <button className="btn-updates" onClick={() => loadUpdates(r._id)}>
-                        {expandedRental === r._id ? 'Hide Updates' : '📷 View Orchard Updates'}
-                      </button>
-                    </div>
-                    {expandedRental === r._id && (
-                      <div className="farm-updates">
-                        {(updates[r._id] || []).length === 0 ? (
-                          <p className="empty">Our orchardist will post your first update soon! 🌱</p>
-                        ) : (updates[r._id] || []).map(u => (
-                          <div key={u._id} className="update-card">
-                            <p className="update-date">📅 {new Date(u.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-                            {u.caption && <p className="update-caption">{u.caption}</p>}
-                            {u.media.length > 0 && (
-                              <div className="update-media-grid">
-                                {u.media.map((m, i) => m.type === 'image'
-                                  ? <img key={i} src={`${API_BASE}${m.url}`} alt="orchard update" />
-                                  : <video key={i} src={`${API_BASE}${m.url}`} controls />)}
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                    {r.status === 'active' && (
+                      <div className="rental-actions">
+                        <button className="btn-cancel" onClick={() => cancelRental(r._id)}>Cancel Rental</button>
                       </div>
                     )}
+                    <div className="farm-updates">
+                      <p className="updates-heading">📷 Orchard Updates</p>
+                      {!updates[r._id] ? (
+                        <p className="empty">Loading updates…</p>
+                      ) : updates[r._id].length === 0 ? (
+                        <p className="empty">Our orchardist will post your first update soon! 🌱</p>
+                      ) : updates[r._id].map(u => (
+                        <div key={u._id} className="update-card">
+                          <p className="update-date">📅 {new Date(u.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                          {u.caption && <p className="update-caption">{u.caption}</p>}
+                          {u.media.length > 0 && (
+                            <div className="update-media-grid">
+                              {u.media.map((m, i) => m.type === 'image'
+                                ? <img key={i} src={mediaUrl(m.url)} alt="orchard update" />
+                                : <video key={i} src={mediaUrl(m.url)} controls />)}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>

@@ -504,6 +504,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .btn-updates { background: #d8f3dc; color: var(--green); border: none; padding: 8px 18px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.84rem; font-family: inherit; }
 .btn-updates:hover { background: #b7e4c7; }
 .farm-updates { margin-top: 16px; border-top: 1.5px dashed rgba(0,0,0,0.1); padding-top: 16px; }
+.updates-heading { font-weight: 700; font-size: 0.9rem; color: var(--green); margin-bottom: 12px; }
 .update-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid rgba(0,0,0,0.07); }
 .update-date { font-size: 0.76rem; color: var(--gray); margin-bottom: 6px; font-weight: 600; }
 .update-caption { font-size: 0.92rem; color: var(--dark); margin-bottom: 12px; }

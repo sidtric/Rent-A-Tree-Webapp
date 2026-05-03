@@ -44,6 +44,7 @@ export default function AdminDashboard({ onExit, user }: Props) {
   const [reviews, setReviews]     = useState<Review[]>([]);
   const [videos, setVideos]       = useState<Video[]>([]);
   const [myRentals, setMyRentals] = useState<any[]>([]);
+  const [stats, setStats]         = useState<{ totalTrees: number; availableTrees: number; rentedTrees: number; totalRentals: number; cancelledRentals: number; reviews: number; users: number; videos: number; totalRevenue: number } | null>(null);
 
   const [showForm, setShowForm]     = useState(false);
   const [treeForm, setTreeForm]     = useState<TreeForm>(emptyTreeForm);
@@ -62,10 +63,11 @@ export default function AdminDashboard({ onExit, user }: Props) {
   const flash = (m: string) => { setMsg(m); setTimeout(() => setMsg(''), 3500); };
 
   useEffect(() => {
-    api.get('/trees').then(setTrees).catch(() => {});
-    api.get('/reviews').then(setReviews).catch(() => {});
-    api.get('/videos').then(setVideos).catch(() => {});
-    api.get('/rentals/my').then(setMyRentals).catch(() => {});
+    api.get('/admin/trees').then(setTrees).catch(() => {});
+    api.get('/admin/reviews').then(setReviews).catch(() => {});
+    api.get('/admin/videos').then(setVideos).catch(() => {});
+    api.get('/admin/rentals').then(setMyRentals).catch(() => {});
+    api.get('/admin/stats').then(setStats).catch(() => {});
   }, []);
 
   // ── Create Tree ──────────────────────────────────────────
@@ -207,25 +209,27 @@ export default function AdminDashboard({ onExit, user }: Props) {
 
             <div className="adm-kpi-grid">
               <div className="adm-kpi adm-kpi--green">
-                <div className="adm-kpi-icon">🌳</div>
-                <div className="adm-kpi-val">{trees.length}</div>
-                <div className="adm-kpi-label">Trees Available</div>
+                <div className="adm-kpi-icon">💰</div>
+                <div className="adm-kpi-val">₹{(stats?.totalRevenue ?? 0).toLocaleString('en-IN')}</div>
+                <div className="adm-kpi-label">Total Revenue</div>
+                <div className="adm-kpi-sub">{stats?.cancelledRentals ?? 0} refund(s)</div>
               </div>
               <div className="adm-kpi adm-kpi--amber">
-                <div className="adm-kpi-icon">⭐</div>
-                <div className="adm-kpi-val">{avgRating}</div>
-                <div className="adm-kpi-label">Avg Rating</div>
-                <div className="adm-kpi-sub">{reviews.length} reviews</div>
+                <div className="adm-kpi-icon">🌳</div>
+                <div className="adm-kpi-val">{stats?.totalTrees ?? trees.length}</div>
+                <div className="adm-kpi-label">Total Trees</div>
+                <div className="adm-kpi-sub">{stats?.availableTrees ?? '—'} available · {stats?.rentedTrees ?? '—'} rented</div>
               </div>
               <div className="adm-kpi adm-kpi--blue">
-                <div className="adm-kpi-icon">🎥</div>
-                <div className="adm-kpi-val">{videos.length}</div>
-                <div className="adm-kpi-label">Farm Videos</div>
+                <div className="adm-kpi-icon">📋</div>
+                <div className="adm-kpi-val">{stats?.totalRentals ?? myRentals.length}</div>
+                <div className="adm-kpi-label">Total Rentals</div>
+                <div className="adm-kpi-sub">{stats?.cancelledRentals ?? 0} cancelled</div>
               </div>
               <div className="adm-kpi adm-kpi--purple">
-                <div className="adm-kpi-icon">📋</div>
-                <div className="adm-kpi-val">{myRentals.length}</div>
-                <div className="adm-kpi-label">My Rentals</div>
+                <div className="adm-kpi-icon">👥</div>
+                <div className="adm-kpi-val">{stats?.users ?? '—'}</div>
+                <div className="adm-kpi-label">Registered Users</div>
               </div>
             </div>
 
@@ -304,15 +308,6 @@ export default function AdminDashboard({ onExit, user }: Props) {
               )}
             </div>
 
-            <div className="adm-upgrade-banner">
-              <div className="adm-upgrade-icon">🔒</div>
-              <div>
-                <div className="adm-upgrade-title">Full Analytics available with Admin API routes</div>
-                <div className="adm-upgrade-desc">
-                  Add backend admin routes to unlock: all-user listing, complete rental history, revenue by plan, and customer management tools.
-                </div>
-              </div>
-            </div>
           </div>
         )}
 
