@@ -21,8 +21,8 @@ export interface Rental {
 
 export interface User {
   id: string;
-  name: string;
-  email: string;
+  name?: string;
+  phone: string;
 }
 
 export interface Video {
