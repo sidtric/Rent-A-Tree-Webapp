@@ -9,8 +9,8 @@ const PLAN_LABEL:  Record<string, string> = { sapling: 'Small Tree Pack', adult:
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '').split(',').map((e: string) => e.trim().toLowerCase()).filter(Boolean);
 
-const isAdmin = (user: { email: string } | null) =>
-  !!user && ADMIN_EMAILS.includes(user.email.toLowerCase());
+const isAdmin = (user: { email?: string } | null) =>
+  !!user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
 
 const STEPS = [
   { n: 1, icon: '🌳', h: 'Choose Your Tree',   p: 'Pick a plan — Sapling, Adult, or Grand — from our Ramnagar orchard.' },
@@ -20,18 +20,18 @@ const STEPS = [
 ];
 
 const PLAN_IMAGES: Record<string, string> = {
-  sapling: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=400&q=80',
-  adult:   'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=400&q=80',
-  grand:   'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=400&q=80',
+  sapling: '/hero-mango-v3.jpg',
+  adult:   '/hero-mango-v3.jpg',
+  grand:   '/hero-mango-v3.jpg',
 };
 
 const GALLERY_PHOTOS = [
-  { url: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=900&q=80', label: 'Fresh Mangoes' },
-  { url: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=500&q=80', label: 'Yellow Alphonso' },
-  { url: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=500&q=80', label: 'Orchard Canopy' },
-  { url: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=900&q=80', label: 'Our Farm' },
-  { url: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=500&q=80', label: 'Open Fields' },
-  { url: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=500&q=80', label: 'Harvest Basket' },
+  { url: '/hero-mango-v3.jpg', label: 'Fresh Mangoes' },
+  { url: '/hero-mango-v3.jpg', label: 'Yellow Alphonso' },
+  { url: '/hero-mango-v3.jpg', label: 'Orchard Canopy' },
+  { url: '/hero-mango-v3.jpg', label: 'Our Farm' },
+  { url: '/hero-mango-v3.jpg', label: 'Open Fields' },
+  { url: '/hero-mango-v3.jpg', label: 'Harvest Basket' },
 ];
 
 const FEATURES = [
@@ -44,45 +44,45 @@ const FEATURES = [
 ];
 
 const MANGO_BOXES = [
-  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80' },
-  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80' },
-  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80' },
+  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: '/hero-mango-v3.jpg' },
+  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: '/hero-mango-v3.jpg' },
+  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: '/hero-mango-v3.jpg' },
 ];
 
 const VARIETIES = [
   {
     id: 'chausa',  name: 'Chausa',  tagline: 'Jewel of Ramnagar',
-    img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80',
+    img: '/hero-mango-v3.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1629637272678-9b0d5a41b1e5?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1772984613890-e3bfbca7f245?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1622955658214-d05c1c6fcf84?auto=format&fit=crop&w=600&q=80',
+      '/hero-mango-v3.jpg',
+      '/hero-mango-v3.jpg',
+      '/hero-mango-v3.jpg',
     ],
   },
   {
     id: 'dasheri', name: 'Dasheri', tagline: 'People\'s Favourite',
-    img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80',
+    img: '/hero-mango-v3.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1685478677113-8c4a58503230?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1688492596644-b0e68aa86477?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1685478676925-05548b7bc317?auto=format&fit=crop&w=600&q=80',
+      '/hero-mango-v3.jpg',
+      '/hero-mango-v3.jpg',
+      '/hero-mango-v3.jpg',
     ],
   },
   {
     id: 'langra',  name: 'Langra',  tagline: 'Most Fulfilling',
-    img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80',
+    img: '/hero-mango-v3.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1655168339435-af59c878e17a?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1680008702821-e1b598db30f3?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1734163075572-8948e799e42c?auto=format&fit=crop&w=600&q=80',
+      '/hero-mango-v3.jpg',
+      '/hero-mango-v3.jpg',
+      '/hero-mango-v3.jpg',
     ],
   },
 ];
 
 const TREE_SIZES = [
-  { plan: 'sapling', label: 'Small Tree', icon: '🌱', yield: '15–20 kg', perks: 'Perfect for a small family. One young tree, full season harvest.',   img: 'https://images.unsplash.com/photo-1624223097551-43a133903591?auto=format&fit=crop&w=400&q=80' },
-  { plan: 'adult',   label: 'Mid Tree',   icon: '🌳', yield: '30–45 kg', perks: 'The sweet spot — generous yield, great value for a family of 4.',     img: 'https://images.unsplash.com/photo-1558261515-72bff9896df1?auto=format&fit=crop&w=400&q=80' },
-  { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: 'https://images.unsplash.com/photo-1692102972494-7852d3e21d3f?auto=format&fit=crop&w=400&q=80' },
+  { plan: 'sapling', label: 'Small Tree', icon: '🌱', yield: '15–20 kg', perks: 'Perfect for a small family. One young tree, full season harvest.',   img: '/hero-mango-v3.jpg' },
+  { plan: 'adult',   label: 'Mid Tree',   icon: '🌳', yield: '30–45 kg', perks: 'The sweet spot — generous yield, great value for a family of 4.',     img: '/hero-mango-v3.jpg' },
+  { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: '/hero-mango-v3.jpg' },
 ];
 
 export default function App() {
@@ -262,26 +262,25 @@ export default function App() {
   return (
     <div className="app">
       <nav className="nav">
-        <div className="logo" onClick={() => { setView('home'); setMobileMenu(false); }}>YourOrchard</div>
+        <img className="logo-full" src="/logo-full.jpeg" alt="YourOrchard — Rooted in Nature, Delivered with Care" onClick={() => { setView('home'); setMobileMenu(false); }} />
         <div className="nav-center">
-          <span className="nav-link" onClick={() => setView('home')}>Home</span>
-          <span className="nav-link" onClick={() => setView('about')}>About</span>
-          <span className="nav-link" onClick={() => setView('farm')}>Life on Farm</span>
-          <span className="nav-link" onClick={() => setView('blog')}>Blog</span>
-          <span className="nav-link" onClick={() => setView('contact')}>Contact</span>
-          {user && <span className="nav-link" onClick={() => setView('dashboard')}>My Tree</span>}
+          <span className={`nav-link ${view === 'home' ? 'nav-link-active' : ''}`} onClick={() => setView('home')}>Home</span>
+          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How It Works</span>
+          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees</span>
+          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Pricing</span>
+          <span className={`nav-link ${view === 'about' ? 'nav-link-active' : ''}`} onClick={() => setView('about')}>About Us</span>
+          <span className={`nav-link ${view === 'blog' ? 'nav-link-active' : ''}`} onClick={() => setView('blog')}>Blog</span>
+          <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => setView('contact')}>Contact</span>
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
+          {user && <span className={`nav-link ${view === 'dashboard' ? 'nav-link-active' : ''}`} onClick={() => setView('dashboard')}>My Tree</span>}
           {isAdmin(user) && <span className="nav-link nav-link-admin" onClick={() => setView('admin')}>⚙ Admin</span>}
         </div>
         <div className="nav-links">
           {user ? (
-            <>
-              <span className="nav-greeting">Hi, {user.name.split(' ')[0]}</span>
-              <button className="btn-sm outline" onClick={logout}>Logout</button>
-            </>
+            <span className="nav-welcome">🌳 Hello {user.name.split(' ')[0]}, welcome to your bagicha</span>
           ) : (
             <>
-              <button className="btn-sm outline" onClick={() => setAuthModal('login')}>Login</button>
+              <button className="btn-sm outline" onClick={() => setAuthModal('login')}>👤 Login</button>
               <button className="btn-sm" onClick={() => setAuthModal('register')}>Sign Up</button>
             </>
           )}
@@ -290,8 +289,14 @@ export default function App() {
           {mobileMenu ? '✕' : '☰'}
         </button>
       </nav>
+      {user && (
+        <div className="mobile-top-welcome">🌳 Hello {user.name.split(' ')[0]}, welcome to your bagicha</div>
+      )}
       {mobileMenu && (
         <div className="mobile-menu">
+          {user && (
+            <div className="mobile-welcome">🌳 Hello {user.name.split(' ')[0]}, welcome to your bagicha</div>
+          )}
           <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); }}>Home</span>
           <span className="mobile-nav-link" onClick={() => { setView('about'); setMobileMenu(false); }}>About</span>
           <span className="mobile-nav-link" onClick={() => { setView('farm'); setMobileMenu(false); }}>Life on Farm</span>
@@ -299,28 +304,15 @@ export default function App() {
           <span className="mobile-nav-link" onClick={() => { setView('contact'); setMobileMenu(false); }}>Contact</span>
           {user && <span className="mobile-nav-link" onClick={() => { setView('dashboard'); setMobileMenu(false); }}>My Tree</span>}
           <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
-          <div className="mobile-menu-auth">
-            {user ? (
-              <button className="btn-sm outline" onClick={() => { logout(); setMobileMenu(false); }}>Logout</button>
-            ) : (
-              <>
-                <button className="btn-sm outline" onClick={() => { setAuthModal('login'); setMobileMenu(false); }}>Login</button>
-                <button className="btn-sm" onClick={() => { setAuthModal('register'); setMobileMenu(false); }}>Sign Up</button>
-              </>
-            )}
-          </div>
+          {!user && (
+            <div className="mobile-menu-auth">
+              <button className="btn-sm outline" onClick={() => { setAuthModal('login'); setMobileMenu(false); }}>Login</button>
+              <button className="btn-sm" onClick={() => { setAuthModal('register'); setMobileMenu(false); }}>Sign Up</button>
+            </div>
+          )}
         </div>
       )}
 
-      <div className="ticker-wrap">
-        <div className="ticker-track">
-          {[...Array(6)].map((_, i) => (
-            <span key={i} className="ticker-item">
-              🌿 Coming soon — Litchi from Uttarakhand &nbsp;·&nbsp; 🍑 Peaches from Mukteshwar &nbsp;·&nbsp; 🍐 Pears from Ranikhet &nbsp;·&nbsp; 🍊 Citrus from the Kumaon Hills &nbsp;·&nbsp; 🫐 More fruits, same promise &nbsp;&nbsp;&nbsp;
-            </span>
-          ))}
-        </div>
-      </div>
 
       <a
         className="whatsapp-btn"
@@ -338,57 +330,56 @@ export default function App() {
         <>
           <section className="hero">
             <div className="hero-text">
-              <div className="hero-label">● Orchard to Doorstep</div>
-              <p className="hero-brand">YourOrchard</p>
-              <div className="hero-tagline">
-                {'Have you city kids tasted the real mangoes?'.split(' ').map((word, i) => (
-                  <span key={i} className="hero-word" style={{ animationDelay: `${i * 0.12}s` }}>{word}</span>
-                ))}
-              </div>
+              <div className="hero-label">🌿 Orchard to Doorstep</div>
               <h1 className="hero-heading">Rent a <span>Tree.</span></h1>
-              <p className="hero-sub">Own the harvest without owning the farm. Rent your own tree in Ramnagar, Uttarakhand and enjoy fresh produce delivered straight to your door.</p>
+              <p className="hero-subheading">Fresh Harvest, Delivered to You.</p>
+              <p className="hero-sub">Own the harvest without owning the farm. Rent your own tree in Ramnagar, Uttarakhand and enjoy farm-fresh fruits delivered straight to your door.</p>
               <div className="hero-btns">
                 <button className="btn-primary" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees →</button>
-                <button className="btn-outline" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>How it works</button>
+                <button className="btn-outline" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>▶ How it works</button>
               </div>
               <div className="hero-trust">
                 <div className="trust-item"><span>📷</span> Weekly Updates</div>
                 <div className="trust-item"><span>🌿</span> Natural Farming</div>
                 <div className="trust-item"><span>🚚</span> Free Delivery</div>
+                <div className="trust-item"><span>🔒</span> Safe & Secure</div>
               </div>
             </div>
             <div className="hero-visual">
               <div className="hero-img-wrap">
-                <img className="hero-img" src="https://images.unsplash.com/photo-1759162339512-c2e0f23d4dff?auto=format&fit=crop&w=680&q=85" alt="Fresh mangoes from our Ramnagar orchard" />
-                <div className="hero-img-badge">🌿 Ramnagar, Uttarakhand</div>
-                <div className="hero-img-pill">🥭 Mango Season 2026</div>
+                <img className="hero-img" src="/hero-mango-v3.jpg" alt="Mango orchard at sunset in Ramnagar, Uttarakhand" />
               </div>
             </div>
           </section>
 
 
-          <section className="section how-it-works" id="how-it-works">
-            <div className="section-title">
-              <span className="section-label">How It Works</span>
-              <h2>From Tree to Your <span>Table</span> — Simply</h2>
-              <p>Four simple steps stand between you and a season full of fresh, naturally ripened produce.</p>
-            </div>
-            <div className="steps">
-              {STEPS.map((s, i) => (
-                <div key={s.n} className="step-wrapper">
-                  <div className="step">
-                    <div className="step-label">STEP 0{s.n}</div>
-                    <div className="step-icon-wrap">{s.icon}</div>
-                    <h3>{s.h}</h3>
-                    <p>{s.p}</p>
+          <section className="trust-howit" id="how-it-works">
+            <div className="trust-howit-inner">
+              <div className="howit-panel">
+                <h3 className="howit-title">How it works</h3>
+                <div className="howit-cards">
+                  <div className="howit-card">
+                    <div className="howit-num">1</div>
+                    <div className="howit-icon">🌳</div>
+                    <h4>Choose a Tree</h4>
+                    <p>Pick your favorite fruit tree and location.</p>
                   </div>
-                  {i < STEPS.length - 1 && (
-                    <div className="step-connector">
-                      <div className="step-connector-arrow">→</div>
-                    </div>
-                  )}
+                  <div className="howit-arrow">▸ ▸ ▸</div>
+                  <div className="howit-card">
+                    <div className="howit-num">2</div>
+                    <div className="howit-icon">👨‍🌾</div>
+                    <h4>We Grow &amp; Care</h4>
+                    <p>Our farmers take care of your tree naturally.</p>
+                  </div>
+                  <div className="howit-arrow">▸ ▸ ▸</div>
+                  <div className="howit-card">
+                    <div className="howit-num">3</div>
+                    <div className="howit-icon">🧺</div>
+                    <h4>You Receive Harvest</h4>
+                    <p>Enjoy fresh, seasonal fruits at your doorstep.</p>
+                  </div>
                 </div>
-              ))}
+              </div>
             </div>
           </section>
 
@@ -955,7 +946,7 @@ export default function App() {
                 <p style={{ marginTop: '16px' }}>Our orchardists have been growing mangoes here for two generations. No chemicals, no shortcuts — just traditional farming, patient hands, and deep knowledge of the land.</p>
               </div>
               <div className="farm-intro-img">
-                <img src="https://images.unsplash.com/photo-1759162339512-c2e0f23d4dff?auto=format&fit=crop&w=600&q=85" alt="Mango orchard" />
+                <img src="/hero-mango-v3.jpg" alt="Mango orchard" />
               </div>
             </div>
           </div>
@@ -967,11 +958,11 @@ export default function App() {
               <p>Unfiltered glimpses of daily life at the bagiche — the people, the trees, and the harvest.</p>
             </div>
             <div className="farm-grid">
-              <div className="farm-img farm-img-wide"><img src="https://images.unsplash.com/photo-1755842546298-d5cb56b5afee?auto=format&fit=crop&w=800&q=80" alt="Mangoes on tree" /></div>
-              <div className="farm-img"><img src="https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80" alt="Mango basket" /></div>
-              <div className="farm-img"><img src="https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80" alt="Fresh mangoes" /></div>
-              <div className="farm-img"><img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=400&q=80" alt="Orchard trees" /></div>
-              <div className="farm-img farm-img-wide"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80" alt="Farm landscape" /></div>
+              <div className="farm-img farm-img-wide"><img src="/hero-mango-v3.jpg" alt="Mangoes on tree" /></div>
+              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Mango basket" /></div>
+              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Fresh mangoes" /></div>
+              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Orchard trees" /></div>
+              <div className="farm-img farm-img-wide"><img src="/hero-mango-v3.jpg" alt="Farm landscape" /></div>
             </div>
           </div>
 
@@ -1045,6 +1036,9 @@ export default function App() {
         </div>
         <div className="footer-bottom">
           <p>© 2026 <strong>YourOrchard</strong>. All rights reserved.</p>
+          {user && (
+            <button className="footer-logout-btn" onClick={logout}>Logout</button>
+          )}
         </div>
       </footer>
     </div>
