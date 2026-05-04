@@ -91,11 +91,13 @@ export default function App() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoForm, setVideoForm] = useState({ title: '', description: '' });
   const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
-  const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
   const [rentModal, setRentModal] = useState<Tree | null>(null);
+  const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
   const [reviewFiles, setReviewFiles] = useState<FileList | null>(null);
   const [updates, setUpdates] = useState<Record<string, FarmUpdate[]>>({});
@@ -198,6 +200,23 @@ export default function App() {
     } catch {
       setMsg('Payment failed. Please try again.');
     }
+  };
+
+  const prebookBox = (box: { name: string; price: number }) => {
+    if (!user) { setAuthModal('register'); return; }
+    const rzp = new (window as any).Razorpay({
+      key:         import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount:      box.price * 100,
+      currency:    'INR',
+      name:        'YourOrchard',
+      description: `${box.name} — 10 kg box`,
+      prefill:     { name: user.name, email: user.email },
+      theme:       { color: '#2d6a4f' },
+      handler: () => {
+        setMsg(`${box.name} box prebooked! We'll confirm your delivery date by WhatsApp. 🥭`);
+      },
+    });
+    rzp.open();
   };
 
   const handleReview = async () => {
@@ -468,7 +487,7 @@ export default function App() {
                     <div className="box-name">{box.name}</div>
                     <p className="box-desc">{box.desc}</p>
                     <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
-                    <button className="btn-primary full" onClick={() => { if (user) setMsg(`${box.name} box order received! We'll contact you to confirm delivery.`); else setAuthModal('register'); }}>
+                    <button className="btn-primary full" onClick={() => prebookBox(box)}>
                       {user ? 'Prebook Now' : 'Prebook — Harvest from May 15'}
                     </button>
                   </div>
