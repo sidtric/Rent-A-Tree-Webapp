@@ -639,6 +639,12 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .auth-modal input:focus { border-color: var(--green); background: #fff; }
 .auth-toggle { margin-top: 18px; text-align: center; color: var(--gray); font-size: 0.9rem; }
 .auth-toggle span { color: var(--green); cursor: pointer; font-weight: 600; }
+.auth-link { color: var(--green); cursor: pointer; font-weight: 600; text-decoration: underline; }
+.phone-input-wrap { display: flex; align-items: center; border: 1.5px solid #e5e7eb; border-radius: 12px; background: var(--bg); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.phone-input-wrap:focus-within { border-color: var(--green); background: #fff; }
+.phone-prefix { padding: 13px 12px 13px 16px; font-size: 0.95rem; font-weight: 600; color: var(--gray); border-right: 1.5px solid #e5e7eb; white-space: nowrap; }
+.phone-input-wrap input { border: none !important; margin-bottom: 0 !important; background: transparent !important; flex: 1; }
+.phone-input-wrap input:focus { border: none !important; }
 
 /* ── Dashboard ── */
 .dashboard { padding: 60px 80px; flex: 1; background: var(--bg); }
