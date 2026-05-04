@@ -1,0 +1,709 @@
+import { useState, useEffect } from 'react';
+import type { Tree, Review, Video, User } from '../types';
+import { api } from '../api';
+import './admin.css';
+
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+
+type Tab = 'overview' | 'trees' | 'reviews' | 'farmupdates' | 'videos';
+
+const TABS: { id: Tab; icon: string; label: string }[] = [
+  { id: 'overview',    icon: '📊', label: 'Overview'     },
+  { id: 'trees',       icon: '🌳', label: 'Trees'        },
+  { id: 'farmupdates', icon: '📷', label: 'Farm Updates' },
+  { id: 'reviews',     icon: '⭐', label: 'Reviews'      },
+  { id: 'videos',      icon: '🎥', label: 'Videos'       },
+];
+
+interface TreeForm {
+  plan: 'sapling' | 'adult' | 'grand';
+  name: string;
+  location: string;
+  yieldMin: string;
+  yieldMax: string;
+  priceMin: string;
+  priceMax: string;
+  pricePerSeason: string;
+  isAvailable: boolean;
+}
+
+const emptyTreeForm: TreeForm = {
+  plan: 'sapling', name: '', location: 'Ramnagar, Uttarakhand',
+  yieldMin: '', yieldMax: '', priceMin: '', priceMax: '', pricePerSeason: '',
+  isAvailable: true,
+};
+
+interface Props { onExit: () => void; user: User; }
+
+export default function AdminDashboard({ onExit, user }: Props) {
+  const [tab, setTab]               = useState<Tab>('overview');
+  const [msg, setMsg]               = useState('');
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const [trees, setTrees]         = useState<Tree[]>([]);
+  const [reviews, setReviews]     = useState<Review[]>([]);
+  const [videos, setVideos]       = useState<Video[]>([]);
+  const [myRentals, setMyRentals] = useState<any[]>([]);
+  const [stats, setStats]         = useState<{ totalTrees: number; availableTrees: number; rentedTrees: number; totalRentals: number; cancelledRentals: number; reviews: number; users: number; videos: number; totalRevenue: number } | null>(null);
+
+  const [showForm, setShowForm]     = useState(false);
+  const [treeForm, setTreeForm]     = useState<TreeForm>(emptyTreeForm);
+  const [savingTree, setSavingTree] = useState(false);
+
+  const [fuRentalId, setFuRentalId] = useState('');
+  const [fuCaption, setFuCaption]   = useState('');
+  const [fuFiles, setFuFiles]       = useState<FileList | null>(null);
+  const [fuPosting, setFuPosting]   = useState(false);
+
+  const [vidTitle, setVidTitle]         = useState('');
+  const [vidDesc, setVidDesc]           = useState('');
+  const [vidFile, setVidFile]           = useState<File | null>(null);
+  const [vidUploading, setVidUploading] = useState(false);
+
+  const flash = (m: string) => { setMsg(m); setTimeout(() => setMsg(''), 3500); };
+
+  useEffect(() => {
+    api.get('/admin/trees').then(setTrees).catch(() => {});
+    api.get('/admin/reviews').then(setReviews).catch(() => {});
+    api.get('/admin/videos').then(setVideos).catch(() => {});
+    api.get('/admin/rentals').then(setMyRentals).catch(() => {});
+    api.get('/admin/stats').then(setStats).catch(() => {});
+  }, []);
+
+  // ── Create Tree ──────────────────────────────────────────
+  const handleCreateTree = async () => {
+    if (!treeForm.name || !treeForm.yieldMin || !treeForm.pricePerSeason) {
+      flash('Fill all required fields (*) to continue'); return;
+    }
+    setSavingTree(true);
+    try {
+      const body = {
+        ...treeForm,
+        yieldMin: Number(treeForm.yieldMin),    yieldMax: Number(treeForm.yieldMax),
+        priceMin: Number(treeForm.priceMin),     priceMax: Number(treeForm.priceMax),
+        pricePerSeason: Number(treeForm.pricePerSeason),
+      };
+      const res = await api.post('/trees', body);
+      if (res._id) {
+        setTrees(t => [res, ...t]);
+        setTreeForm(emptyTreeForm); setShowForm(false);
+        flash('Tree created and live on the site!');
+      } else flash(res.message || 'Failed to create tree');
+    } finally { setSavingTree(false); }
+  };
+
+  // ── Post Farm Update ─────────────────────────────────────
+  const postFarmUpdate = async () => {
+    if (!fuRentalId.trim()) { flash('Enter a rental ID'); return; }
+    setFuPosting(true);
+    try {
+      const data = new FormData();
+      data.append('caption', fuCaption);
+      if (fuFiles) Array.from(fuFiles).forEach(f => data.append('media', f));
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE}/api/farm-updates/${fuRentalId.trim()}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token || ''}` },
+        body: data,
+      }).then(r => r.json());
+      if (res._id) {
+        flash('Farm update posted to customer!');
+        setFuRentalId(''); setFuCaption(''); setFuFiles(null);
+      } else flash(res.message || 'Failed — check rental ID');
+    } finally { setFuPosting(false); }
+  };
+
+  // ── Upload Video ─────────────────────────────────────────
+  const uploadVideo = async () => {
+    if (!vidTitle || !vidFile) { flash('Title and video file required'); return; }
+    setVidUploading(true);
+    try {
+      const data = new FormData();
+      data.append('title', vidTitle); data.append('description', vidDesc);
+      data.append('video', vidFile);
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE}/api/videos`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token || ''}` },
+        body: data,
+      }).then(r => r.json());
+      if (res._id) {
+        setVideos(v => [res, ...v]);
+        setVidTitle(''); setVidDesc(''); setVidFile(null);
+        flash('Video uploaded!');
+      } else flash(res.message || 'Upload failed');
+    } finally { setVidUploading(false); }
+  };
+
+  // ── Derived stats ────────────────────────────────────────
+  const planCounts = trees.reduce((acc, t) => {
+    acc[t.plan] = (acc[t.plan] || 0) + 1; return acc;
+  }, {} as Record<string, number>);
+
+  const avgRating = reviews.length
+    ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
+    : '—';
+
+  const go = (t: Tab) => { setTab(t); setMobileOpen(false); };
+
+  return (
+    <div className="adm-shell">
+      {msg && <div className="toast adm-toast" onClick={() => setMsg('')}>{msg}</div>}
+
+      {/* ── Sidebar ──────────────────────────────── */}
+      <aside className={`adm-sidebar ${mobileOpen ? 'adm-sidebar--open' : ''}`}>
+        <div className="adm-sidebar-top">
+          <div className="adm-logo">YourOrchard</div>
+          <div className="adm-role-pill">Admin Panel</div>
+        </div>
+
+        <nav className="adm-nav">
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              className={`adm-nav-btn ${tab === t.id ? 'adm-nav-btn--active' : ''}`}
+              onClick={() => go(t.id)}
+            >
+              <span className="adm-nav-icon">{t.icon}</span>
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        <div className="adm-sidebar-footer">
+          <div className="adm-user-row">
+            <div className="adm-avatar adm-avatar--lg">{user.name[0].toUpperCase()}</div>
+            <div className="adm-user-info">
+              <div className="adm-user-name">{user.name}</div>
+              <div className="adm-user-email">{user.email}</div>
+            </div>
+          </div>
+          <button className="adm-exit-btn" onClick={onExit}>← Back to Site</button>
+        </div>
+      </aside>
+
+      {/* ── Mobile bar ───────────────────────────── */}
+      <div className="adm-mobile-bar">
+        <button className="adm-hamburger" onClick={() => setMobileOpen(o => !o)}>
+          {mobileOpen ? '✕' : '☰'}
+        </button>
+        <span className="adm-mobile-title">
+          {TABS.find(t => t.id === tab)?.icon} {TABS.find(t => t.id === tab)?.label}
+        </span>
+        <button className="adm-exit-btn-sm" onClick={onExit}>Exit</button>
+      </div>
+
+      {/* ── Main area ────────────────────────────── */}
+      <main className="adm-main">
+
+        {/* ════════ OVERVIEW ════════ */}
+        {tab === 'overview' && (
+          <div className="adm-content">
+            <header className="adm-header">
+              <div>
+                <h1 className="adm-h1">Dashboard</h1>
+                <p className="adm-sub">Live snapshot of YourOrchard operations</p>
+              </div>
+              <div className="adm-season-badge">🌿 Season 2026</div>
+            </header>
+
+            <div className="adm-kpi-grid">
+              <div className="adm-kpi adm-kpi--green">
+                <div className="adm-kpi-icon">💰</div>
+                <div className="adm-kpi-val">₹{(stats?.totalRevenue ?? 0).toLocaleString('en-IN')}</div>
+                <div className="adm-kpi-label">Total Revenue</div>
+                <div className="adm-kpi-sub">{stats?.cancelledRentals ?? 0} refund(s)</div>
+              </div>
+              <div className="adm-kpi adm-kpi--amber">
+                <div className="adm-kpi-icon">🌳</div>
+                <div className="adm-kpi-val">{stats?.totalTrees ?? trees.length}</div>
+                <div className="adm-kpi-label">Total Trees</div>
+                <div className="adm-kpi-sub">{stats?.availableTrees ?? '—'} available · {stats?.rentedTrees ?? '—'} rented</div>
+              </div>
+              <div className="adm-kpi adm-kpi--blue">
+                <div className="adm-kpi-icon">📋</div>
+                <div className="adm-kpi-val">{stats?.totalRentals ?? myRentals.length}</div>
+                <div className="adm-kpi-label">Total Rentals</div>
+                <div className="adm-kpi-sub">{stats?.cancelledRentals ?? 0} cancelled</div>
+              </div>
+              <div className="adm-kpi adm-kpi--purple">
+                <div className="adm-kpi-icon">👥</div>
+                <div className="adm-kpi-val">{stats?.users ?? '—'}</div>
+                <div className="adm-kpi-label">Registered Users</div>
+              </div>
+            </div>
+
+            <div className="adm-row-2">
+              <div className="adm-card">
+                <h2 className="adm-card-title">Trees by Plan</h2>
+                {(['sapling', 'adult', 'grand'] as const).map(plan => {
+                  const count = planCounts[plan] || 0;
+                  const pct   = trees.length > 0 ? (count / trees.length) * 100 : 0;
+                  return (
+                    <div key={plan} className="adm-bar-row">
+                      <span className={`adm-plan-badge adm-plan--${plan}`}>{plan}</span>
+                      <div className="adm-bar-track">
+                        <div className={`adm-bar-fill adm-bar--${plan}`} style={{ width: `${pct}%` }} />
+                      </div>
+                      <span className="adm-bar-num">{count}</span>
+                    </div>
+                  );
+                })}
+                {trees.length === 0 && <p className="adm-empty" style={{ margin: 0 }}>No trees loaded.</p>}
+              </div>
+
+              <div className="adm-card">
+                <h2 className="adm-card-title">Review Ratings</h2>
+                {[5, 4, 3, 2, 1].map(n => {
+                  const count = reviews.filter(r => r.rating === n).length;
+                  const pct   = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+                  return (
+                    <div key={n} className="adm-bar-row">
+                      <span className="adm-star-label">{'★'.repeat(n)}</span>
+                      <div className="adm-bar-track">
+                        <div className="adm-bar-fill adm-bar--star" style={{ width: `${pct}%` }} />
+                      </div>
+                      <span className="adm-bar-num">{count}</span>
+                    </div>
+                  );
+                })}
+                {reviews.length === 0 && <p className="adm-empty" style={{ margin: 0 }}>No reviews yet.</p>}
+              </div>
+            </div>
+
+            <div className="adm-card">
+              <h2 className="adm-card-title">Recent Reviews</h2>
+              {reviews.length === 0 ? (
+                <p className="adm-empty">No reviews yet — be the first!</p>
+              ) : (
+                <table className="adm-table">
+                  <thead>
+                    <tr>
+                      <th>Customer</th>
+                      <th>Rating</th>
+                      <th>Comment</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reviews.slice(0, 6).map(r => (
+                      <tr key={r._id}>
+                        <td>
+                          <div className="adm-td-user">
+                            <div className="adm-avatar">{r.name[0].toUpperCase()}</div>
+                            <span className="adm-td-name">{r.name}</span>
+                          </div>
+                        </td>
+                        <td><span className="adm-stars">{'★'.repeat(r.rating)}</span></td>
+                        <td className="adm-td-comment">
+                          {r.comment.slice(0, 80)}{r.comment.length > 80 ? '…' : ''}
+                        </td>
+                        <td className="adm-td-date">
+                          {new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+          </div>
+        )}
+
+        {/* ════════ TREES ════════ */}
+        {tab === 'trees' && (
+          <div className="adm-content">
+            <header className="adm-header">
+              <div>
+                <h1 className="adm-h1">Trees</h1>
+                <p className="adm-sub">{trees.length} trees currently in inventory</p>
+              </div>
+              <button
+                className="adm-btn-primary"
+                onClick={() => { setShowForm(f => !f); setTreeForm(emptyTreeForm); }}
+              >
+                {showForm ? '✕ Cancel' : '+ Add Tree'}
+              </button>
+            </header>
+
+            {showForm && (
+              <div className="adm-card adm-form-card">
+                <h2 className="adm-card-title">Add New Tree</h2>
+                <div className="adm-form-grid">
+                  <div className="adm-field">
+                    <label>Plan *</label>
+                    <select
+                      value={treeForm.plan}
+                      onChange={e => setTreeForm(f => ({ ...f, plan: e.target.value as any }))}
+                    >
+                      <option value="sapling">Sapling — Small Pack</option>
+                      <option value="adult">Adult — Medium Pack</option>
+                      <option value="grand">Grand — Premium Pack</option>
+                    </select>
+                  </div>
+                  <div className="adm-field">
+                    <label>Tree Name *</label>
+                    <input
+                      placeholder="e.g. Mango Tree #14"
+                      value={treeForm.name}
+                      onChange={e => setTreeForm(f => ({ ...f, name: e.target.value }))}
+                    />
+                  </div>
+                  <div className="adm-field">
+                    <label>Location</label>
+                    <input
+                      value={treeForm.location}
+                      onChange={e => setTreeForm(f => ({ ...f, location: e.target.value }))}
+                    />
+                  </div>
+                  <div className="adm-field">
+                    <label>Yield Min (kg) *</label>
+                    <input
+                      type="number" placeholder="15"
+                      value={treeForm.yieldMin}
+                      onChange={e => setTreeForm(f => ({ ...f, yieldMin: e.target.value }))}
+                    />
+                  </div>
+                  <div className="adm-field">
+                    <label>Yield Max (kg)</label>
+                    <input
+                      type="number" placeholder="25"
+                      value={treeForm.yieldMax}
+                      onChange={e => setTreeForm(f => ({ ...f, yieldMax: e.target.value }))}
+                    />
+                  </div>
+                  <div className="adm-field">
+                    <label>Display Price Min (₹)</label>
+                    <input
+                      type="number" placeholder="2999"
+                      value={treeForm.priceMin}
+                      onChange={e => setTreeForm(f => ({ ...f, priceMin: e.target.value }))}
+                    />
+                  </div>
+                  <div className="adm-field">
+                    <label>Display Price Max (₹)</label>
+                    <input
+                      type="number" placeholder="4999"
+                      value={treeForm.priceMax}
+                      onChange={e => setTreeForm(f => ({ ...f, priceMax: e.target.value }))}
+                    />
+                  </div>
+                  <div className="adm-field">
+                    <label>Price / Season (₹) *</label>
+                    <input
+                      type="number" placeholder="3499"
+                      value={treeForm.pricePerSeason}
+                      onChange={e => setTreeForm(f => ({ ...f, pricePerSeason: e.target.value }))}
+                    />
+                  </div>
+                  <div className="adm-field adm-field--check">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={treeForm.isAvailable}
+                        onChange={e => setTreeForm(f => ({ ...f, isAvailable: e.target.checked }))}
+                      />
+                      Available for rental
+                    </label>
+                  </div>
+                </div>
+                <button
+                  className="adm-btn-primary"
+                  onClick={handleCreateTree}
+                  disabled={savingTree}
+                >
+                  {savingTree ? 'Creating…' : 'Create Tree'}
+                </button>
+              </div>
+            )}
+
+            <div className="adm-card">
+              <table className="adm-table">
+                <thead>
+                  <tr>
+                    <th>Plan</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Yield</th>
+                    <th>Price / Season</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {trees.map(t => (
+                    <tr key={t._id}>
+                      <td>
+                        <span className={`adm-plan-badge adm-plan--${t.plan}`}>{t.plan}</span>
+                      </td>
+                      <td className="adm-td-bold">{t.name}</td>
+                      <td className="adm-td-dim">{t.location}</td>
+                      <td>{t.yieldMin}–{t.yieldMax} kg</td>
+                      <td>₹{t.pricePerSeason.toLocaleString('en-IN')}</td>
+                      <td>
+                        <span className={`adm-status adm-status--${t.isAvailable ? 'avail' : 'rented'}`}>
+                          {t.isAvailable ? '● Available' : '● Rented'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                  {trees.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="adm-td-empty">No trees in inventory</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="adm-info-note">
+              <span>ℹ️</span>
+              <span>
+                Edit &amp; delete require admin API routes on the backend.
+                Newly created trees appear on the live site immediately.
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* ════════ FARM UPDATES ════════ */}
+        {tab === 'farmupdates' && (
+          <div className="adm-content">
+            <header className="adm-header">
+              <div>
+                <h1 className="adm-h1">Farm Updates</h1>
+                <p className="adm-sub">Send weekly orchard updates to customers</p>
+              </div>
+            </header>
+
+            <div className="adm-card adm-form-card">
+              <h2 className="adm-card-title">Post New Update</h2>
+
+              {myRentals.length > 0 && (
+                <div className="adm-field adm-field--wide" style={{ marginBottom: 16 }}>
+                  <label>Quick-select from your rentals</label>
+                  <select value={fuRentalId} onChange={e => setFuRentalId(e.target.value)}>
+                    <option value="">— pick a rental —</option>
+                    {myRentals.map((r: any) => (
+                      <option key={r._id} value={r._id}>
+                        {r.tree?.name} — Season {r.season} ({r.status})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div className="adm-field adm-field--wide" style={{ marginBottom: 16 }}>
+                <label>Rental ID *</label>
+                <input
+                  placeholder="Paste the customer's rental _id from the database"
+                  value={fuRentalId}
+                  onChange={e => setFuRentalId(e.target.value)}
+                />
+              </div>
+
+              <div className="adm-field adm-field--wide" style={{ marginBottom: 16 }}>
+                <label>Caption</label>
+                <textarea
+                  rows={3}
+                  placeholder="Your mangoes are growing beautifully this week! 🌿 The rains have been kind to your tree."
+                  value={fuCaption}
+                  onChange={e => setFuCaption(e.target.value)}
+                />
+              </div>
+
+              <div className="adm-upload-zone" style={{ marginBottom: 20 }}>
+                <label>
+                  <span className="adm-upload-icon">📷</span>
+                  <span>Attach Photos / Videos</span>
+                  <input
+                    type="file" multiple accept="image/*,video/*"
+                    onChange={e => setFuFiles(e.target.files)}
+                  />
+                </label>
+                {fuFiles && <p className="adm-file-count">{fuFiles.length} file(s) selected</p>}
+              </div>
+
+              <button
+                className="adm-btn-primary"
+                onClick={postFarmUpdate}
+                disabled={fuPosting || !fuRentalId.trim()}
+              >
+                {fuPosting ? 'Posting…' : 'Post Update'}
+              </button>
+            </div>
+
+            {myRentals.filter((r: any) => r.status === 'active').length > 0 && (
+              <div className="adm-card">
+                <h2 className="adm-card-title">Your Active Rentals</h2>
+                <table className="adm-table">
+                  <thead>
+                    <tr>
+                      <th>Tree</th>
+                      <th>Season</th>
+                      <th>Status</th>
+                      <th>Rental ID</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {myRentals
+                      .filter((r: any) => r.status === 'active')
+                      .map((r: any) => (
+                        <tr key={r._id}>
+                          <td className="adm-td-bold">{r.tree?.name}</td>
+                          <td>{r.season}</td>
+                          <td>
+                            <span className="adm-status adm-status--avail">● Active</span>
+                          </td>
+                          <td className="adm-td-mono">{r._id}</td>
+                          <td>
+                            <button
+                              className="adm-btn-sm"
+                              onClick={() => setFuRentalId(r._id)}
+                            >
+                              Use this ID
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ════════ REVIEWS ════════ */}
+        {tab === 'reviews' && (
+          <div className="adm-content">
+            <header className="adm-header">
+              <div>
+                <h1 className="adm-h1">Reviews</h1>
+                <p className="adm-sub">{reviews.length} customer reviews · avg {avgRating} ★</p>
+              </div>
+            </header>
+
+            <div className="adm-reviews-grid">
+              {reviews.map(r => (
+                <div key={r._id} className="adm-review-card">
+                  <div className="adm-review-top">
+                    <div className="adm-td-user">
+                      <div className="adm-avatar">{r.name[0].toUpperCase()}</div>
+                      <div>
+                        <div className="adm-td-name">{r.name}</div>
+                        <div className="adm-stars">
+                          {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="adm-review-date">
+                      {new Date(r.createdAt).toLocaleDateString('en-IN', {
+                        day: 'numeric', month: 'short', year: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                  <p className="adm-review-text">{r.comment}</p>
+                  {r.media.length > 0 && (
+                    <div className="adm-review-media">
+                      {r.media.map((m, i) =>
+                        m.type === 'image'
+                          ? <img key={i} src={`${API_BASE}${m.url}`} alt="review" />
+                          : <video key={i} src={`${API_BASE}${m.url}`} controls />
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {reviews.length === 0 && (
+                <p className="adm-empty">No reviews yet.</p>
+              )}
+            </div>
+
+            <div className="adm-info-note">
+              <span>ℹ️</span>
+              <span>
+                Review moderation (delete / flag) requires a DELETE admin route on the backend.
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* ════════ VIDEOS ════════ */}
+        {tab === 'videos' && (
+          <div className="adm-content">
+            <header className="adm-header">
+              <div>
+                <h1 className="adm-h1">Farm Videos</h1>
+                <p className="adm-sub">{videos.length} videos on the Life on Farm page</p>
+              </div>
+            </header>
+
+            <div className="adm-card adm-form-card">
+              <h2 className="adm-card-title">Upload New Video</h2>
+              <div className="adm-form-grid">
+                <div className="adm-field">
+                  <label>Title *</label>
+                  <input
+                    placeholder="Weekly Orchard Update — Week 12"
+                    value={vidTitle}
+                    onChange={e => setVidTitle(e.target.value)}
+                  />
+                </div>
+                <div className="adm-field">
+                  <label>Description</label>
+                  <input
+                    placeholder="A quick look at how your mangoes are doing…"
+                    value={vidDesc}
+                    onChange={e => setVidDesc(e.target.value)}
+                  />
+                </div>
+                <div className="adm-field adm-field--wide">
+                  <div className="adm-upload-zone">
+                    <label>
+                      <span className="adm-upload-icon">🎥</span>
+                      <span>{vidFile ? vidFile.name : 'Select Video File'}</span>
+                      <input
+                        type="file" accept="video/*"
+                        onChange={e => setVidFile(e.target.files?.[0] || null)}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <button
+                className="adm-btn-primary"
+                onClick={uploadVideo}
+                disabled={vidUploading}
+              >
+                {vidUploading ? 'Uploading…' : 'Upload Video'}
+              </button>
+            </div>
+
+            <div className="adm-videos-grid">
+              {videos.map(v => (
+                <div key={v._id} className="adm-video-card">
+                  <video
+                    src={`${API_BASE}${v.url}`}
+                    controls
+                    className="adm-video-player"
+                  />
+                  <div className="adm-video-body">
+                    <div className="adm-video-title">{v.title}</div>
+                    {v.description && (
+                      <div className="adm-video-desc">{v.description}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {videos.length === 0 && (
+                <p className="adm-empty">No videos yet. Upload your first one above.</p>
+              )}
+            </div>
+          </div>
+        )}
+
+      </main>
+    </div>
+  );
+}

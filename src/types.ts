@@ -5,6 +5,8 @@ export interface Tree {
   location: string;
   yieldMin: number;
   yieldMax: number;
+  priceMin: number;
+  priceMax: number;
   pricePerSeason: number;
   isAvailable: boolean;
 }
@@ -21,8 +23,9 @@ export interface Rental {
 
 export interface User {
   id: string;
-  name?: string;
-  phone: string;
+  name: string;
+  email: string;
+  role?: 'user' | 'admin';
 }
 
 export interface Video {
