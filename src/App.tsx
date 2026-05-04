@@ -44,37 +44,37 @@ const FEATURES = [
 ];
 
 const MANGO_BOXES = [
-  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: '/hero-mango-v3.jpg' },
-  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: '/hero-mango-v3.jpg' },
-  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: '/hero-mango-v3.jpg' },
+  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: '/mango-basket.jpg' },
+  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: '/mango-basket.jpg' },
+  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: '/mango-langra.jpg' },
 ];
 
 const VARIETIES = [
   {
     id: 'chausa',  name: 'Chausa',  tagline: 'Jewel of Ramnagar',
-    img: '/hero-mango-v3.jpg',
+    img: '/mango-basket.jpg',
     gallery: [
-      '/hero-mango-v3.jpg',
-      '/hero-mango-v3.jpg',
-      '/hero-mango-v3.jpg',
+      '/mango-basket.jpg',
+      '/mango-basket.jpg',
+      '/mango-basket.jpg',
     ],
   },
   {
     id: 'dasheri', name: 'Dasheri', tagline: 'People\'s Favourite',
-    img: '/hero-mango-v3.jpg',
+    img: '/mango-basket.jpg',
     gallery: [
-      '/hero-mango-v3.jpg',
-      '/hero-mango-v3.jpg',
-      '/hero-mango-v3.jpg',
+      '/mango-basket.jpg',
+      '/mango-basket.jpg',
+      '/mango-basket.jpg',
     ],
   },
   {
     id: 'langra',  name: 'Langra',  tagline: 'Most Fulfilling',
-    img: '/hero-mango-v3.jpg',
+    img: '/mango-langra.jpg',
     gallery: [
-      '/hero-mango-v3.jpg',
-      '/hero-mango-v3.jpg',
-      '/hero-mango-v3.jpg',
+      '/mango-langra.jpg',
+      '/mango-langra.jpg',
+      '/mango-langra.jpg',
     ],
   },
 ];
@@ -495,34 +495,19 @@ export default function App() {
             </div>
 
 
-            <div className="feat-coverflow-wrap">
-              <button className="feat-arrow" onClick={() => setFeatIdx(i => (i - 1 + FEATURES.length) % FEATURES.length)}>‹</button>
-              <div className="feat-coverflow">
-                {FEATURES.map((f, i) => {
-                  const total = FEATURES.length;
-                  const diff = ((i - featIdx) % total + total) % total;
-                  const pos = diff === 0 ? 'cf-active' : diff === 1 ? 'cf-next' : diff === total - 1 ? 'cf-prev' : 'cf-hidden';
-                  return (
-                    <div key={f.num} className={`feat-slide ${f.cls} ${pos}`} onClick={() => setFeatIdx(i)}>
-                      <div className="feat-slide-top">
-                        <span className="feat-slide-num">{f.num}</span>
-                        <div className="feat-slide-icon">{f.icon}</div>
-                      </div>
-                      <div className="feat-slide-body">
-                        <div className="feat-slide-title">{f.title}</div>
-                        <div className="feat-slide-desc">{f.desc}</div>
-                        <div className="feature-tag"><span className="feature-tag-dot" />{f.tag}</div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <button className="feat-arrow" onClick={() => setFeatIdx(i => (i + 1) % FEATURES.length)}>›</button>
-            </div>
-
-            <div className="feat-dots">
-              {FEATURES.map((_, i) => (
-                <button key={i} className={`feat-dot ${i === featIdx ? 'active' : ''}`} onClick={() => setFeatIdx(i)} />
+            <div className="feat-grid">
+              {FEATURES.map((f) => (
+                <div key={f.num} className={`feat-card ${f.cls}`}>
+                  <div className="feat-card-top">
+                    <span className="feat-card-num">{f.num}</span>
+                    <div className="feat-card-icon">{f.icon}</div>
+                  </div>
+                  <div className="feat-card-body">
+                    <div className="feat-card-title">{f.title}</div>
+                    <div className="feat-card-desc">{f.desc}</div>
+                    <div className="feature-tag"><span className="feature-tag-dot" />{f.tag}</div>
+                  </div>
+                </div>
               ))}
             </div>
           </section>
