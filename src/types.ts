@@ -24,7 +24,8 @@ export interface Rental {
 export interface User {
   id: string;
   name: string;
-  email: string;
+  phone: string;
+  email?: string;
   role?: 'user' | 'admin';
 }
 
