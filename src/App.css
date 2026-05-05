@@ -189,7 +189,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 /* ── Hero ── */
 .hero {
   background-image:
-    linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.15) 100%),
+    linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.65) 35%, rgba(0,0,0,0.35) 65%, rgba(0,0,0,0.15) 100%),
     url('/orchard-hero.jpg');
   background-size: cover;
   background-position: center;
@@ -207,11 +207,11 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
   position: relative;
   z-index: 2;
 }
-.hero-text .hero-heading { color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,0.4); }
-.hero-text .hero-heading span { color: #52d798; }
-.hero-text .hero-subheading { color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.4); }
-.hero-text .hero-sub { color: rgba(255,255,255,0.92); text-shadow: 0 1px 6px rgba(0,0,0,0.3); }
-.hero-text .hero-label { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.4); color: #d8f3dc; backdrop-filter: blur(8px); }
+.hero-text .hero-heading { color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,0.7); }
+.hero-text .hero-heading span { color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,0.7); }
+.hero-text .hero-subheading { color: #fff; text-shadow: 0 1px 12px rgba(0,0,0,0.7); }
+.hero-text .hero-sub { color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.6); }
+.hero-text .hero-label { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.4); color: #fff; backdrop-filter: blur(8px); }
 .hero-text .trust-item { background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); }
 .hero-text .btn-outline { color: #fff; border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.08); backdrop-filter: blur(8px); }
 .hero-text .btn-outline:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.18); }
