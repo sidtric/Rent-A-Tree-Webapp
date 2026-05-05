@@ -7,10 +7,10 @@ import './App.css';
 const PLAN_EMOJI:  Record<string, string> = { sapling: '🌳', adult: '🌳', grand: '🌳' };
 const PLAN_LABEL:  Record<string, string> = { sapling: 'Small Tree Pack', adult: 'Medium Tree Pack', grand: 'Premium Tree Pack' };
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
-const ADMIN_PHONES = (import.meta.env.VITE_ADMIN_PHONE || '').split(',').map((e: string) => e.trim()).filter(Boolean);
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '').split(',').map((e: string) => e.trim().toLowerCase()).filter(Boolean);
 
-const isAdmin = (user: { phone?: string } | null) =>
-  !!user?.phone && ADMIN_PHONES.includes(user.phone);
+const isAdmin = (user: { email?: string } | null) =>
+  !!user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
 
 const STEPS = [
   { n: 1, icon: '🌳', h: 'Choose Your Tree',   p: 'Pick a plan — Sapling, Adult, or Grand — from our Ramnagar orchard.' },
@@ -95,8 +95,7 @@ export default function App() {
   const [videoForm, setVideoForm] = useState({ title: '', description: '' });
   const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
-  const [otpStep, setOtpStep] = useState<'phone' | 'otp'>('phone');
-  const [form, setForm] = useState({ name: '', phone: '', otp: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [rentModal, setRentModal] = useState<Tree | null>(null);
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
@@ -142,31 +141,26 @@ export default function App() {
 
   const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setView('home'); };
 
-  const handleSendOtp = async () => {
-    if (!form.phone.trim()) { setMsg('Enter your phone number'); return; }
+  const handleAuth = async () => {
+    if (!form.email.trim() || !form.password.trim()) { setMsg('Please fill all fields'); return; }
+    if (authModal === 'register' && !form.name.trim()) { setMsg('Please enter your name'); return; }
     try {
-      const res = await api.post('/auth/send-otp', { phone: form.phone.trim() });
-      if (res.message === 'OTP sent') { setOtpStep('otp'); setMsg(''); }
-      else setMsg(res.message || 'Failed to send OTP');
-    } catch { setMsg('Could not connect. Try again.'); }
-  };
-
-  const handleVerifyOtp = async () => {
-    if (!form.otp.trim()) { setMsg('Enter the OTP'); return; }
-    try {
-      const res = await api.post('/auth/verify-otp', { phone: form.phone.trim(), otp: form.otp.trim(), name: form.name.trim() || undefined });
-      if (!res.token) { setMsg(res.message || 'Invalid OTP'); return; }
+      const endpoint = authModal === 'register' ? '/auth/register' : '/auth/login';
+      const payload  = authModal === 'register'
+        ? { name: form.name.trim(), email: form.email.trim(), password: form.password }
+        : { email: form.email.trim(), password: form.password };
+      const res = await api.post(endpoint, payload);
+      if (!res.token) { setMsg(res.message || 'Something went wrong'); return; }
       localStorage.setItem('token', res.token);
       localStorage.setItem('user', JSON.stringify(res.user));
       setUser(res.user);
       setAuthModal(null);
-      setOtpStep('phone');
-      setForm({ name: '', phone: '', otp: '' });
+      setForm({ name: '', email: '', password: '' });
       setMsg('');
     } catch { setMsg('Could not connect. Try again.'); }
   };
 
-  const closeAuthModal = () => { setAuthModal(null); setOtpStep('phone'); setForm({ name: '', phone: '', otp: '' }); setMsg(''); };
+  const closeAuthModal = () => { setAuthModal(null); setForm({ name: '', email: '', password: '' }); setMsg(''); };
 
   const handleRent = async () => {
     if (!rentForm.treeId || !rentForm.deliveryAddress) { setMsg('Fill all fields'); return; }
@@ -629,43 +623,38 @@ export default function App() {
         <div className="auth-overlay" onClick={(e) => { if (e.target === e.currentTarget) closeAuthModal(); }}>
           <div className="auth-modal">
             <button className="auth-close" onClick={closeAuthModal}>✕</button>
-            {otpStep === 'phone' ? (
-              <>
-                <h2>Welcome to YourOrchard</h2>
-                <p className="auth-sub">Enter your phone number to continue</p>
-                <input
-                  placeholder="Your Name (optional)"
-                  value={form.name}
-                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                />
-                <div className="phone-input-wrap">
-                  <span className="phone-prefix">+91</span>
-                  <input
-                    placeholder="10-digit mobile number"
-                    type="tel" maxLength={10}
-                    value={form.phone}
-                    onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
-                    onKeyDown={e => e.key === 'Enter' && handleSendOtp()}
-                  />
-                </div>
-                <button className="btn-primary full" onClick={handleSendOtp}>Send OTP →</button>
-              </>
-            ) : (
-              <>
-                <h2>Enter OTP</h2>
-                <p className="auth-sub">Sent to +91 {form.phone} · <span className="auth-link" onClick={() => setOtpStep('phone')}>Change</span></p>
-                <input
-                  placeholder="6-digit OTP"
-                  type="tel" maxLength={6}
-                  value={form.otp}
-                  onChange={e => setForm(f => ({ ...f, otp: e.target.value.replace(/\D/g, '') }))}
-                  onKeyDown={e => e.key === 'Enter' && handleVerifyOtp()}
-                  autoFocus
-                />
-                <button className="btn-primary full" onClick={handleVerifyOtp}>Verify & Continue →</button>
-                <p className="auth-toggle">Didn't get it? <span onClick={handleSendOtp}>Resend OTP</span></p>
-              </>
+            <h2>{authModal === 'register' ? 'Create Account' : 'Welcome Back'}</h2>
+            <p className="auth-sub">{authModal === 'register' ? 'Join YourOrchard to rent a tree' : 'Login to your YourOrchard account'}</p>
+            {authModal === 'register' && (
+              <input
+                placeholder="Your Name"
+                value={form.name}
+                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+              />
             )}
+            <input
+              placeholder="Email Address"
+              type="email"
+              value={form.email}
+              onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+              onKeyDown={e => e.key === 'Enter' && handleAuth()}
+            />
+            <input
+              placeholder="Password"
+              type="password"
+              value={form.password}
+              onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+              onKeyDown={e => e.key === 'Enter' && handleAuth()}
+            />
+            <button className="btn-primary full" onClick={handleAuth}>
+              {authModal === 'register' ? 'Create Account →' : 'Login →'}
+            </button>
+            <p className="auth-toggle">
+              {authModal === 'register'
+                ? <>Already have an account? <span onClick={() => { setAuthModal('login'); setMsg(''); }}>Login</span></>
+                : <>New here? <span onClick={() => { setAuthModal('register'); setMsg(''); }}>Create account</span></>
+              }
+            </p>
           </div>
         </div>
       )}
