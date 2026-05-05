@@ -11,7 +11,7 @@
 }
 
 body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); color: var(--dark); }
-.app { min-height: 100vh; display: flex; flex-direction: column; }
+.app { min-height: 100vh; width: 100%; display: flex; flex-direction: column; }
 
 /* ── Nav ── */
 .nav {
@@ -24,7 +24,9 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .logo-full { height: 60px; width: auto; cursor: pointer; display: block; object-fit: contain; margin-right: auto; justify-self: start; transition: transform 0.2s ease; }
 .logo-full:hover { transform: translateY(-1px); }
 @media (max-width: 768px) {
-  .logo-full { height: 48px; }
+  .logo-full { height: 60px; }
+  .nav { padding: 2px 20px; min-height: 0; grid-template-columns: 1fr auto; }
+  .nav-hamburger { font-size: 1.2rem; padding: 4px; }
 }
 .nav-center { display: flex; gap: 28px; align-items: center; justify-content: center; }
 .nav-links { display: flex; gap: 10px; align-items: center; justify-content: flex-end; justify-self: end; margin-left: auto; }
@@ -65,9 +67,9 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
     display: block;
     background: linear-gradient(90deg, #1b4332 0%, #2d6a4f 100%);
     color: #fff;
-    padding: 10px 18px;
+    padding: 6px 14px;
     text-align: center;
-    font-size: 0.86rem;
+    font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 0.2px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -193,12 +195,12 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
   background-position: center;
   background-repeat: no-repeat;
   padding-top: 80px;
-  padding-bottom: 80px;
+  padding-bottom: 0;
   padding-left: max(80px, calc((100vw - 1440px) / 2 + 80px));
   padding-right: 80px;
   position: relative;
   display: flex; align-items: center;
-  min-height: 88vh;
+  min-height: 100vh;
 }
 .hero-text {
   max-width: 580px;
@@ -282,7 +284,10 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 @keyframes wordPop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .hero-heading { font-size: 5.5rem; font-weight: 900; line-height: 0.95; color: var(--dark); margin-bottom: 22px; letter-spacing: -2px; }
 .hero-heading span { color: var(--green); }
-.hero-sub { color: var(--gray); line-height: 1.7; margin-bottom: 36px; font-size: 1rem; max-width: 460px; }
+.hero-sub { color: var(--gray); line-height: 1.7; margin-bottom: 36px; font-size: 1.2rem; max-width: 540px; }
+@media (max-width: 980px) {
+  .hero-sub { font-size: 1rem; max-width: 100%; }
+}
 .hero-btns { display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap; }
 .hero-trust { display: flex; gap: 8px; flex-wrap: wrap; }
 .trust-item {
@@ -313,15 +318,17 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 }
 @media (max-width: 980px) {
   .hero {
-    background-color: #0e2015;
     background-image:
       linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.55) 100%),
       url('/hero-mango-v3.jpg');
-    background-size: cover, 100% auto;
-    background-position: center, top center;
-    background-repeat: no-repeat, no-repeat;
-    padding: 60px 24px 50px;
-    min-height: 620px;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    padding: 0 16px 24px;
+    min-height: 500px;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
   }
   .hero-text { max-width: 100%; padding: 0; }
   .hero-heading { font-size: 2.8rem !important; line-height: 1 !important; }
@@ -940,7 +947,7 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.5); padding: 6
   }
   .nav-center { display: none; }
   .nav-links { display: none; }
-  .nav { grid-template-columns: 1fr auto; padding: 16px 20px; }
+  .nav { grid-template-columns: 1fr auto; padding: 2px 20px; }
   .mobile-menu {
     display: flex; flex-direction: column;
     background: #fff; border-bottom: 1px solid rgba(0,0,0,0.07);
