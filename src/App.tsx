@@ -44,9 +44,9 @@ const FEATURES = [
 ];
 
 const MANGO_BOXES = [
-  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: '/mango-basket.jpg' },
-  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: '/mango-dasheri.jpg' },
-  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: '/mango-langra.jpg' },
+  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1, img: '/mango-basket.jpg' },
+  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1, img: '/mango-dasheri.jpg' },
+  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1, img: '/mango-langra.jpg' },
 ];
 
 const VARIETIES = [
