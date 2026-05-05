@@ -7,10 +7,10 @@ import './App.css';
 const PLAN_EMOJI:  Record<string, string> = { sapling: '🌳', adult: '🌳', grand: '🌳' };
 const PLAN_LABEL:  Record<string, string> = { sapling: 'Small Tree Pack', adult: 'Medium Tree Pack', grand: 'Premium Tree Pack' };
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
-const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '').split(',').map((e: string) => e.trim().toLowerCase()).filter(Boolean);
+const ADMIN_PHONES = (import.meta.env.VITE_ADMIN_PHONE || '').split(',').map((e: string) => e.trim()).filter(Boolean);
 
-const isAdmin = (user: { email: string } | null) =>
-  !!user && ADMIN_EMAILS.includes(user.email.toLowerCase());
+const isAdmin = (user: { phone?: string } | null) =>
+  !!user?.phone && ADMIN_PHONES.includes(user.phone);
 
 const STEPS = [
   { n: 1, icon: '🌳', h: 'Choose Your Tree',   p: 'Pick a plan — Sapling, Adult, or Grand — from our Ramnagar orchard.' },
@@ -20,18 +20,18 @@ const STEPS = [
 ];
 
 const PLAN_IMAGES: Record<string, string> = {
-  sapling: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=400&q=80',
-  adult:   'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=400&q=80',
-  grand:   'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=400&q=80',
+  sapling: '/hero-mango-v3.jpg',
+  adult:   '/hero-mango-v3.jpg',
+  grand:   '/hero-mango-v3.jpg',
 };
 
 const GALLERY_PHOTOS = [
-  { url: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=900&q=80', label: 'Fresh Mangoes' },
-  { url: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=500&q=80', label: 'Yellow Alphonso' },
-  { url: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=500&q=80', label: 'Orchard Canopy' },
-  { url: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=900&q=80', label: 'Our Farm' },
-  { url: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=500&q=80', label: 'Open Fields' },
-  { url: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=500&q=80', label: 'Harvest Basket' },
+  { url: '/hero-mango-v3.jpg', label: 'Fresh Mangoes' },
+  { url: '/hero-mango-v3.jpg', label: 'Yellow Alphonso' },
+  { url: '/hero-mango-v3.jpg', label: 'Orchard Canopy' },
+  { url: '/hero-mango-v3.jpg', label: 'Our Farm' },
+  { url: '/hero-mango-v3.jpg', label: 'Open Fields' },
+  { url: '/hero-mango-v3.jpg', label: 'Harvest Basket' },
 ];
 
 const FEATURES = [
@@ -44,45 +44,45 @@ const FEATURES = [
 ];
 
 const MANGO_BOXES = [
-  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80' },
-  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80' },
-  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80' },
+  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: '/mango-basket.jpg' },
+  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: '/mango-dasheri.jpg' },
+  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: '/mango-langra.jpg' },
 ];
 
 const VARIETIES = [
   {
     id: 'chausa',  name: 'Chausa',  tagline: 'Jewel of Ramnagar',
-    img: 'https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80',
+    img: '/mango-basket.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1629637272678-9b0d5a41b1e5?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1772984613890-e3bfbca7f245?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1622955658214-d05c1c6fcf84?auto=format&fit=crop&w=600&q=80',
+      '/mango-basket.jpg',
+      '/mango-basket.jpg',
+      '/mango-basket.jpg',
     ],
   },
   {
     id: 'dasheri', name: 'Dasheri', tagline: 'People\'s Favourite',
-    img: 'https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80',
+    img: '/mango-dasheri.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1685478677113-8c4a58503230?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1688492596644-b0e68aa86477?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1685478676925-05548b7bc317?auto=format&fit=crop&w=600&q=80',
+      '/mango-dasheri.jpg',
+      '/mango-dasheri.jpg',
+      '/mango-dasheri.jpg',
     ],
   },
   {
     id: 'langra',  name: 'Langra',  tagline: 'Most Fulfilling',
-    img: 'https://images.unsplash.com/photo-1732472581875-89ff83f18439?auto=format&fit=crop&w=400&q=80',
+    img: '/mango-langra.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1655168339435-af59c878e17a?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1680008702821-e1b598db30f3?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1734163075572-8948e799e42c?auto=format&fit=crop&w=600&q=80',
+      '/mango-langra.jpg',
+      '/mango-langra.jpg',
+      '/mango-langra.jpg',
     ],
   },
 ];
 
 const TREE_SIZES = [
-  { plan: 'sapling', label: 'Small Tree', icon: '🌱', yield: '15–20 kg', perks: 'Perfect for a small family. One young tree, full season harvest.',   img: 'https://images.unsplash.com/photo-1624223097551-43a133903591?auto=format&fit=crop&w=400&q=80' },
-  { plan: 'adult',   label: 'Mid Tree',   icon: '🌳', yield: '30–45 kg', perks: 'The sweet spot — generous yield, great value for a family of 4.',     img: 'https://images.unsplash.com/photo-1558261515-72bff9896df1?auto=format&fit=crop&w=400&q=80' },
-  { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: 'https://images.unsplash.com/photo-1692102972494-7852d3e21d3f?auto=format&fit=crop&w=400&q=80' },
+  { plan: 'sapling', label: 'Small Tree', icon: '🌱', yield: '15–20 kg', perks: 'Perfect for a small family. One young tree, full season harvest.',   img: '/hero-mango-v3.jpg' },
+  { plan: 'adult',   label: 'Mid Tree',   icon: '🌳', yield: '30–45 kg', perks: 'The sweet spot — generous yield, great value for a family of 4.',     img: '/hero-mango-v3.jpg' },
+  { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: '/hero-mango-v3.jpg' },
 ];
 
 export default function App() {
@@ -91,11 +91,14 @@ export default function App() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoForm, setVideoForm] = useState({ title: '', description: '' });
   const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
-  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
-  const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
+  const [otpStep, setOtpStep] = useState<'phone' | 'otp'>('phone');
+  const [form, setForm] = useState({ name: '', phone: '', otp: '' });
   const [rentModal, setRentModal] = useState<Tree | null>(null);
+  const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
   const [reviewFiles, setReviewFiles] = useState<FileList | null>(null);
   const [updates, setUpdates] = useState<Record<string, FarmUpdate[]>>({});
@@ -106,6 +109,10 @@ export default function App() {
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [activeBlog, setActiveBlog] = useState<{ emoji: string; title: string; date: string; desc: string } | null>(null);
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
+  const [cart, setCart] = useState<{ id: string; name: string; price: number; qty: number; img: string; type?: 'tree'; treeObj?: Tree; season?: string }[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartStep, setCartStep] = useState<'items' | 'address'>('items');
+  const [addrForm, setAddrForm] = useState({ name: '', phone: '', house: '', street: '', city: '', state: '', pin: '' });
 
   useEffect(() => {
     const t = setInterval(() => setFeatIdx(i => (i + 1) % FEATURES.length), 3500);
@@ -135,23 +142,31 @@ export default function App() {
 
   const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setView('home'); };
 
-  const handleAuth = async () => {
-    if (!authModal) return;
+  const handleSendOtp = async () => {
+    if (!form.phone.trim()) { setMsg('Enter your phone number'); return; }
     try {
-      const res = await api.post(`/auth/${authModal}`, form);
-      if (!res.token) { setMsg(res.message || 'Something went wrong. Try again.'); return; }
-      if (authModal === 'register') {
-        setMsg('Account created! Please log in.');
-        setTimeout(() => { setMsg(''); setForm({ name: '', email: '', password: '', phone: '' }); setAuthModal('login'); }, 1800);
-      } else {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('user', JSON.stringify(res.user));
-        setUser(res.user); setAuthModal(null); setView('home'); setMsg('');
-      }
-    } catch {
-      setMsg('Could not connect to server. Please try again.');
-    }
+      const res = await api.post('/auth/send-otp', { phone: form.phone.trim() });
+      if (res.message === 'OTP sent') { setOtpStep('otp'); setMsg(''); }
+      else setMsg(res.message || 'Failed to send OTP');
+    } catch { setMsg('Could not connect. Try again.'); }
   };
+
+  const handleVerifyOtp = async () => {
+    if (!form.otp.trim()) { setMsg('Enter the OTP'); return; }
+    try {
+      const res = await api.post('/auth/verify-otp', { phone: form.phone.trim(), otp: form.otp.trim(), name: form.name.trim() || undefined });
+      if (!res.token) { setMsg(res.message || 'Invalid OTP'); return; }
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('user', JSON.stringify(res.user));
+      setUser(res.user);
+      setAuthModal(null);
+      setOtpStep('phone');
+      setForm({ name: '', phone: '', otp: '' });
+      setMsg('');
+    } catch { setMsg('Could not connect. Try again.'); }
+  };
+
+  const closeAuthModal = () => { setAuthModal(null); setOtpStep('phone'); setForm({ name: '', phone: '', otp: '' }); setMsg(''); };
 
   const handleRent = async () => {
     if (!rentForm.treeId || !rentForm.deliveryAddress) { setMsg('Fill all fields'); return; }
@@ -200,6 +215,23 @@ export default function App() {
     }
   };
 
+  const prebookBox = (box: { name: string; price: number }) => {
+    if (!user) { setAuthModal('register'); return; }
+    const rzp = new (window as any).Razorpay({
+      key:         import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount:      box.price * 100,
+      currency:    'INR',
+      name:        'YourOrchard',
+      description: `${box.name} — 10 kg box`,
+      prefill:     { name: user.name, email: user.email },
+      theme:       { color: '#2d6a4f' },
+      handler: () => {
+        setMsg(`${box.name} box prebooked! We'll confirm your delivery date by WhatsApp. 🥭`);
+      },
+    });
+    rzp.open();
+  };
+
   const handleReview = async () => {
     if (!reviewForm.comment.trim()) { setMsg('Please write a comment'); return; }
     try {
@@ -241,6 +273,100 @@ export default function App() {
 
   const mediaUrl = (url: string) => url.startsWith('http') ? url : `${API_BASE}${url}`;
 
+  const addToCart = (box: { id: string; name: string; price: number; img: string }) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === box.id);
+      if (existing) return prev.map(i => i.id === box.id ? { ...i, qty: i.qty + 1 } : i);
+      return [...prev, { ...box, qty: 1 }];
+    });
+    setMsg(`${box.name} added to cart`);
+  };
+
+  const removeFromCart = (id: string) => setCart(prev => prev.filter(i => i.id !== id));
+  const updateQty = (id: string, qty: number) => {
+    if (qty < 1) { removeFromCart(id); return; }
+    setCart(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
+  };
+
+  const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
+  const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+  const proceedToCheckout = () => {
+    if (!user) { setAuthModal('register'); setCartOpen(false); return; }
+    if (cart.length === 0) return;
+    const hasTree = cart.some(i => i.type === 'tree');
+    if (hasTree) { setCartStep('address'); return; }
+    checkoutCart('');
+  };
+
+  const checkoutCart = async (address: string) => {
+    if (!user) return;
+
+    const treeItems = cart.filter(i => i.type === 'tree');
+    const boxItems  = cart.filter(i => i.type !== 'tree');
+
+    if (treeItems.length > 0) {
+      const item = treeItems[0];
+      const tree = item.treeObj!;
+      try {
+        const order = await api.post('/payments/create-order', { treeId: tree._id });
+        if (!order.orderId) { setMsg(order.message || 'Could not initiate payment'); return; }
+        const rzp = new (window as any).Razorpay({
+          key:         import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount:      order.amount,
+          currency:    order.currency,
+          name:        'YourOrchard',
+          description: `${tree.name} — Season ${item.season}`,
+          order_id:    order.orderId,
+          prefill:     { name: user.name, email: user.email },
+          theme:       { color: '#2d6a4f' },
+          handler: async (response: any) => {
+            const rental = await api.post('/payments/verify', {
+              ...response,
+              treeId: tree._id,
+              deliveryAddress: address,
+              season: item.season,
+            });
+            if (rental._id) {
+              setCart(prev => prev.filter(i => i.id !== item.id));
+              setAddrForm({ name: '', phone: '', house: '', street: '', city: '', state: '', pin: '' });
+              setCartStep('items');
+              setMsg('Tree rented! Welcome to YourOrchard');
+              api.get('/trees').then(setTrees);
+              api.get('/rentals/my').then(setRentals);
+              setView('dashboard');
+              setCartOpen(false);
+            } else {
+              setMsg(rental.message || 'Payment received but rental creation failed. Contact support.');
+            }
+          },
+        });
+        rzp.open();
+      } catch {
+        setMsg('Payment failed. Please try again.');
+      }
+      return;
+    }
+
+    const rzp = new (window as any).Razorpay({
+      key:         import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount:      cartTotal * 100,
+      currency:    'INR',
+      name:        'YourOrchard',
+      description: boxItems.map(i => `${i.name} x${i.qty}`).join(', '),
+      prefill:     { name: user.name, email: user.email },
+      theme:       { color: '#2d6a4f' },
+      handler: () => {
+        setCart([]);
+        setCartOpen(false);
+        setCartStep('items');
+        setAddrForm({ name: '', phone: '', house: '', street: '', city: '', state: '', pin: '' });
+        setMsg('Order placed! We\'ll confirm your delivery date by WhatsApp.');
+      },
+    });
+    rzp.open();
+  };
+
   const cancelRental = async (id: string) => {
     await api.patch(`/rentals/${id}/cancel`);
     api.get('/rentals/my').then(setRentals);
@@ -262,23 +388,25 @@ export default function App() {
   return (
     <div className="app">
       <nav className="nav">
-        <div className="logo" onClick={() => { setView('home'); setMobileMenu(false); }}>YourOrchard</div>
+        <img className="logo-full" src="/logo-full.jpeg" alt="YourOrchard — Rooted in Nature, Delivered with Care" onClick={() => { setView('home'); setMobileMenu(false); }} />
         <div className="nav-center">
-          <span className="nav-link" onClick={() => setView('home')}>Home</span>
-          <span className="nav-link" onClick={() => setView('about')}>About</span>
-          <span className="nav-link" onClick={() => setView('farm')}>Life on Farm</span>
-          <span className="nav-link" onClick={() => setView('blog')}>Blog</span>
-          <span className="nav-link" onClick={() => setView('contact')}>Contact</span>
-          {user && <span className="nav-link" onClick={() => setView('dashboard')}>My Tree</span>}
+          <span className={`nav-link ${view === 'home' ? 'nav-link-active' : ''}`} onClick={() => setView('home')}>Home</span>
+          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How It Works</span>
+          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees</span>
+          <span className={`nav-link ${view === 'about' ? 'nav-link-active' : ''}`} onClick={() => setView('about')}>About Us</span>
+          <span className={`nav-link ${view === 'blog' ? 'nav-link-active' : ''}`} onClick={() => setView('blog')}>Blog</span>
+          <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => setView('contact')}>Contact</span>
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
+          {user && <span className={`nav-link ${view === 'dashboard' ? 'nav-link-active' : ''}`} onClick={() => setView('dashboard')}>My Tree</span>}
           {isAdmin(user) && <span className="nav-link nav-link-admin" onClick={() => setView('admin')}>⚙ Admin</span>}
         </div>
         <div className="nav-links">
+          <button className="cart-btn" onClick={() => setCartOpen(true)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </button>
           {user ? (
-            <>
-              <span className="nav-greeting">Hi, {user.name.split(' ')[0]}</span>
-              <button className="btn-sm outline" onClick={logout}>Logout</button>
-            </>
+            <span className="nav-welcome">Hello {user.name.split(' ')[0]}</span>
           ) : (
             <>
               <button className="btn-sm outline" onClick={() => setAuthModal('login')}>Login</button>
@@ -290,8 +418,14 @@ export default function App() {
           {mobileMenu ? '✕' : '☰'}
         </button>
       </nav>
+      {user && (
+        <div className="mobile-top-welcome">🌳 Hello {user.name.split(' ')[0]}, welcome to your bagicha</div>
+      )}
       {mobileMenu && (
         <div className="mobile-menu">
+          {user && (
+            <div className="mobile-welcome">🌳 Hello {user.name.split(' ')[0]}, welcome to your bagicha</div>
+          )}
           <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); }}>Home</span>
           <span className="mobile-nav-link" onClick={() => { setView('about'); setMobileMenu(false); }}>About</span>
           <span className="mobile-nav-link" onClick={() => { setView('farm'); setMobileMenu(false); }}>Life on Farm</span>
@@ -299,28 +433,15 @@ export default function App() {
           <span className="mobile-nav-link" onClick={() => { setView('contact'); setMobileMenu(false); }}>Contact</span>
           {user && <span className="mobile-nav-link" onClick={() => { setView('dashboard'); setMobileMenu(false); }}>My Tree</span>}
           <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
-          <div className="mobile-menu-auth">
-            {user ? (
-              <button className="btn-sm outline" onClick={() => { logout(); setMobileMenu(false); }}>Logout</button>
-            ) : (
-              <>
-                <button className="btn-sm outline" onClick={() => { setAuthModal('login'); setMobileMenu(false); }}>Login</button>
-                <button className="btn-sm" onClick={() => { setAuthModal('register'); setMobileMenu(false); }}>Sign Up</button>
-              </>
-            )}
-          </div>
+          {!user && (
+            <div className="mobile-menu-auth">
+              <button className="btn-sm outline" onClick={() => { setAuthModal('login'); setMobileMenu(false); }}>Login</button>
+              <button className="btn-sm" onClick={() => { setAuthModal('register'); setMobileMenu(false); }}>Sign Up</button>
+            </div>
+          )}
         </div>
       )}
 
-      <div className="ticker-wrap">
-        <div className="ticker-track">
-          {[...Array(6)].map((_, i) => (
-            <span key={i} className="ticker-item">
-              🌿 Coming soon — Litchi from Uttarakhand &nbsp;·&nbsp; 🍑 Peaches from Mukteshwar &nbsp;·&nbsp; 🍐 Pears from Ranikhet &nbsp;·&nbsp; 🍊 Citrus from the Kumaon Hills &nbsp;·&nbsp; 🫐 More fruits, same promise &nbsp;&nbsp;&nbsp;
-            </span>
-          ))}
-        </div>
-      </div>
 
       <a
         className="whatsapp-btn"
@@ -338,57 +459,56 @@ export default function App() {
         <>
           <section className="hero">
             <div className="hero-text">
-              <div className="hero-label">● Orchard to Doorstep</div>
-              <p className="hero-brand">YourOrchard</p>
-              <div className="hero-tagline">
-                {'Have you city kids tasted the real mangoes?'.split(' ').map((word, i) => (
-                  <span key={i} className="hero-word" style={{ animationDelay: `${i * 0.12}s` }}>{word}</span>
-                ))}
-              </div>
+              <div className="hero-label">🌿 Orchard to Doorstep</div>
               <h1 className="hero-heading">Rent a <span>Tree.</span></h1>
-              <p className="hero-sub">Own the harvest without owning the farm. Rent your own tree in Ramnagar, Uttarakhand and enjoy fresh produce delivered straight to your door.</p>
+              <p className="hero-subheading">Fresh Harvest, Delivered to You.</p>
+              <p className="hero-sub">Own the harvest without owning the farm. Rent your own tree in Ramnagar, Uttarakhand and enjoy farm-fresh fruits delivered straight to your door.</p>
               <div className="hero-btns">
                 <button className="btn-primary" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees →</button>
-                <button className="btn-outline" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>How it works</button>
+                <button className="btn-outline" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>▶ How it works</button>
               </div>
               <div className="hero-trust">
                 <div className="trust-item"><span>📷</span> Weekly Updates</div>
                 <div className="trust-item"><span>🌿</span> Natural Farming</div>
                 <div className="trust-item"><span>🚚</span> Free Delivery</div>
+                <div className="trust-item"><span>🔒</span> Safe & Secure</div>
               </div>
             </div>
             <div className="hero-visual">
               <div className="hero-img-wrap">
-                <img className="hero-img" src="https://images.unsplash.com/photo-1759162339512-c2e0f23d4dff?auto=format&fit=crop&w=680&q=85" alt="Fresh mangoes from our Ramnagar orchard" />
-                <div className="hero-img-badge">🌿 Ramnagar, Uttarakhand</div>
-                <div className="hero-img-pill">🥭 Mango Season 2026</div>
+                <img className="hero-img" src="/hero-mango-v3.jpg" alt="Mango orchard at sunset in Ramnagar, Uttarakhand" />
               </div>
             </div>
           </section>
 
 
-          <section className="section how-it-works" id="how-it-works">
-            <div className="section-title">
-              <span className="section-label">How It Works</span>
-              <h2>From Tree to Your <span>Table</span> — Simply</h2>
-              <p>Four simple steps stand between you and a season full of fresh, naturally ripened produce.</p>
-            </div>
-            <div className="steps">
-              {STEPS.map((s, i) => (
-                <div key={s.n} className="step-wrapper">
-                  <div className="step">
-                    <div className="step-label">STEP 0{s.n}</div>
-                    <div className="step-icon-wrap">{s.icon}</div>
-                    <h3>{s.h}</h3>
-                    <p>{s.p}</p>
+          <section className="trust-howit" id="how-it-works">
+            <div className="trust-howit-inner">
+              <div className="howit-panel">
+                <h3 className="howit-title">How it works</h3>
+                <div className="howit-cards">
+                  <div className="howit-card">
+                    <div className="howit-num">1</div>
+                    <div className="howit-icon">🌳</div>
+                    <h4>Choose a Tree</h4>
+                    <p>Pick your favorite fruit tree and location.</p>
                   </div>
-                  {i < STEPS.length - 1 && (
-                    <div className="step-connector">
-                      <div className="step-connector-arrow">→</div>
-                    </div>
-                  )}
+                  <div className="howit-arrow">▸ ▸ ▸</div>
+                  <div className="howit-card">
+                    <div className="howit-num">2</div>
+                    <div className="howit-icon">👨‍🌾</div>
+                    <h4>We Grow &amp; Care</h4>
+                    <p>Our farmers take care of your tree naturally.</p>
+                  </div>
+                  <div className="howit-arrow">▸ ▸ ▸</div>
+                  <div className="howit-card">
+                    <div className="howit-num">3</div>
+                    <div className="howit-icon">🧺</div>
+                    <h4>You Receive Harvest</h4>
+                    <p>Enjoy fresh, seasonal fruits at your doorstep.</p>
+                  </div>
                 </div>
-              ))}
+              </div>
             </div>
           </section>
 
@@ -468,8 +588,8 @@ export default function App() {
                     <div className="box-name">{box.name}</div>
                     <p className="box-desc">{box.desc}</p>
                     <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
-                    <button className="btn-primary full" onClick={() => { if (user) setMsg(`${box.name} box order received! We'll contact you to confirm delivery.`); else setAuthModal('register'); }}>
-                      {user ? 'Prebook Now' : 'Prebook — Harvest from May 15'}
+                    <button className="btn-primary full" onClick={() => addToCart(box)}>
+                      Prebook Now
                     </button>
                   </div>
                 </div>
@@ -485,34 +605,19 @@ export default function App() {
             </div>
 
 
-            <div className="feat-coverflow-wrap">
-              <button className="feat-arrow" onClick={() => setFeatIdx(i => (i - 1 + FEATURES.length) % FEATURES.length)}>‹</button>
-              <div className="feat-coverflow">
-                {FEATURES.map((f, i) => {
-                  const total = FEATURES.length;
-                  const diff = ((i - featIdx) % total + total) % total;
-                  const pos = diff === 0 ? 'cf-active' : diff === 1 ? 'cf-next' : diff === total - 1 ? 'cf-prev' : 'cf-hidden';
-                  return (
-                    <div key={f.num} className={`feat-slide ${f.cls} ${pos}`} onClick={() => setFeatIdx(i)}>
-                      <div className="feat-slide-top">
-                        <span className="feat-slide-num">{f.num}</span>
-                        <div className="feat-slide-icon">{f.icon}</div>
-                      </div>
-                      <div className="feat-slide-body">
-                        <div className="feat-slide-title">{f.title}</div>
-                        <div className="feat-slide-desc">{f.desc}</div>
-                        <div className="feature-tag"><span className="feature-tag-dot" />{f.tag}</div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <button className="feat-arrow" onClick={() => setFeatIdx(i => (i + 1) % FEATURES.length)}>›</button>
-            </div>
-
-            <div className="feat-dots">
-              {FEATURES.map((_, i) => (
-                <button key={i} className={`feat-dot ${i === featIdx ? 'active' : ''}`} onClick={() => setFeatIdx(i)} />
+            <div className="feat-grid">
+              {FEATURES.map((f) => (
+                <div key={f.num} className={`feat-card ${f.cls}`}>
+                  <div className="feat-card-top">
+                    <span className="feat-card-num">{f.num}</span>
+                    <div className="feat-card-icon">{f.icon}</div>
+                  </div>
+                  <div className="feat-card-body">
+                    <div className="feat-card-title">{f.title}</div>
+                    <div className="feat-card-desc">{f.desc}</div>
+                    <div className="feature-tag"><span className="feature-tag-dot" />{f.tag}</div>
+                  </div>
+                </div>
               ))}
             </div>
           </section>
@@ -521,20 +626,46 @@ export default function App() {
       )}
 
       {authModal && (
-        <div className="auth-overlay" onClick={(e) => { if (e.target === e.currentTarget) setAuthModal(null); }}>
+        <div className="auth-overlay" onClick={(e) => { if (e.target === e.currentTarget) closeAuthModal(); }}>
           <div className="auth-modal">
-            <button className="auth-close" onClick={() => setAuthModal(null)}>✕</button>
-            <h2>{authModal === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
-            <p className="auth-sub">{authModal === 'login' ? 'Log in to manage your tree' : 'Start your orchard journey'}</p>
-            {authModal === 'register' && <input placeholder="Full Name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />}
-            <input placeholder="Email" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
-            <input placeholder="Password" type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
-            {authModal === 'register' && <input placeholder="Phone (optional)" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />}
-            <button className="btn-primary full" onClick={handleAuth}>{authModal === 'login' ? 'Login' : 'Create Account'}</button>
-            <p className="auth-toggle">
-              {authModal === 'login' ? "Don't have an account? " : 'Already have an account? '}
-              <span onClick={() => setAuthModal(authModal === 'login' ? 'register' : 'login')}>{authModal === 'login' ? 'Sign Up' : 'Login'}</span>
-            </p>
+            <button className="auth-close" onClick={closeAuthModal}>✕</button>
+            {otpStep === 'phone' ? (
+              <>
+                <h2>Welcome to YourOrchard</h2>
+                <p className="auth-sub">Enter your phone number to continue</p>
+                <input
+                  placeholder="Your Name (optional)"
+                  value={form.name}
+                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                />
+                <div className="phone-input-wrap">
+                  <span className="phone-prefix">+91</span>
+                  <input
+                    placeholder="10-digit mobile number"
+                    type="tel" maxLength={10}
+                    value={form.phone}
+                    onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
+                    onKeyDown={e => e.key === 'Enter' && handleSendOtp()}
+                  />
+                </div>
+                <button className="btn-primary full" onClick={handleSendOtp}>Send OTP →</button>
+              </>
+            ) : (
+              <>
+                <h2>Enter OTP</h2>
+                <p className="auth-sub">Sent to +91 {form.phone} · <span className="auth-link" onClick={() => setOtpStep('phone')}>Change</span></p>
+                <input
+                  placeholder="6-digit OTP"
+                  type="tel" maxLength={6}
+                  value={form.otp}
+                  onChange={e => setForm(f => ({ ...f, otp: e.target.value.replace(/\D/g, '') }))}
+                  onKeyDown={e => e.key === 'Enter' && handleVerifyOtp()}
+                  autoFocus
+                />
+                <button className="btn-primary full" onClick={handleVerifyOtp}>Verify & Continue →</button>
+                <p className="auth-toggle">Didn't get it? <span onClick={handleSendOtp}>Resend OTP</span></p>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -545,16 +676,20 @@ export default function App() {
             <button className="auth-close" onClick={() => setRentModal(null)}>✕</button>
             <h2>Rent {PLAN_LABEL[rentModal.plan]}</h2>
             <p className="auth-sub">₹{rentModal.pricePerSeason.toLocaleString()} · {rentModal.yieldMin}–{rentModal.yieldMax} kg · Season 2026</p>
-            <input
-              placeholder="Full delivery address"
-              value={rentForm.deliveryAddress}
-              onChange={e => setRentForm(f => ({ ...f, treeId: rentModal._id, deliveryAddress: e.target.value }))}
-            />
             <select value={rentForm.season} onChange={e => setRentForm(f => ({ ...f, season: e.target.value }))}>
               <option value="2026">Season 2026</option>
             </select>
-            <button className="btn-primary full" onClick={() => openRazorpay(rentModal, rentForm.deliveryAddress, rentForm.season)}>
-              Pay ₹{rentModal.pricePerSeason.toLocaleString()} →
+            <button className="btn-primary full" onClick={() => {
+              setCart(prev => {
+                const existing = prev.find(i => i.id === rentModal._id);
+                if (existing) return prev;
+                return [...prev, { id: rentModal._id, name: rentModal.name, price: rentModal.pricePerSeason, qty: 1, img: '/hero-mango-v3.jpg', type: 'tree', treeObj: rentModal, season: rentForm.season }];
+              });
+              setRentModal(null);
+              setRentForm({ treeId: '', deliveryAddress: '', season: '2026' });
+              setCartOpen(true);
+            }}>
+              Add to Cart →
             </button>
           </div>
         </div>
@@ -955,7 +1090,7 @@ export default function App() {
                 <p style={{ marginTop: '16px' }}>Our orchardists have been growing mangoes here for two generations. No chemicals, no shortcuts — just traditional farming, patient hands, and deep knowledge of the land.</p>
               </div>
               <div className="farm-intro-img">
-                <img src="https://images.unsplash.com/photo-1759162339512-c2e0f23d4dff?auto=format&fit=crop&w=600&q=85" alt="Mango orchard" />
+                <img src="/hero-mango-v3.jpg" alt="Mango orchard" />
               </div>
             </div>
           </div>
@@ -967,11 +1102,11 @@ export default function App() {
               <p>Unfiltered glimpses of daily life at the bagiche — the people, the trees, and the harvest.</p>
             </div>
             <div className="farm-grid">
-              <div className="farm-img farm-img-wide"><img src="https://images.unsplash.com/photo-1755842546298-d5cb56b5afee?auto=format&fit=crop&w=800&q=80" alt="Mangoes on tree" /></div>
-              <div className="farm-img"><img src="https://images.unsplash.com/photo-1669207334420-66d0e3450283?auto=format&fit=crop&w=400&q=80" alt="Mango basket" /></div>
-              <div className="farm-img"><img src="https://images.unsplash.com/photo-1635716279493-d1e30afc25a0?auto=format&fit=crop&w=400&q=80" alt="Fresh mangoes" /></div>
-              <div className="farm-img"><img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=400&q=80" alt="Orchard trees" /></div>
-              <div className="farm-img farm-img-wide"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80" alt="Farm landscape" /></div>
+              <div className="farm-img farm-img-wide"><img src="/hero-mango-v3.jpg" alt="Mangoes on tree" /></div>
+              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Mango basket" /></div>
+              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Fresh mangoes" /></div>
+              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Orchard trees" /></div>
+              <div className="farm-img farm-img-wide"><img src="/hero-mango-v3.jpg" alt="Farm landscape" /></div>
             </div>
           </div>
 
@@ -1002,6 +1137,127 @@ export default function App() {
             <h2>Own a Piece of This Orchard 🌳</h2>
             <p>Rent a tree, get weekly updates from this very farm, and receive your harvest at home.</p>
             <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree This Season →</button>
+          </div>
+        </div>
+      )}
+
+      {cartOpen && (
+        <div className="cart-overlay" onClick={e => { if (e.target === e.currentTarget) { setCartOpen(false); setCartStep('items'); } }}>
+          <div className="cart-drawer">
+            <div className="cart-header">
+              {cartStep === 'address' ? (
+                <>
+                  <button className="cart-back" onClick={() => setCartStep('items')}>← Back</button>
+                  <h3>Delivery Address</h3>
+                </>
+              ) : (
+                <h3>Your Cart {cartCount > 0 && <span className="cart-header-count">{cartCount}</span>}</h3>
+              )}
+              <button className="cart-close" onClick={() => { setCartOpen(false); setCartStep('items'); }}>✕</button>
+            </div>
+
+            {cartStep === 'address' ? (
+              <div className="cart-address-step">
+                <p className="cart-address-hint">Where should we deliver your harvest?</p>
+                <div className="addr-form">
+                  <div className="addr-row">
+                    <div className="addr-field">
+                      <label>Full Name</label>
+                      <input placeholder="Recipient name" value={addrForm.name} onChange={e => setAddrForm(f => ({ ...f, name: e.target.value }))} />
+                    </div>
+                    <div className="addr-field">
+                      <label>Phone</label>
+                      <input placeholder="10-digit number" type="tel" maxLength={10} value={addrForm.phone} onChange={e => setAddrForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))} />
+                    </div>
+                  </div>
+                  <div className="addr-field full">
+                    <label>House / Flat / Building</label>
+                    <input placeholder="House no., flat, building name" value={addrForm.house} onChange={e => setAddrForm(f => ({ ...f, house: e.target.value }))} />
+                  </div>
+                  <div className="addr-field full">
+                    <label>Street / Area / Locality</label>
+                    <input placeholder="Street name, area, locality" value={addrForm.street} onChange={e => setAddrForm(f => ({ ...f, street: e.target.value }))} />
+                  </div>
+                  <div className="addr-row">
+                    <div className="addr-field">
+                      <label>City</label>
+                      <input placeholder="City" value={addrForm.city} onChange={e => setAddrForm(f => ({ ...f, city: e.target.value }))} />
+                    </div>
+                    <div className="addr-field">
+                      <label>State</label>
+                      <input placeholder="State" value={addrForm.state} onChange={e => setAddrForm(f => ({ ...f, state: e.target.value }))} />
+                    </div>
+                  </div>
+                  <div className="addr-field" style={{ maxWidth: '160px' }}>
+                    <label>PIN Code</label>
+                    <input placeholder="6-digit PIN" type="tel" maxLength={6} value={addrForm.pin} onChange={e => setAddrForm(f => ({ ...f, pin: e.target.value.replace(/\D/g, '') }))} />
+                  </div>
+                </div>
+                <div className="cart-footer">
+                  <div className="cart-total-row">
+                    <span>Total</span>
+                    <span className="cart-total-price">₹{cartTotal.toLocaleString()}</span>
+                  </div>
+                  <button className="btn-primary full" onClick={() => {
+                    const { name, phone, house, street, city, state, pin } = addrForm;
+                    if (!name.trim() || !phone.trim() || !house.trim() || !city.trim() || !state.trim() || !pin.trim()) {
+                      setMsg('Please fill all address fields'); return;
+                    }
+                    if (phone.length !== 10) { setMsg('Enter a valid 10-digit phone number'); return; }
+                    if (pin.length !== 6) { setMsg('Enter a valid 6-digit PIN code'); return; }
+                    const fullAddress = `${name}, ${phone} — ${house}, ${street ? street + ', ' : ''}${city}, ${state} - ${pin}`;
+                    checkoutCart(fullAddress);
+                  }}>
+                    Pay ₹{cartTotal.toLocaleString()} →
+                  </button>
+                </div>
+              </div>
+            ) : cart.length === 0 ? (
+              <div className="cart-empty">
+                <div className="cart-empty-icon">🛒</div>
+                <p>Your cart is empty</p>
+                <span>Add a mango box or rent a tree to get started</span>
+              </div>
+            ) : (
+              <>
+                <div className="cart-items">
+                  {cart.map(item => (
+                    <div key={item.id} className="cart-item">
+                      <div className="cart-item-img" style={{ backgroundImage: `url(${item.img})` }} />
+                      <div className="cart-item-info">
+                        <div className="cart-item-name">{item.name}</div>
+                        {item.type === 'tree' ? (
+                          <div className="cart-item-sub">Tree rental · Season {item.season}</div>
+                        ) : (
+                          <>
+                            <div className="cart-item-sub">10 kg box · ₹{item.price.toLocaleString()}</div>
+                            <div className="cart-item-controls">
+                              <button onClick={() => updateQty(item.id, item.qty - 1)}>−</button>
+                              <span>{item.qty}</span>
+                              <button onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      <div className="cart-item-right">
+                        <div className="cart-item-total">₹{(item.price * item.qty).toLocaleString()}</div>
+                        <button className="cart-item-remove" onClick={() => removeFromCart(item.id)}>✕</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="cart-footer">
+                  <div className="cart-total-row">
+                    <span>Total</span>
+                    <span className="cart-total-price">₹{cartTotal.toLocaleString()}</span>
+                  </div>
+                  <p className="cart-delivery-note">Free delivery · Harvest from May 15</p>
+                  <button className="btn-primary full" onClick={proceedToCheckout}>
+                    {user ? 'Checkout →' : 'Login to Checkout →'}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -1045,6 +1301,9 @@ export default function App() {
         </div>
         <div className="footer-bottom">
           <p>© 2026 <strong>YourOrchard</strong>. All rights reserved.</p>
+          {user && (
+            <button className="footer-logout-btn" onClick={logout}>Logout</button>
+          )}
         </div>
       </footer>
     </div>
