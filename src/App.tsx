@@ -53,6 +53,7 @@ const VARIETIES = [
   {
     id: 'chausa',  name: 'Chausa',  tagline: 'Jewel of Ramnagar',
     img: '/mango-basket.jpg',
+    treeImg: '/chausa-tree.jpg',
     gallery: [
       '/mango-basket.jpg',
       '/mango-basket.jpg',
@@ -62,6 +63,7 @@ const VARIETIES = [
   {
     id: 'dasheri', name: 'Dasheri', tagline: 'People\'s Favourite',
     img: '/mango-dasheri.jpg',
+    treeImg: '/dasheri-tree.jpg',
     gallery: [
       '/mango-dasheri.jpg',
       '/mango-dasheri.jpg',
@@ -71,6 +73,7 @@ const VARIETIES = [
   {
     id: 'langra',  name: 'Langra',  tagline: 'Most Fulfilling',
     img: '/mango-langra.jpg',
+    treeImg: '/langra-tree.jpg',
     gallery: [
       '/mango-langra.jpg',
       '/mango-langra.jpg',
@@ -80,9 +83,9 @@ const VARIETIES = [
 ];
 
 const TREE_SIZES = [
-  { plan: 'sapling', label: 'Small Tree', icon: '🌱', yield: '15–20 kg', perks: 'Perfect for a small family. One young tree, full season harvest.',   img: '/hero-mango-v3.jpg' },
-  { plan: 'adult',   label: 'Mid Tree',   icon: '🌳', yield: '30–45 kg', perks: 'The sweet spot — generous yield, great value for a family of 4.',     img: '/hero-mango-v3.jpg' },
-  { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: '/hero-mango-v3.jpg' },
+  { plan: 'sapling', label: 'Small Tree', icon: '🌱', yield: '15–20 kg', perks: 'Perfect for a small family. One young tree, full season harvest.',   img: '/langra-tree.jpg' },
+  { plan: 'adult',   label: 'Mid Tree',   icon: '🌳', yield: '30–45 kg', perks: 'The sweet spot — generous yield, great value for a family of 4.',     img: '/langra-tree.jpg' },
+  { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: '/langra-tree.jpg' },
 ];
 
 export default function App() {
@@ -400,7 +403,7 @@ export default function App() {
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
           {user ? (
-            <span className="nav-welcome">Hello {user.name.split(' ')[0]}</span>
+            <span className="nav-welcome">Hello {(user.name || '').split(' ')[0] || 'friend'}</span>
           ) : (
             <>
               <button className="btn-sm outline" onClick={() => setAuthModal('login')}>Login</button>
@@ -413,12 +416,12 @@ export default function App() {
         </button>
       </nav>
       {user && (
-        <div className="mobile-top-welcome">🌳 Hello {user.name.split(' ')[0]}, welcome to your bagicha</div>
+        <div className="mobile-top-welcome">🌳 Hello {(user.name || '').split(' ')[0] || 'friend'}, welcome to your bagicha</div>
       )}
       {mobileMenu && (
         <div className="mobile-menu">
           {user && (
-            <div className="mobile-welcome">🌳 Hello {user.name.split(' ')[0]}, welcome to your bagicha</div>
+            <div className="mobile-welcome">🌳 Hello {(user.name || '').split(' ')[0] || 'friend'}, welcome to your bagicha</div>
           )}
           <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); }}>Home</span>
           <span className="mobile-nav-link" onClick={() => { setView('about'); setMobileMenu(false); }}>About</span>
@@ -539,9 +542,11 @@ export default function App() {
                   {TREE_SIZES.map(size => {
                     const available = trees.filter(t => t.plan === size.plan && t.isAvailable).length;
                     const treeRef = planCards.find(t => t.plan === size.plan);
+                    const variety = VARIETIES.find(v => v.id === selectedVariety);
+                    const treeImage = variety?.treeImg || size.img;
                     return (
-                      <div key={size.plan} className={`tsize-card ${available === 0 ? 'unavailable' : ''}`}>
-                        <div className="tsize-img" style={{ backgroundImage: `url(${size.img})` }}>
+                      <div key={size.plan} className={`tsize-card ${treeRef && available === 0 ? 'unavailable' : ''}`}>
+                        <div className="tsize-img" style={{ backgroundImage: `url(${treeImage})` }}>
                           <span className="tsize-badge">{size.icon} {size.label}</span>
                         </div>
                         <div className="tsize-body">
