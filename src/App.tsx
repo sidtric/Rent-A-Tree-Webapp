@@ -7,10 +7,10 @@ import './App.css';
 const PLAN_EMOJI:  Record<string, string> = { sapling: '🌳', adult: '🌳', grand: '🌳' };
 const PLAN_LABEL:  Record<string, string> = { sapling: 'Small Tree Pack', adult: 'Medium Tree Pack', grand: 'Premium Tree Pack' };
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
-const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '').split(',').map((e: string) => e.trim().toLowerCase()).filter(Boolean);
+const ADMIN_PHONES = (import.meta.env.VITE_ADMIN_PHONE || '').split(',').map((e: string) => e.trim()).filter(Boolean);
 
-const isAdmin = (user: { email?: string } | null) =>
-  !!user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+const isAdmin = (user: { phone?: string } | null) =>
+  !!user?.phone && ADMIN_PHONES.includes(user.phone);
 
 const STEPS = [
   { n: 1, icon: '🌳', h: 'Choose Your Tree',   p: 'Pick a plan — Sapling, Adult, or Grand — from our Ramnagar orchard.' },
@@ -95,7 +95,8 @@ export default function App() {
   const [videoForm, setVideoForm] = useState({ title: '', description: '' });
   const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin'>('home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
-  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
+  const [otpStep, setOtpStep] = useState<'phone' | 'otp'>('phone');
+  const [form, setForm] = useState({ name: '', phone: '', otp: '' });
   const [rentModal, setRentModal] = useState<Tree | null>(null);
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
@@ -108,6 +109,10 @@ export default function App() {
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [activeBlog, setActiveBlog] = useState<{ emoji: string; title: string; date: string; desc: string } | null>(null);
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
+  const [cart, setCart] = useState<{ id: string; name: string; price: number; qty: number; img: string; type?: 'tree'; treeObj?: Tree; season?: string }[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartStep, setCartStep] = useState<'items' | 'address'>('items');
+  const [addrForm, setAddrForm] = useState({ name: '', phone: '', house: '', street: '', city: '', state: '', pin: '' });
 
   useEffect(() => {
     const t = setInterval(() => setFeatIdx(i => (i + 1) % FEATURES.length), 3500);
@@ -137,23 +142,31 @@ export default function App() {
 
   const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setView('home'); };
 
-  const handleAuth = async () => {
-    if (!authModal) return;
+  const handleSendOtp = async () => {
+    if (!form.phone.trim()) { setMsg('Enter your phone number'); return; }
     try {
-      const res = await api.post(`/auth/${authModal}`, form);
-      if (!res.token) { setMsg(res.message || 'Something went wrong. Try again.'); return; }
-      if (authModal === 'register') {
-        setMsg('Account created! Please log in.');
-        setTimeout(() => { setMsg(''); setForm({ name: '', email: '', password: '', phone: '' }); setAuthModal('login'); }, 1800);
-      } else {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('user', JSON.stringify(res.user));
-        setUser(res.user); setAuthModal(null); setView('home'); setMsg('');
-      }
-    } catch {
-      setMsg('Could not connect to server. Please try again.');
-    }
+      const res = await api.post('/auth/send-otp', { phone: form.phone.trim() });
+      if (res.message === 'OTP sent') { setOtpStep('otp'); setMsg(''); }
+      else setMsg(res.message || 'Failed to send OTP');
+    } catch { setMsg('Could not connect. Try again.'); }
   };
+
+  const handleVerifyOtp = async () => {
+    if (!form.otp.trim()) { setMsg('Enter the OTP'); return; }
+    try {
+      const res = await api.post('/auth/verify-otp', { phone: form.phone.trim(), otp: form.otp.trim(), name: form.name.trim() || undefined });
+      if (!res.token) { setMsg(res.message || 'Invalid OTP'); return; }
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('user', JSON.stringify(res.user));
+      setUser(res.user);
+      setAuthModal(null);
+      setOtpStep('phone');
+      setForm({ name: '', phone: '', otp: '' });
+      setMsg('');
+    } catch { setMsg('Could not connect. Try again.'); }
+  };
+
+  const closeAuthModal = () => { setAuthModal(null); setOtpStep('phone'); setForm({ name: '', phone: '', otp: '' }); setMsg(''); };
 
   const handleRent = async () => {
     if (!rentForm.treeId || !rentForm.deliveryAddress) { setMsg('Fill all fields'); return; }
@@ -260,6 +273,100 @@ export default function App() {
 
   const mediaUrl = (url: string) => url.startsWith('http') ? url : `${API_BASE}${url}`;
 
+  const addToCart = (box: { id: string; name: string; price: number; img: string }) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === box.id);
+      if (existing) return prev.map(i => i.id === box.id ? { ...i, qty: i.qty + 1 } : i);
+      return [...prev, { ...box, qty: 1 }];
+    });
+    setMsg(`${box.name} added to cart`);
+  };
+
+  const removeFromCart = (id: string) => setCart(prev => prev.filter(i => i.id !== id));
+  const updateQty = (id: string, qty: number) => {
+    if (qty < 1) { removeFromCart(id); return; }
+    setCart(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
+  };
+
+  const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
+  const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+  const proceedToCheckout = () => {
+    if (!user) { setAuthModal('register'); setCartOpen(false); return; }
+    if (cart.length === 0) return;
+    const hasTree = cart.some(i => i.type === 'tree');
+    if (hasTree) { setCartStep('address'); return; }
+    checkoutCart('');
+  };
+
+  const checkoutCart = async (address: string) => {
+    if (!user) return;
+
+    const treeItems = cart.filter(i => i.type === 'tree');
+    const boxItems  = cart.filter(i => i.type !== 'tree');
+
+    if (treeItems.length > 0) {
+      const item = treeItems[0];
+      const tree = item.treeObj!;
+      try {
+        const order = await api.post('/payments/create-order', { treeId: tree._id });
+        if (!order.orderId) { setMsg(order.message || 'Could not initiate payment'); return; }
+        const rzp = new (window as any).Razorpay({
+          key:         import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount:      order.amount,
+          currency:    order.currency,
+          name:        'YourOrchard',
+          description: `${tree.name} — Season ${item.season}`,
+          order_id:    order.orderId,
+          prefill:     { name: user.name, email: user.email },
+          theme:       { color: '#2d6a4f' },
+          handler: async (response: any) => {
+            const rental = await api.post('/payments/verify', {
+              ...response,
+              treeId: tree._id,
+              deliveryAddress: address,
+              season: item.season,
+            });
+            if (rental._id) {
+              setCart(prev => prev.filter(i => i.id !== item.id));
+              setAddrForm({ name: '', phone: '', house: '', street: '', city: '', state: '', pin: '' });
+              setCartStep('items');
+              setMsg('Tree rented! Welcome to YourOrchard');
+              api.get('/trees').then(setTrees);
+              api.get('/rentals/my').then(setRentals);
+              setView('dashboard');
+              setCartOpen(false);
+            } else {
+              setMsg(rental.message || 'Payment received but rental creation failed. Contact support.');
+            }
+          },
+        });
+        rzp.open();
+      } catch {
+        setMsg('Payment failed. Please try again.');
+      }
+      return;
+    }
+
+    const rzp = new (window as any).Razorpay({
+      key:         import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount:      cartTotal * 100,
+      currency:    'INR',
+      name:        'YourOrchard',
+      description: boxItems.map(i => `${i.name} x${i.qty}`).join(', '),
+      prefill:     { name: user.name, email: user.email },
+      theme:       { color: '#2d6a4f' },
+      handler: () => {
+        setCart([]);
+        setCartOpen(false);
+        setCartStep('items');
+        setAddrForm({ name: '', phone: '', house: '', street: '', city: '', state: '', pin: '' });
+        setMsg('Order placed! We\'ll confirm your delivery date by WhatsApp.');
+      },
+    });
+    rzp.open();
+  };
+
   const cancelRental = async (id: string) => {
     await api.patch(`/rentals/${id}/cancel`);
     api.get('/rentals/my').then(setRentals);
@@ -286,7 +393,6 @@ export default function App() {
           <span className={`nav-link ${view === 'home' ? 'nav-link-active' : ''}`} onClick={() => setView('home')}>Home</span>
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How It Works</span>
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees</span>
-          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Pricing</span>
           <span className={`nav-link ${view === 'about' ? 'nav-link-active' : ''}`} onClick={() => setView('about')}>About Us</span>
           <span className={`nav-link ${view === 'blog' ? 'nav-link-active' : ''}`} onClick={() => setView('blog')}>Blog</span>
           <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => setView('contact')}>Contact</span>
@@ -295,11 +401,15 @@ export default function App() {
           {isAdmin(user) && <span className="nav-link nav-link-admin" onClick={() => setView('admin')}>⚙ Admin</span>}
         </div>
         <div className="nav-links">
+          <button className="cart-btn" onClick={() => setCartOpen(true)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </button>
           {user ? (
-            <span className="nav-welcome">🌳 Hello {user.name.split(' ')[0]}, welcome to your bagicha</span>
+            <span className="nav-welcome">Hello {user.name.split(' ')[0]}</span>
           ) : (
             <>
-              <button className="btn-sm outline" onClick={() => setAuthModal('login')}>👤 Login</button>
+              <button className="btn-sm outline" onClick={() => setAuthModal('login')}>Login</button>
               <button className="btn-sm" onClick={() => setAuthModal('register')}>Sign Up</button>
             </>
           )}
@@ -478,8 +588,8 @@ export default function App() {
                     <div className="box-name">{box.name}</div>
                     <p className="box-desc">{box.desc}</p>
                     <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
-                    <button className="btn-primary full" onClick={() => prebookBox(box)}>
-                      {user ? 'Prebook Now' : 'Prebook — Harvest from May 15'}
+                    <button className="btn-primary full" onClick={() => addToCart(box)}>
+                      Prebook Now
                     </button>
                   </div>
                 </div>
@@ -516,20 +626,46 @@ export default function App() {
       )}
 
       {authModal && (
-        <div className="auth-overlay" onClick={(e) => { if (e.target === e.currentTarget) setAuthModal(null); }}>
+        <div className="auth-overlay" onClick={(e) => { if (e.target === e.currentTarget) closeAuthModal(); }}>
           <div className="auth-modal">
-            <button className="auth-close" onClick={() => setAuthModal(null)}>✕</button>
-            <h2>{authModal === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
-            <p className="auth-sub">{authModal === 'login' ? 'Log in to manage your tree' : 'Start your orchard journey'}</p>
-            {authModal === 'register' && <input placeholder="Full Name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />}
-            <input placeholder="Email" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
-            <input placeholder="Password" type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
-            {authModal === 'register' && <input placeholder="Phone (optional)" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />}
-            <button className="btn-primary full" onClick={handleAuth}>{authModal === 'login' ? 'Login' : 'Create Account'}</button>
-            <p className="auth-toggle">
-              {authModal === 'login' ? "Don't have an account? " : 'Already have an account? '}
-              <span onClick={() => setAuthModal(authModal === 'login' ? 'register' : 'login')}>{authModal === 'login' ? 'Sign Up' : 'Login'}</span>
-            </p>
+            <button className="auth-close" onClick={closeAuthModal}>✕</button>
+            {otpStep === 'phone' ? (
+              <>
+                <h2>Welcome to YourOrchard</h2>
+                <p className="auth-sub">Enter your phone number to continue</p>
+                <input
+                  placeholder="Your Name (optional)"
+                  value={form.name}
+                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                />
+                <div className="phone-input-wrap">
+                  <span className="phone-prefix">+91</span>
+                  <input
+                    placeholder="10-digit mobile number"
+                    type="tel" maxLength={10}
+                    value={form.phone}
+                    onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
+                    onKeyDown={e => e.key === 'Enter' && handleSendOtp()}
+                  />
+                </div>
+                <button className="btn-primary full" onClick={handleSendOtp}>Send OTP →</button>
+              </>
+            ) : (
+              <>
+                <h2>Enter OTP</h2>
+                <p className="auth-sub">Sent to +91 {form.phone} · <span className="auth-link" onClick={() => setOtpStep('phone')}>Change</span></p>
+                <input
+                  placeholder="6-digit OTP"
+                  type="tel" maxLength={6}
+                  value={form.otp}
+                  onChange={e => setForm(f => ({ ...f, otp: e.target.value.replace(/\D/g, '') }))}
+                  onKeyDown={e => e.key === 'Enter' && handleVerifyOtp()}
+                  autoFocus
+                />
+                <button className="btn-primary full" onClick={handleVerifyOtp}>Verify & Continue →</button>
+                <p className="auth-toggle">Didn't get it? <span onClick={handleSendOtp}>Resend OTP</span></p>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -540,16 +676,20 @@ export default function App() {
             <button className="auth-close" onClick={() => setRentModal(null)}>✕</button>
             <h2>Rent {PLAN_LABEL[rentModal.plan]}</h2>
             <p className="auth-sub">₹{rentModal.pricePerSeason.toLocaleString()} · {rentModal.yieldMin}–{rentModal.yieldMax} kg · Season 2026</p>
-            <input
-              placeholder="Full delivery address"
-              value={rentForm.deliveryAddress}
-              onChange={e => setRentForm(f => ({ ...f, treeId: rentModal._id, deliveryAddress: e.target.value }))}
-            />
             <select value={rentForm.season} onChange={e => setRentForm(f => ({ ...f, season: e.target.value }))}>
               <option value="2026">Season 2026</option>
             </select>
-            <button className="btn-primary full" onClick={() => openRazorpay(rentModal, rentForm.deliveryAddress, rentForm.season)}>
-              Pay ₹{rentModal.pricePerSeason.toLocaleString()} →
+            <button className="btn-primary full" onClick={() => {
+              setCart(prev => {
+                const existing = prev.find(i => i.id === rentModal._id);
+                if (existing) return prev;
+                return [...prev, { id: rentModal._id, name: rentModal.name, price: rentModal.pricePerSeason, qty: 1, img: '/hero-mango-v3.jpg', type: 'tree', treeObj: rentModal, season: rentForm.season }];
+              });
+              setRentModal(null);
+              setRentForm({ treeId: '', deliveryAddress: '', season: '2026' });
+              setCartOpen(true);
+            }}>
+              Add to Cart →
             </button>
           </div>
         </div>
@@ -997,6 +1137,127 @@ export default function App() {
             <h2>Own a Piece of This Orchard 🌳</h2>
             <p>Rent a tree, get weekly updates from this very farm, and receive your harvest at home.</p>
             <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree This Season →</button>
+          </div>
+        </div>
+      )}
+
+      {cartOpen && (
+        <div className="cart-overlay" onClick={e => { if (e.target === e.currentTarget) { setCartOpen(false); setCartStep('items'); } }}>
+          <div className="cart-drawer">
+            <div className="cart-header">
+              {cartStep === 'address' ? (
+                <>
+                  <button className="cart-back" onClick={() => setCartStep('items')}>← Back</button>
+                  <h3>Delivery Address</h3>
+                </>
+              ) : (
+                <h3>Your Cart {cartCount > 0 && <span className="cart-header-count">{cartCount}</span>}</h3>
+              )}
+              <button className="cart-close" onClick={() => { setCartOpen(false); setCartStep('items'); }}>✕</button>
+            </div>
+
+            {cartStep === 'address' ? (
+              <div className="cart-address-step">
+                <p className="cart-address-hint">Where should we deliver your harvest?</p>
+                <div className="addr-form">
+                  <div className="addr-row">
+                    <div className="addr-field">
+                      <label>Full Name</label>
+                      <input placeholder="Recipient name" value={addrForm.name} onChange={e => setAddrForm(f => ({ ...f, name: e.target.value }))} />
+                    </div>
+                    <div className="addr-field">
+                      <label>Phone</label>
+                      <input placeholder="10-digit number" type="tel" maxLength={10} value={addrForm.phone} onChange={e => setAddrForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))} />
+                    </div>
+                  </div>
+                  <div className="addr-field full">
+                    <label>House / Flat / Building</label>
+                    <input placeholder="House no., flat, building name" value={addrForm.house} onChange={e => setAddrForm(f => ({ ...f, house: e.target.value }))} />
+                  </div>
+                  <div className="addr-field full">
+                    <label>Street / Area / Locality</label>
+                    <input placeholder="Street name, area, locality" value={addrForm.street} onChange={e => setAddrForm(f => ({ ...f, street: e.target.value }))} />
+                  </div>
+                  <div className="addr-row">
+                    <div className="addr-field">
+                      <label>City</label>
+                      <input placeholder="City" value={addrForm.city} onChange={e => setAddrForm(f => ({ ...f, city: e.target.value }))} />
+                    </div>
+                    <div className="addr-field">
+                      <label>State</label>
+                      <input placeholder="State" value={addrForm.state} onChange={e => setAddrForm(f => ({ ...f, state: e.target.value }))} />
+                    </div>
+                  </div>
+                  <div className="addr-field" style={{ maxWidth: '160px' }}>
+                    <label>PIN Code</label>
+                    <input placeholder="6-digit PIN" type="tel" maxLength={6} value={addrForm.pin} onChange={e => setAddrForm(f => ({ ...f, pin: e.target.value.replace(/\D/g, '') }))} />
+                  </div>
+                </div>
+                <div className="cart-footer">
+                  <div className="cart-total-row">
+                    <span>Total</span>
+                    <span className="cart-total-price">₹{cartTotal.toLocaleString()}</span>
+                  </div>
+                  <button className="btn-primary full" onClick={() => {
+                    const { name, phone, house, street, city, state, pin } = addrForm;
+                    if (!name.trim() || !phone.trim() || !house.trim() || !city.trim() || !state.trim() || !pin.trim()) {
+                      setMsg('Please fill all address fields'); return;
+                    }
+                    if (phone.length !== 10) { setMsg('Enter a valid 10-digit phone number'); return; }
+                    if (pin.length !== 6) { setMsg('Enter a valid 6-digit PIN code'); return; }
+                    const fullAddress = `${name}, ${phone} — ${house}, ${street ? street + ', ' : ''}${city}, ${state} - ${pin}`;
+                    checkoutCart(fullAddress);
+                  }}>
+                    Pay ₹{cartTotal.toLocaleString()} →
+                  </button>
+                </div>
+              </div>
+            ) : cart.length === 0 ? (
+              <div className="cart-empty">
+                <div className="cart-empty-icon">🛒</div>
+                <p>Your cart is empty</p>
+                <span>Add a mango box or rent a tree to get started</span>
+              </div>
+            ) : (
+              <>
+                <div className="cart-items">
+                  {cart.map(item => (
+                    <div key={item.id} className="cart-item">
+                      <div className="cart-item-img" style={{ backgroundImage: `url(${item.img})` }} />
+                      <div className="cart-item-info">
+                        <div className="cart-item-name">{item.name}</div>
+                        {item.type === 'tree' ? (
+                          <div className="cart-item-sub">Tree rental · Season {item.season}</div>
+                        ) : (
+                          <>
+                            <div className="cart-item-sub">10 kg box · ₹{item.price.toLocaleString()}</div>
+                            <div className="cart-item-controls">
+                              <button onClick={() => updateQty(item.id, item.qty - 1)}>−</button>
+                              <span>{item.qty}</span>
+                              <button onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      <div className="cart-item-right">
+                        <div className="cart-item-total">₹{(item.price * item.qty).toLocaleString()}</div>
+                        <button className="cart-item-remove" onClick={() => removeFromCart(item.id)}>✕</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="cart-footer">
+                  <div className="cart-total-row">
+                    <span>Total</span>
+                    <span className="cart-total-price">₹{cartTotal.toLocaleString()}</span>
+                  </div>
+                  <p className="cart-delivery-note">Free delivery · Harvest from May 15</p>
+                  <button className="btn-primary full" onClick={proceedToCheckout}>
+                    {user ? 'Checkout →' : 'Login to Checkout →'}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
