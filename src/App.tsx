@@ -20,18 +20,18 @@ const STEPS = [
 ];
 
 const PLAN_IMAGES: Record<string, string> = {
-  sapling: '/hero-mango-v3.jpg',
-  adult:   '/hero-mango-v3.jpg',
-  grand:   '/hero-mango-v3.jpg',
+  sapling: '/orchard-hero.jpg',
+  adult:   '/orchard-hero.jpg',
+  grand:   '/orchard-hero.jpg',
 };
 
 const GALLERY_PHOTOS = [
-  { url: '/hero-mango-v3.jpg', label: 'Fresh Mangoes' },
-  { url: '/hero-mango-v3.jpg', label: 'Yellow Alphonso' },
-  { url: '/hero-mango-v3.jpg', label: 'Orchard Canopy' },
-  { url: '/hero-mango-v3.jpg', label: 'Our Farm' },
-  { url: '/hero-mango-v3.jpg', label: 'Open Fields' },
-  { url: '/hero-mango-v3.jpg', label: 'Harvest Basket' },
+  { url: '/orchard-hero.jpg', label: 'Fresh Mangoes' },
+  { url: '/orchard-hero.jpg', label: 'Yellow Alphonso' },
+  { url: '/orchard-hero.jpg', label: 'Orchard Canopy' },
+  { url: '/orchard-hero.jpg', label: 'Our Farm' },
+  { url: '/orchard-hero.jpg', label: 'Open Fields' },
+  { url: '/orchard-hero.jpg', label: 'Harvest Basket' },
 ];
 
 const FEATURES = [
@@ -473,7 +473,7 @@ export default function App() {
             </div>
             <div className="hero-visual">
               <div className="hero-img-wrap">
-                <img className="hero-img" src="/hero-mango-v3.jpg" alt="Mango orchard at sunset in Ramnagar, Uttarakhand" />
+                <img className="hero-img" src="/orchard-hero.jpg" alt="Mango orchard at sunset in Ramnagar, Uttarakhand" />
               </div>
             </div>
           </section>
@@ -677,7 +677,7 @@ export default function App() {
               setCart(prev => {
                 const existing = prev.find(i => i.id === rentModal._id);
                 if (existing) return prev;
-                return [...prev, { id: rentModal._id, name: rentModal.name, price: rentModal.pricePerSeason, qty: 1, img: '/hero-mango-v3.jpg', type: 'tree', treeObj: rentModal, season: rentForm.season }];
+                return [...prev, { id: rentModal._id, name: rentModal.name, price: rentModal.pricePerSeason, qty: 1, img: '/orchard-hero.jpg', type: 'tree', treeObj: rentModal, season: rentForm.season }];
               });
               setRentModal(null);
               setRentForm({ treeId: '', deliveryAddress: '', season: '2026' });
@@ -1084,7 +1084,7 @@ export default function App() {
                 <p style={{ marginTop: '16px' }}>Our orchardists have been growing mangoes here for two generations. No chemicals, no shortcuts — just traditional farming, patient hands, and deep knowledge of the land.</p>
               </div>
               <div className="farm-intro-img">
-                <img src="/hero-mango-v3.jpg" alt="Mango orchard" />
+                <img src="/orchard-hero.jpg" alt="Mango orchard" />
               </div>
             </div>
           </div>
@@ -1096,11 +1096,11 @@ export default function App() {
               <p>Unfiltered glimpses of daily life at the bagiche — the people, the trees, and the harvest.</p>
             </div>
             <div className="farm-grid">
-              <div className="farm-img farm-img-wide"><img src="/hero-mango-v3.jpg" alt="Mangoes on tree" /></div>
-              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Mango basket" /></div>
-              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Fresh mangoes" /></div>
-              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Orchard trees" /></div>
-              <div className="farm-img farm-img-wide"><img src="/hero-mango-v3.jpg" alt="Farm landscape" /></div>
+              <div className="farm-img farm-img-wide"><img src="/orchard-hero.jpg" alt="Mangoes on tree" /></div>
+              <div className="farm-img"><img src="/orchard-hero.jpg" alt="Mango basket" /></div>
+              <div className="farm-img"><img src="/orchard-hero.jpg" alt="Fresh mangoes" /></div>
+              <div className="farm-img"><img src="/orchard-hero.jpg" alt="Orchard trees" /></div>
+              <div className="farm-img farm-img-wide"><img src="/orchard-hero.jpg" alt="Farm landscape" /></div>
             </div>
           </div>
 
