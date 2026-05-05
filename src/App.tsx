@@ -605,34 +605,19 @@ export default function App() {
             </div>
 
 
-            <div className="feat-coverflow-wrap">
-              <button className="feat-arrow" onClick={() => setFeatIdx(i => (i - 1 + FEATURES.length) % FEATURES.length)}>‹</button>
-              <div className="feat-coverflow">
-                {FEATURES.map((f, i) => {
-                  const total = FEATURES.length;
-                  const diff = ((i - featIdx) % total + total) % total;
-                  const pos = diff === 0 ? 'cf-active' : diff === 1 ? 'cf-next' : diff === total - 1 ? 'cf-prev' : 'cf-hidden';
-                  return (
-                    <div key={f.num} className={`feat-slide ${f.cls} ${pos}`} onClick={() => setFeatIdx(i)}>
-                      <div className="feat-slide-top">
-                        <span className="feat-slide-num">{f.num}</span>
-                        <div className="feat-slide-icon">{f.icon}</div>
-                      </div>
-                      <div className="feat-slide-body">
-                        <div className="feat-slide-title">{f.title}</div>
-                        <div className="feat-slide-desc">{f.desc}</div>
-                        <div className="feature-tag"><span className="feature-tag-dot" />{f.tag}</div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <button className="feat-arrow" onClick={() => setFeatIdx(i => (i + 1) % FEATURES.length)}>›</button>
-            </div>
-
-            <div className="feat-dots">
-              {FEATURES.map((_, i) => (
-                <button key={i} className={`feat-dot ${i === featIdx ? 'active' : ''}`} onClick={() => setFeatIdx(i)} />
+            <div className="feat-grid">
+              {FEATURES.map(f => (
+                <div key={f.num} className={`feat-card ${f.cls}`}>
+                  <div className="feat-card-top">
+                    <span className="feat-slide-num">{f.num}</span>
+                    <div className="feat-slide-icon">{f.icon}</div>
+                  </div>
+                  <div className="feat-card-body">
+                    <div className="feat-slide-title">{f.title}</div>
+                    <div className="feat-slide-desc">{f.desc}</div>
+                    <div className="feature-tag"><span className="feature-tag-dot" />{f.tag}</div>
+                  </div>
+                </div>
               ))}
             </div>
           </section>

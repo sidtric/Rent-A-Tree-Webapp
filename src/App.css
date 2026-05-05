@@ -407,38 +407,25 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .feat-tab:hover { border-color: var(--green); color: var(--green); }
 .feat-tab.active { background: var(--green); color: #fff; border-color: var(--green); }
 
-.feat-coverflow-wrap { display: flex; align-items: center; gap: 16px; overflow: hidden; }
-.feat-coverflow {
-  flex: 1; position: relative; height: 400px;
-  perspective: 1400px; display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
+@media (max-width: 900px) { .feat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .feat-grid { grid-template-columns: 1fr; } }
 
-/* each slide sits absolutely in the 3D space */
-.feat-slide {
-  position: absolute; width: 720px; max-width: 85vw;
-  background: #fff; border-radius: 28px; overflow: hidden;
+.feat-card {
+  background: #fff; border-radius: 24px; overflow: hidden;
   border: 1px solid rgba(0,0,0,0.06);
-  transition: transform 0.55s cubic-bezier(0.4,0,0.2,1), opacity 0.55s, box-shadow 0.55s;
-  cursor: pointer; user-select: none;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.feat-slide.cf-active {
-  transform: translateX(0) scale(1) rotateY(0deg);
-  z-index: 10; opacity: 1;
-  box-shadow: 0 28px 80px rgba(0,0,0,0.16);
-}
-.feat-slide.cf-prev {
-  transform: translateX(-340px) scale(0.76) rotateY(42deg);
-  z-index: 5; opacity: 0.45; box-shadow: none;
-}
-.feat-slide.cf-next {
-  transform: translateX(340px) scale(0.76) rotateY(-42deg);
-  z-index: 5; opacity: 0.45; box-shadow: none;
-}
-.feat-slide.cf-hidden {
-  transform: translateX(0) scale(0.5) rotateY(0deg);
-  z-index: 1; opacity: 0; pointer-events: none;
-}
+.feat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.11); }
+.feat-card-top { height: 160px; padding: 20px; position: relative; display: flex; align-items: flex-end; justify-content: flex-end; }
+.feat-card-body { padding: 22px 24px 28px; }
 
 .feat-slide-top { height: 200px; padding: 24px; position: relative; display: flex; align-items: flex-end; justify-content: flex-end; }
 .feat-slide-num { position: absolute; top: 20px; left: 24px; font-size: 3rem; font-weight: 900; color: rgba(0,0,0,0.07); line-height: 1; }
@@ -446,12 +433,12 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .feat-slide-body { padding: 28px 32px 36px; }
 .feat-slide-title { font-size: 1.6rem; font-weight: 900; color: var(--dark); margin-bottom: 12px; letter-spacing: -0.5px; }
 .feat-slide-desc { font-size: 1rem; color: var(--gray); line-height: 1.7; margin-bottom: 20px; max-width: 520px; }
-.fc1 .feat-slide-top { background: linear-gradient(135deg, #c8f0da, #e4f8ed); }
-.fc2 .feat-slide-top { background: linear-gradient(135deg, #fde8b0, #fef5d8); }
-.fc3 .feat-slide-top { background: linear-gradient(135deg, #c8dff0, #e0eef8); }
-.fc4 .feat-slide-top { background: linear-gradient(135deg, #e0c8f0, #ede0f8); }
-.fc5 .feat-slide-top { background: linear-gradient(135deg, #f0d8c0, #f8ece0); }
-.fc6 .feat-slide-top { background: linear-gradient(135deg, #c8f0c8, #e0f8e0); }
+.fc1 .feat-slide-top, .fc1 .feat-card-top { background: linear-gradient(135deg, #c8f0da, #e4f8ed); }
+.fc2 .feat-slide-top, .fc2 .feat-card-top { background: linear-gradient(135deg, #fde8b0, #fef5d8); }
+.fc3 .feat-slide-top, .fc3 .feat-card-top { background: linear-gradient(135deg, #c8dff0, #e0eef8); }
+.fc4 .feat-slide-top, .fc4 .feat-card-top { background: linear-gradient(135deg, #e0c8f0, #ede0f8); }
+.fc5 .feat-slide-top, .fc5 .feat-card-top { background: linear-gradient(135deg, #f0d8c0, #f8ece0); }
+.fc6 .feat-slide-top, .fc6 .feat-card-top { background: linear-gradient(135deg, #c8f0c8, #e0f8e0); }
 .fc1 .feat-slide-icon { background: #2d6a4f; color: #fff; }
 .fc2 .feat-slide-icon { background: #D97706; color: #fff; }
 .fc3 .feat-slide-icon { background: #0369A1; color: #fff; }
