@@ -584,7 +584,14 @@ export default function App() {
                 <Fragment key={variety.id}>
                   <div
                     className={`variety-card ${selectedVariety === variety.id ? 'active' : ''}`}
-                    onClick={() => setSelectedVariety(selectedVariety === variety.id ? null : variety.id)}
+                    onClick={(e) => {
+                      const card = e.currentTarget;
+                      const willOpen = selectedVariety !== variety.id;
+                      setSelectedVariety(willOpen ? variety.id : null);
+                      if (willOpen) {
+                        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+                      }
+                    }}
                   >
                     <div className="variety-card-img" style={{ backgroundImage: `url(${variety.img})` }} />
                     <div className="variety-card-info">
