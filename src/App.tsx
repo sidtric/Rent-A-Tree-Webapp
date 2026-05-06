@@ -1074,23 +1074,19 @@ export default function App() {
 
       {view === 'farm' && (
         <div className="info-page farm-page">
-          <div className="info-hero farm-hero">
-            <span className="section-label">Ramnagar, Uttarakhand</span>
+          <div className="farm-hero-compact">
+            <span className="section-label" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.8)' }}>Ramnagar, Uttarakhand</span>
             <h1>Life on the Farm 🌿</h1>
             <p>Step inside our orchard. This is where your mangoes grow, ripen, and begin their journey to you.</p>
           </div>
 
-          <div className="farm-intro section">
-            <div className="farm-intro-grid">
-              <div className="farm-intro-text">
-                <span className="section-label">Our Bagiche</span>
-                <h2>A Living, <span>Breathing Orchard</span></h2>
-                <p>Nestled in the foothills of the Himalayas, our orchard in Ramnagar sits at the edge of Corbett country. The soil is rich, the water is clean, and the air carries the scent of mango blossoms every spring.</p>
-                <p style={{ marginTop: '16px' }}>Our orchardists have been growing mangoes here for two generations. No chemicals, no shortcuts — just traditional farming, patient hands, and deep knowledge of the land.</p>
-              </div>
-              <div className="farm-intro-img">
-                <img src="/hero-mango-v3.jpg" alt="Mango orchard" />
-              </div>
+          <div className="farm-bg-video">
+            <video src="/farm-intro.mp4" autoPlay muted loop playsInline />
+            <div className="farm-bg-video-overlay">
+              <span className="section-label" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)' }}>Our Bagiche</span>
+              <h2>A Living, <span>Breathing Orchard</span></h2>
+              <p>Nestled in the foothills of the Himalayas, our orchard in Ramnagar sits at the edge of Corbett country. The soil is rich, the water is clean, and the air carries the scent of mango blossoms every spring.</p>
+              <p style={{ marginTop: '14px' }}>Our orchardists have been growing mangoes here for two generations — no chemicals, no shortcuts, just traditional farming, patient hands, and deep knowledge of the land.</p>
             </div>
           </div>
 
