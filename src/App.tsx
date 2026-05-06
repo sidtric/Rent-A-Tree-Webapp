@@ -92,7 +92,7 @@ function SeamlessVideo({ src }: { src: string }) {
   const aRef = useRef<HTMLVideoElement>(null);
   const bRef = useRef<HTMLVideoElement>(null);
   const active = useRef<'a' | 'b'>('a');
-  const FADE = 1.2; // seconds of crossfade
+  const switching = useRef(false);
 
   useEffect(() => {
     const a = aRef.current!;
@@ -100,19 +100,25 @@ function SeamlessVideo({ src }: { src: string }) {
     a.muted = true; b.muted = true;
     b.style.opacity = '0';
 
+    // Pre-load B so it's ready to play instantly when needed
+    b.load();
+
     const tick = () => {
       const curr = active.current === 'a' ? a : b;
       const next = active.current === 'a' ? b : a;
-      if (!curr.duration) return;
+      if (!curr.duration || switching.current) return;
       const remaining = curr.duration - curr.currentTime;
-      if (remaining <= FADE && parseFloat(next.style.opacity) === 0) {
+      // Start next video 0.5s before current ends so it's buffered at frame 0
+      if (remaining <= 0.5) {
+        switching.current = true;
         next.currentTime = 0;
-        next.play().catch(() => {});
-        next.style.transition = `opacity ${FADE}s linear`;
-        next.style.opacity = '1';
-        curr.style.transition = `opacity ${FADE}s linear`;
-        curr.style.opacity = '0';
-        active.current = active.current === 'a' ? 'b' : 'a';
+        next.play().then(() => {
+          // Instant cut — no fade, just swap z-index visibility
+          next.style.opacity = '1';
+          curr.style.opacity = '0';
+          active.current = active.current === 'a' ? 'b' : 'a';
+          switching.current = false;
+        }).catch(() => { switching.current = false; });
       }
     };
 
@@ -126,7 +132,7 @@ function SeamlessVideo({ src }: { src: string }) {
     };
   }, [src]);
 
-  const style: React.CSSProperties = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' };
+  const style: React.CSSProperties = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'none' };
   return (
     <>
       <video ref={aRef} src={src} muted playsInline preload="auto" style={style} />
