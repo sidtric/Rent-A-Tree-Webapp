@@ -45,6 +45,20 @@ export interface FarmUpdate {
   createdAt: string;
 }
 
+export interface PublicUpdate {
+  _id: string;
+  caption: string;
+  media: { url: string; type: 'image' | 'video' }[];
+  createdAt: string;
+}
+
+export interface FarmPhoto {
+  _id: string;
+  caption: string;
+  url: string;
+  createdAt: string;
+}
+
 export interface Review {
   _id: string;
   name: string;

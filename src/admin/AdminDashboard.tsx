@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
-import type { Tree, Review, Video, User } from '../types';
+import type { Tree, Review, Video, User, FarmPhoto, PublicUpdate } from '../types';
 import { api } from '../api';
 import './admin.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
-type Tab = 'overview' | 'trees' | 'reviews' | 'farmupdates' | 'videos';
+type Tab = 'overview' | 'trees' | 'reviews' | 'farmupdates' | 'videos' | 'farmphotos' | 'publicupdates';
 
 const TABS: { id: Tab; icon: string; label: string }[] = [
   { id: 'overview',    icon: '📊', label: 'Overview'     },
   { id: 'trees',       icon: '🌳', label: 'Trees'        },
-  { id: 'farmupdates', icon: '📷', label: 'Farm Updates' },
-  { id: 'reviews',     icon: '⭐', label: 'Reviews'      },
-  { id: 'videos',      icon: '🎥', label: 'Videos'       },
+  { id: 'publicupdates', icon: '🌿', label: 'Life on Farm'  },
+  { id: 'farmupdates',  icon: '📷', label: 'User Updates'  },
+  { id: 'reviews',      icon: '⭐', label: 'Reviews'       },
 ];
 
 interface TreeForm {
@@ -60,6 +60,16 @@ export default function AdminDashboard({ onExit, user }: Props) {
   const [vidFile, setVidFile]           = useState<File | null>(null);
   const [vidUploading, setVidUploading] = useState(false);
 
+  const [farmPhotos, setFarmPhotos]         = useState<FarmPhoto[]>([]);
+  const [photoCaption, setPhotoCaption]     = useState('');
+  const [photoFile, setPhotoFile]           = useState<File | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+
+  const [publicUpdates, setPublicUpdates]   = useState<PublicUpdate[]>([]);
+  const [puCaption, setPuCaption]           = useState('');
+  const [puFiles, setPuFiles]               = useState<FileList | null>(null);
+  const [puPosting, setPuPosting]           = useState(false);
+
   const flash = (m: string) => { setMsg(m); setTimeout(() => setMsg(''), 3500); };
 
   useEffect(() => {
@@ -68,6 +78,8 @@ export default function AdminDashboard({ onExit, user }: Props) {
     api.get('/admin/videos').then(setVideos).catch(() => {});
     api.get('/admin/rentals').then(setMyRentals).catch(() => {});
     api.get('/admin/stats').then(setStats).catch(() => {});
+    api.get('/farm-photos').then(setFarmPhotos).catch(() => {});
+    api.get('/public-updates').then(setPublicUpdates).catch(() => {});
   }, []);
 
   // ── Create Tree ──────────────────────────────────────────
@@ -115,7 +127,7 @@ export default function AdminDashboard({ onExit, user }: Props) {
 
   // ── Upload Video ─────────────────────────────────────────
   const uploadVideo = async () => {
-    if (!vidTitle || !vidFile) { flash('Title and video file required'); return; }
+    if (!vidFile) { flash('Please select a video file'); return; }
     setVidUploading(true);
     try {
       const data = new FormData();
@@ -133,6 +145,62 @@ export default function AdminDashboard({ onExit, user }: Props) {
         flash('Video uploaded!');
       } else flash(res.message || 'Upload failed');
     } finally { setVidUploading(false); }
+  };
+
+  // ── Upload Farm Photo ────────────────────────────────────
+  const uploadFarmPhoto = async () => {
+    if (!photoFile) { flash('Please select a photo'); return; }
+    setPhotoUploading(true);
+    try {
+      const data = new FormData();
+      data.append('caption', photoCaption);
+      data.append('photo', photoFile);
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE}/api/farm-photos`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token || ''}` },
+        body: data,
+      }).then(r => r.json());
+      if (res._id) {
+        setFarmPhotos(p => [res, ...p]);
+        setPhotoCaption(''); setPhotoFile(null);
+        flash('Photo uploaded!');
+      } else flash(res.message || 'Upload failed');
+    } finally { setPhotoUploading(false); }
+  };
+
+  const deleteFarmPhoto = async (id: string) => {
+    await api.del(`/farm-photos/${id}`);
+    setFarmPhotos(p => p.filter(x => x._id !== id));
+    flash('Photo deleted');
+  };
+
+  // ── Post Public Update ───────────────────────────────────
+  const postPublicUpdate = async () => {
+    if (!puFiles || puFiles.length === 0) { flash('Select at least one photo or video'); return; }
+    setPuPosting(true);
+    try {
+      const data = new FormData();
+      data.append('caption', puCaption);
+      Array.from(puFiles).forEach(f => data.append('media', f));
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE}/api/public-updates`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token || ''}` },
+        body: data,
+      }).then(r => r.json());
+      if (res._id) {
+        setPublicUpdates(u => [res, ...u]);
+        setPuCaption(''); setPuFiles(null);
+        flash('Farm update posted to Life on Farm page!');
+      } else flash(res.message || 'Upload failed');
+    } finally { setPuPosting(false); }
+  };
+
+  const deletePublicUpdate = async (id: string) => {
+    await api.del(`/public-updates/${id}`);
+    setPublicUpdates(u => u.filter(x => x._id !== id));
+    flash('Update deleted');
   };
 
   // ── Derived stats ────────────────────────────────────────
@@ -471,8 +539,8 @@ export default function AdminDashboard({ onExit, user }: Props) {
           <div className="adm-content">
             <header className="adm-header">
               <div>
-                <h1 className="adm-h1">Farm Updates</h1>
-                <p className="adm-sub">Send weekly orchard updates to customers</p>
+                <h1 className="adm-h1">User Updates</h1>
+                <p className="adm-sub">Send weekly orchard updates to specific customers</p>
               </div>
             </header>
 
@@ -698,6 +766,127 @@ export default function AdminDashboard({ onExit, user }: Props) {
               ))}
               {videos.length === 0 && (
                 <p className="adm-empty">No videos yet. Upload your first one above.</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {tab === 'publicupdates' && (
+          <div className="adm-content">
+            <header className="adm-header">
+              <div>
+                <h1 className="adm-h1">Life on Farm</h1>
+                <p className="adm-sub">Post photos & videos to the Life on Farm page</p>
+              </div>
+            </header>
+
+            <div className="adm-card adm-form-card">
+              <h2 className="adm-card-title">Post New Update</h2>
+              <div className="adm-form-grid">
+                <div className="adm-field adm-field--wide">
+                  <label>Caption (optional)</label>
+                  <textarea
+                    rows={3}
+                    placeholder="Mangoes are ripening beautifully this week at Block A 🌿"
+                    value={puCaption}
+                    onChange={e => setPuCaption(e.target.value)}
+                  />
+                </div>
+                <div className="adm-field adm-field--wide">
+                  <div className="adm-upload-zone">
+                    <label>
+                      <span className="adm-upload-icon">📸</span>
+                      <span>{puFiles && puFiles.length > 0 ? `${puFiles.length} file(s) selected` : 'Select Photos & Videos (multiple allowed)'}</span>
+                      <input
+                        type="file" multiple accept="image/*,video/*"
+                        onChange={e => setPuFiles(e.target.files)}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <button className="adm-btn-primary" onClick={postPublicUpdate} disabled={puPosting}>
+                {puPosting ? 'Uploading…' : 'Post to Life on Farm'}
+              </button>
+            </div>
+
+            <div style={{ marginTop: 32 }}>
+              {publicUpdates.map(update => (
+                <div key={update._id} className="adm-card" style={{ marginBottom: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                    <p style={{ fontSize: '0.9rem', color: '#444', flex: 1 }}>{update.caption || <em style={{ color: '#aaa' }}>No caption</em>}</p>
+                    <button className="adm-btn-danger-sm" onClick={() => deletePublicUpdate(update._id)}>Delete</button>
+                  </div>
+                  <div className="adm-farm-photos-grid">
+                    {update.media.map((m, i) => (
+                      <div key={i} className="adm-farm-photo-card">
+                        {m.type === 'image'
+                          ? <img src={m.url} alt="farm" />
+                          : <video src={m.url} controls style={{ width: '100%', height: 160, objectFit: 'cover' }} />}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              {publicUpdates.length === 0 && <p className="adm-empty">No updates yet. Post your first one above.</p>}
+            </div>
+          </div>
+        )}
+
+        {tab === 'farmphotos' && (
+          <div className="adm-content">
+            <header className="adm-header">
+              <div>
+                <h1 className="adm-h1">Farm Photos</h1>
+                <p className="adm-sub">{farmPhotos.length} photos on the Life on Farm page</p>
+              </div>
+            </header>
+
+            <div className="adm-card adm-form-card">
+              <h2 className="adm-card-title">Upload New Photo</h2>
+              <div className="adm-form-grid">
+                <div className="adm-field">
+                  <label>Caption (optional)</label>
+                  <input
+                    placeholder="Harvest day at Block A…"
+                    value={photoCaption}
+                    onChange={e => setPhotoCaption(e.target.value)}
+                  />
+                </div>
+                <div className="adm-field adm-field--wide">
+                  <div className="adm-upload-zone">
+                    <label>
+                      <span className="adm-upload-icon">🌿</span>
+                      <span>{photoFile ? photoFile.name : 'Select Photo (JPG/PNG/WebP)'}</span>
+                      <input
+                        type="file" accept="image/*"
+                        onChange={e => setPhotoFile(e.target.files?.[0] || null)}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <button
+                className="adm-btn-primary"
+                onClick={uploadFarmPhoto}
+                disabled={photoUploading}
+              >
+                {photoUploading ? 'Uploading…' : 'Upload Photo'}
+              </button>
+            </div>
+
+            <div className="adm-farm-photos-grid">
+              {farmPhotos.map(p => (
+                <div key={p._id} className="adm-farm-photo-card">
+                  <img src={p.url} alt={p.caption || 'Farm photo'} />
+                  <div className="adm-farm-photo-body">
+                    <span className="adm-farm-photo-caption">{p.caption || 'No caption'}</span>
+                    <button className="adm-btn-danger-sm" onClick={() => deleteFarmPhoto(p._id)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+              {farmPhotos.length === 0 && (
+                <p className="adm-empty">No photos yet. Upload your first one above.</p>
               )}
             </div>
           </div>

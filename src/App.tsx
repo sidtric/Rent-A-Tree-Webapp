@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from './api';
-import type { Tree, Rental, User, Review, FarmUpdate, Video } from './types';
+import type { Tree, Rental, User, Review, FarmUpdate, Video, FarmPhoto, PublicUpdate } from './types';
 import AdminDashboard from './admin/AdminDashboard';
 import './App.css';
 
@@ -94,6 +94,8 @@ export default function App() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
+  const [farmPhotos, setFarmPhotos] = useState<FarmPhoto[]>([]);
+  const [publicUpdates, setPublicUpdates] = useState<PublicUpdate[]>([]);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoForm, setVideoForm] = useState({ title: '', description: '' });
   const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin'>('home');
@@ -125,6 +127,8 @@ export default function App() {
     api.get('/trees').then(setTrees).catch(() => {});
     api.get('/reviews').then(setReviews).catch(() => {});
     api.get('/videos').then(setVideos).catch(() => {});
+    api.get('/farm-photos').then(setFarmPhotos).catch(() => {});
+    api.get('/public-updates').then(setPublicUpdates).catch(() => {});
     const saved = localStorage.getItem('user');
     if (localStorage.getItem('token') && saved) setUser(JSON.parse(saved));
   }, []);
@@ -390,6 +394,7 @@ export default function App() {
           <span className={`nav-link ${view === 'home' ? 'nav-link-active' : ''}`} onClick={() => setView('home')}>Home</span>
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How It Works</span>
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees</span>
+          <span className={`nav-link ${view === 'farm' ? 'nav-link-active' : ''}`} onClick={() => setView('farm')}>🌿 Life on Farm</span>
           <span className={`nav-link ${view === 'about' ? 'nav-link-active' : ''}`} onClick={() => setView('about')}>About Us</span>
           <span className={`nav-link ${view === 'blog' ? 'nav-link-active' : ''}`} onClick={() => setView('blog')}>Blog</span>
           <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => setView('contact')}>Contact</span>
@@ -1095,34 +1100,30 @@ export default function App() {
               <h2>Moments From <span>Our Farm</span></h2>
               <p>Unfiltered glimpses of daily life at the bagiche — the people, the trees, and the harvest.</p>
             </div>
-            <div className="farm-grid">
-              <div className="farm-img farm-img-wide"><img src="/hero-mango-v3.jpg" alt="Mangoes on tree" /></div>
-              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Mango basket" /></div>
-              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Fresh mangoes" /></div>
-              <div className="farm-img"><img src="/hero-mango-v3.jpg" alt="Orchard trees" /></div>
-              <div className="farm-img farm-img-wide"><img src="/hero-mango-v3.jpg" alt="Farm landscape" /></div>
-            </div>
-          </div>
-
-          <div className="farm-videos section">
-            <div className="section-title">
-              <span className="section-label">Live From the Orchard</span>
-              <h2>Videos From <span>the Bagiche</span></h2>
-              <p>Our orchardist films the trees, the harvest, and the farm every week.</p>
-            </div>
-            {videos.length === 0 ? (
-              <p className="empty" style={{ textAlign: 'center' }}>No videos yet — our orchardist is filming! Check back soon.</p>
+            {publicUpdates.length === 0 ? (
+              <p className="empty" style={{ textAlign: 'center' }}>Content coming soon — our orchardist is out in the field!</p>
             ) : (
-              <div className="videos-grid">
-                {videos.map(v => (
-                  <div key={v._id} className="video-card">
-                    <video src={`${API_BASE}${v.url}`} controls />
-                    <div className="video-info">
-                      <div className="video-title">{v.title}</div>
-                      {v.description && <div className="video-desc">{v.description}</div>}
+              <div className="farm-updates-feed">
+                {publicUpdates.map(update => {
+                  const shuffled = [...update.media].sort(() => Math.random() - 0.5);
+                  const ratios = ['4/3','3/4','1/1','4/5','16/9','2/3'];
+                  return (
+                    <div key={update._id} className="farm-update-post">
+                      {update.caption && <p className="farm-update-caption">{update.caption}</p>}
+                      <div className="farm-media-grid">
+                        {shuffled.map((m, i) => (
+                          <div key={i} className="farm-media-card" style={m.type === 'image' ? { aspectRatio: ratios[i % ratios.length] } : {}}>
+                            {m.type === 'image' ? (
+                              <img src={m.url} alt={update.caption || 'Farm photo'} />
+                            ) : (
+                              <video src={m.url} autoPlay muted loop playsInline style={{ width: '100%', height: 'auto', display: 'block' }} />
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
