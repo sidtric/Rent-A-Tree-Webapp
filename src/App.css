@@ -1086,7 +1086,19 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.5); padding: 6
 
 @media (max-width: 768px) {
   .farm-media-grid { columns: 2; }
+  .farm-bg-video-overlay { padding: 32px 24px; }
+  .farm-hero-h1 { font-size: 2rem; }
+  .farm-hero-sub { font-size: 0.88rem; }
+  .farm-hero-h2 { font-size: 1.5rem; }
+  .farm-hero-body { font-size: 0.85rem; }
+  .farm-hero-divider { margin: 16px 0 12px; }
 }
 @media (max-width: 480px) {
   .farm-media-grid { columns: 1; }
+  .farm-bg-video--full { height: calc(100vh - 60px); }
+  .farm-bg-video-overlay { padding: 28px 20px; }
+  .farm-hero-h1 { font-size: 1.75rem; letter-spacing: -0.5px; }
+  .farm-hero-sub { font-size: 0.82rem; }
+  .farm-hero-h2 { font-size: 1.3rem; }
+  .farm-hero-body { font-size: 0.8rem; line-height: 1.6; }
 }
