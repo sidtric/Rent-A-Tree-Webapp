@@ -605,7 +605,12 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .variety-card-tagline { font-size: 0.72rem; color: var(--gray); }
 .variety-card-arrow { font-size: 0.65rem; color: var(--gray); margin-left: auto; }
 
-.tree-size-popup { background: #fff; border: 1px solid rgba(0,0,0,0.09); border-radius: 24px; overflow: hidden; animation: popupIn 0.22s ease; margin-top: 4px; flex-basis: 100%; width: 100%; }
+.tree-size-popup { background: #fff; border: 1px solid rgba(0,0,0,0.09); border-radius: 24px; overflow: hidden; animation: popupIn 0.22s ease; margin-top: 4px; }
+.tree-size-popup-mobile { display: none; }
+@media (max-width: 980px) {
+  .tree-size-popup-mobile { display: block; flex-basis: 100%; width: 100%; }
+  .tree-size-popup-desktop { display: none; }
+}
 .tree-size-popup-header { background: var(--green-dark); color: #fff; padding: 14px 28px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.3px; }
 .tree-size-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
 @media (max-width: 768px) {
