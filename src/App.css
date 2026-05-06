@@ -1057,7 +1057,7 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.5); padding: 6
   .hero-btns { justify-content: center; }
   .hero-trust { justify-content: center; }
   .trust-item { border-radius: 12px !important; }
-  .section { padding: 60px 24px; }
+  .section { padding: 38px 24px; }
   .steps { flex-direction: column; align-items: center; }
   .step-wrapper { flex-direction: column; align-items: center; }
   .step-connector { transform: rotate(90deg); padding: 0; }
