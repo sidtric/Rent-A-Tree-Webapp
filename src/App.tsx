@@ -1102,6 +1102,11 @@ export default function App() {
               <span className="section-label" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.8)' }}>Ramnagar, Uttarakhand</span>
               <h1 className="farm-hero-h1">Life on the Farm</h1>
               <p className="farm-hero-sub">Step inside our orchard. This is where your mangoes grow, ripen, and begin their journey to you.</p>
+              <div className="farm-hero-divider" />
+              <span className="section-label" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)', marginTop: 8 }}>Our Bagiche</span>
+              <h2 className="farm-hero-h2">A Living, <span>Breathing Orchard</span></h2>
+              <p className="farm-hero-body">Nestled in the foothills of the Himalayas, our orchard in Ramnagar sits at the edge of Corbett country. The soil is rich, the water is clean, and the air carries the scent of mango blossoms every spring.</p>
+              <p className="farm-hero-body" style={{ marginTop: 12 }}>Our orchardists have been growing mangoes here for two generations — no chemicals, no shortcuts, just traditional farming, patient hands, and deep knowledge of the land.</p>
             </div>
           </div>
 
