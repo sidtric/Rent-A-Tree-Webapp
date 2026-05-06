@@ -203,6 +203,15 @@ export default function AdminDashboard({ onExit, user }: Props) {
     flash('Update deleted');
   };
 
+  const deleteMediaItem = async (updateId: string, idx: number) => {
+    await api.del(`/public-updates/${updateId}/media/${idx}`);
+    setPublicUpdates(u => u.flatMap(x => {
+      if (x._id !== updateId) return [x];
+      const media = x.media.filter((_, i) => i !== idx);
+      return media.length === 0 ? [] : [{ ...x, media }];
+    }));
+  };
+
   // ── Derived stats ────────────────────────────────────────
   const planCounts = trees.reduce((acc, t) => {
     acc[t.plan] = (acc[t.plan] || 0) + 1; return acc;
@@ -819,10 +828,15 @@ export default function AdminDashboard({ onExit, user }: Props) {
                   </div>
                   <div className="adm-farm-photos-grid">
                     {update.media.map((m, i) => (
-                      <div key={i} className="adm-farm-photo-card">
+                      <div key={i} className="adm-farm-photo-card" style={{ position: 'relative' }}>
                         {m.type === 'image'
                           ? <img src={m.url} alt="farm" />
                           : <video src={m.url} controls style={{ width: '100%', height: 160, objectFit: 'cover' }} />}
+                        <button
+                          onClick={() => deleteMediaItem(update._id, i)}
+                          style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: 26, height: 26, cursor: 'pointer', fontSize: '0.75rem', lineHeight: 1 }}
+                          title="Remove this item"
+                        >✕</button>
                       </div>
                     ))}
                   </div>
