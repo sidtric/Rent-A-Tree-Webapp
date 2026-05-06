@@ -465,10 +465,10 @@ export default function App() {
                 <button className="btn-outline" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>▶ How it works</button>
               </div>
               <div className="hero-trust">
-                <div className="trust-item"><span>📷</span> Weekly Updates</div>
-                <div className="trust-item"><span>🌿</span> Natural Farming</div>
-                <div className="trust-item"><span>🚚</span> Free Delivery</div>
-                <div className="trust-item"><span>🔒</span> Safe & Secure</div>
+                <div className="trust-item"><span>📅</span> Weekly Updates</div>
+                <div className="trust-item"><span>🌱</span> Natural Farming</div>
+                <div className="trust-item"><span>🛡️</span> Safe &amp; Secure</div>
+                <div className="trust-item"><span>📦</span> Free Delivery</div>
               </div>
             </div>
             <div className="hero-visual">
