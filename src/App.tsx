@@ -102,58 +102,8 @@ function LoopVideo({ src, style }: { src: string; style?: React.CSSProperties })
 }
 
 function SeamlessVideo({ src }: { src: string }) {
-  const aRef = useRef<HTMLVideoElement>(null);
-  const bRef = useRef<HTMLVideoElement>(null);
-  const state = useRef({ active: 'a' as 'a' | 'b', prepared: false });
-
-  useEffect(() => {
-    const a = aRef.current!;
-    const b = bRef.current!;
-    a.muted = true; b.muted = true;
-    b.style.opacity = '0';
-
-    const tick = () => {
-      const { active, prepared } = state.current;
-      const curr = active === 'a' ? a : b;
-      const next = active === 'a' ? b : a;
-      if (!curr.duration) return;
-      const remaining = curr.duration - curr.currentTime;
-
-      // 2 s before end: start next video playing silently so it's already rendering when we cut
-      if (remaining <= 2.0 && !prepared) {
-        state.current.prepared = true;
-        next.currentTime = 0;
-        next.play().catch(() => {});
-      }
-
-      // At the very last frame: instant cut — next is already playing, no async needed
-      if (remaining <= 0.07) {
-        next.style.opacity = '1';
-        curr.style.opacity = '0';
-        curr.pause();
-        curr.currentTime = 0;
-        state.current.active = active === 'a' ? 'b' : 'a';
-        state.current.prepared = false;
-      }
-    };
-
-    a.addEventListener('timeupdate', tick);
-    b.addEventListener('timeupdate', tick);
-    a.play().catch(() => {});
-
-    return () => {
-      a.removeEventListener('timeupdate', tick);
-      b.removeEventListener('timeupdate', tick);
-    };
-  }, [src]);
-
-  const style: React.CSSProperties = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'none' };
-  return (
-    <>
-      <video ref={aRef} src={src} muted playsInline preload="auto" style={style} />
-      <video ref={bRef} src={src} muted playsInline preload="auto" style={style} />
-    </>
-  );
+  const style: React.CSSProperties = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' };
+  return <video src={src} autoPlay muted loop playsInline preload="auto" style={style} />;
 }
 
 export default function App() {
@@ -166,7 +116,10 @@ export default function App() {
   const [publicUpdates, setPublicUpdates] = useState<PublicUpdate[]>([]);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoForm, setVideoForm] = useState({ title: '', description: '' });
-  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin'>('home');
+  type View = 'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin';
+  const validViews: View[] = ['home','dashboard','about','contact','blog','terms','privacy','refund','shipping','farm','admin'];
+  const hashView = window.location.hash.replace('#','') as View;
+  const [view, setView] = useState<View>(validViews.includes(hashView) ? hashView : 'home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [rentModal, setRentModal] = useState<Tree | null>(null);
@@ -214,7 +167,8 @@ export default function App() {
     }
   }, [user]);
 
-  const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setView('home'); };
+  const navigate = (v: View) => { setView(v); window.location.hash = v === 'home' ? '' : v; };
+  const logout = () => { localStorage.clear(); setUser(null); setRentals([]); navigate('home'); };
 
   const handleAuth = async () => {
     if (!form.email.trim() || !form.password.trim()) { setMsg('Please fill all fields'); return; }
@@ -272,7 +226,7 @@ export default function App() {
             setRentForm({ treeId: '', deliveryAddress: '', season: '2026' });
             api.get('/trees').then(setTrees);
             api.get('/rentals/my').then(setRentals);
-            setView('dashboard');
+            navigate('dashboard');
           } else {
             setMsg(rental.message || 'Payment received but rental creation failed. Contact support.');
           }
@@ -403,7 +357,7 @@ export default function App() {
               setMsg('Tree rented! Welcome to YourOrchard');
               api.get('/trees').then(setTrees);
               api.get('/rentals/my').then(setRentals);
-              setView('dashboard');
+              navigate('dashboard');
               setCartOpen(false);
             } else {
               setMsg(rental.message || 'Payment received but rental creation failed. Contact support.');
@@ -449,7 +403,7 @@ export default function App() {
   if (view === 'admin' && user && isAdmin(user)) {
     return (
       <div className="app">
-        <AdminDashboard user={user} onExit={() => setView('home')} />
+        <AdminDashboard user={user} onExit={() => navigate('home')} />
       </div>
     );
   }
@@ -457,18 +411,18 @@ export default function App() {
   return (
     <div className="app">
       <nav className="nav">
-        <img className="logo-full" src="/logo-full.jpeg" alt="YourOrchard — Rooted in Nature, Delivered with Care" onClick={() => { setView('home'); setMobileMenu(false); }} />
+        <img className="logo-full" src="/logo-full.jpeg" alt="YourOrchard — Rooted in Nature, Delivered with Care" onClick={() => { navigate('home'); setMobileMenu(false); }} />
         <div className="nav-center">
-          <span className={`nav-link ${view === 'home' ? 'nav-link-active' : ''}`} onClick={() => setView('home')}>Home</span>
-          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How It Works</span>
-          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees</span>
-          <span className={`nav-link ${view === 'farm' ? 'nav-link-active' : ''}`} onClick={() => setView('farm')}>Life on Farm</span>
-          <span className={`nav-link ${view === 'about' ? 'nav-link-active' : ''}`} onClick={() => setView('about')}>About Us</span>
-          <span className={`nav-link ${view === 'blog' ? 'nav-link-active' : ''}`} onClick={() => setView('blog')}>Blog</span>
-          <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => setView('contact')}>Contact</span>
-          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
-          {user && <span className={`nav-link ${view === 'dashboard' ? 'nav-link-active' : ''}`} onClick={() => setView('dashboard')}>My Tree</span>}
-          {isAdmin(user) && <span className="nav-link nav-link-admin" onClick={() => setView('admin')}>⚙ Admin</span>}
+          <span className={`nav-link ${view === 'home' ? 'nav-link-active' : ''}`} onClick={() => navigate('home')}>Home</span>
+          <span className="nav-link" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How It Works</span>
+          <span className="nav-link" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees</span>
+          <span className={`nav-link ${view === 'farm' ? 'nav-link-active' : ''}`} onClick={() => navigate('farm')}>Life on Farm</span>
+          <span className={`nav-link ${view === 'about' ? 'nav-link-active' : ''}`} onClick={() => navigate('about')}>About Us</span>
+          <span className={`nav-link ${view === 'blog' ? 'nav-link-active' : ''}`} onClick={() => navigate('blog')}>Blog</span>
+          <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => navigate('contact')}>Contact</span>
+          <span className="nav-link" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
+          {user && <span className={`nav-link ${view === 'dashboard' ? 'nav-link-active' : ''}`} onClick={() => navigate('dashboard')}>My Tree</span>}
+          {isAdmin(user) && <span className="nav-link nav-link-admin" onClick={() => navigate('admin')}>⚙ Admin</span>}
         </div>
         <div className="nav-links">
           <button className="cart-btn" onClick={() => setCartOpen(true)}>
@@ -496,13 +450,13 @@ export default function App() {
           {user && (
             <div className="mobile-welcome">🌳 Hello {(user.name || '').split(' ')[0] || 'friend'}, welcome to your bagicha</div>
           )}
-          <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); }}>Home</span>
-          <span className="mobile-nav-link" onClick={() => { setView('about'); setMobileMenu(false); }}>About</span>
-          <span className="mobile-nav-link" onClick={() => { setView('farm'); setMobileMenu(false); }}>Life on Farm</span>
-          <span className="mobile-nav-link" onClick={() => { setView('blog'); setMobileMenu(false); }}>Blog</span>
-          <span className="mobile-nav-link" onClick={() => { setView('contact'); setMobileMenu(false); }}>Contact</span>
-          {user && <span className="mobile-nav-link" onClick={() => { setView('dashboard'); setMobileMenu(false); }}>My Tree</span>}
-          <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('home'); setMobileMenu(false); }}>Home</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('about'); setMobileMenu(false); }}>About</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('farm'); setMobileMenu(false); }}>Life on Farm</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('blog'); setMobileMenu(false); }}>Blog</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('contact'); setMobileMenu(false); }}>Contact</span>
+          {user && <span className="mobile-nav-link" onClick={() => { navigate('dashboard'); setMobileMenu(false); }}>My Tree</span>}
+          <span className="mobile-nav-link" onClick={() => { navigate('home'); setMobileMenu(false); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
           {!user && (
             <div className="mobile-menu-auth">
               <button className="btn-sm outline" onClick={() => { setAuthModal('login'); setMobileMenu(false); }}>Login</button>
@@ -534,7 +488,7 @@ export default function App() {
               <p className="hero-subheading">Fresh Harvest, Delivered to You.</p>
               <p className="hero-sub">Own the harvest without owning the farm. Rent your own tree in Ramnagar, Uttarakhand and enjoy farm-fresh fruits delivered straight to your door.</p>
               <div className="hero-btns">
-                <button className="btn-primary" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees →</button>
+                <button className="btn-primary" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees →</button>
                 <button className="btn-outline" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>▶ How it works</button>
               </div>
               <div className="hero-trust">
@@ -631,7 +585,7 @@ export default function App() {
                             ? available > 0
                               ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(treeRef); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
                               : <div className="unavail-badge">Fully Booked</div>
-                            : <button className="btn-primary full" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
+                            : <button className="btn-primary full" onClick={() => { if (user) navigate('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
                           }
                         </div>
                       </div>
@@ -1186,7 +1140,7 @@ export default function App() {
           <div className="farm-cta">
             <h2>Own a Piece of This Orchard</h2>
             <p>Rent a tree, get weekly updates from this very farm, and receive your harvest at home.</p>
-            <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree This Season →</button>
+            <button className="btn-primary" onClick={() => { if (user) navigate('dashboard'); else setAuthModal('register'); }}>Rent a Tree This Season →</button>
           </div>
         </div>
       )}
@@ -1326,27 +1280,27 @@ export default function App() {
           <div className="footer-col">
             <h4>Explore</h4>
             <ul className="footer-links">
-              <li onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How it works</li>
-              <li onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Our Trees</li>
-              <li onClick={() => setView('about')}>About</li>
-              <li onClick={() => setView('blog')}>Blog</li>
-              <li onClick={() => setView('contact')}>Contact</li>
+              <li onClick={() => { navigate('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How it works</li>
+              <li onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Our Trees</li>
+              <li onClick={() => navigate('about')}>About</li>
+              <li onClick={() => navigate('blog')}>Blog</li>
+              <li onClick={() => navigate('contact')}>Contact</li>
             </ul>
           </div>
           <div className="footer-col">
             <h4>Legal</h4>
             <ul className="footer-links">
-              <li onClick={() => setView('terms')}>Terms & Conditions</li>
-              <li onClick={() => setView('privacy')}>Privacy Policy</li>
-              <li onClick={() => setView('refund')}>Refund Policy</li>
-              <li onClick={() => setView('shipping')}>Shipping & Delivery</li>
+              <li onClick={() => navigate('terms')}>Terms & Conditions</li>
+              <li onClick={() => navigate('privacy')}>Privacy Policy</li>
+              <li onClick={() => navigate('refund')}>Refund Policy</li>
+              <li onClick={() => navigate('shipping')}>Shipping & Delivery</li>
             </ul>
           </div>
           <div className="footer-col">
             <h4>Contact</h4>
             <p className="footer-contact-line">hello@yourorchard.in</p>
             <p className="footer-contact-line dim">Ramnagar, Uttarakhand</p>
-            <button className="footer-reserve-btn" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Rent a Tree →</button>
+            <button className="footer-reserve-btn" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Rent a Tree →</button>
           </div>
         </div>
         <div className="footer-bottom">
