@@ -121,7 +121,7 @@ export default function App() {
   const hashView = window.location.hash.replace('#','') as View;
   const [view, setView] = useState<View>(validViews.includes(hashView) ? hashView : 'home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '' });
   const [rentModal, setRentModal] = useState<Tree | null>(null);
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
@@ -134,7 +134,14 @@ export default function App() {
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [activeBlog, setActiveBlog] = useState<{ emoji: string; title: string; date: string; desc: string } | null>(null);
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
-  const [cart, setCart] = useState<{ id: string; name: string; price: number; qty: number; img: string; type?: 'tree'; treeObj?: Tree; season?: string }[]>([]);
+  const [cart, setCart] = useState<{ id: string; name: string; price: number; qty: number; img: string; type?: 'tree'; treeObj?: Tree; season?: string }[]>(() => {
+    try {
+      const saved = localStorage.getItem('cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [cartOpen, setCartOpen] = useState(false);
   const [cartStep, setCartStep] = useState<'items' | 'address'>('items');
   const [addrForm, setAddrForm] = useState({ name: '', phone: '', house: '', street: '', city: '', state: '', pin: '' });
@@ -143,6 +150,10 @@ export default function App() {
     const t = setInterval(() => setFeatIdx(i => (i + 1) % FEATURES.length), 3500);
     return () => clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
 
   useEffect(() => {
     api.get('/trees').then(setTrees).catch(() => {});
@@ -168,15 +179,19 @@ export default function App() {
   }, [user]);
 
   const navigate = (v: View) => { setView(v); window.location.hash = v === 'home' ? '' : v; };
-  const logout = () => { localStorage.clear(); setUser(null); setRentals([]); navigate('home'); };
+  const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setCart([]); setCartOpen(false); navigate('home'); };
 
   const handleAuth = async () => {
     if (!form.email.trim() || !form.password.trim()) { setMsg('Please fill all fields'); return; }
-    if (authModal === 'register' && !form.name.trim()) { setMsg('Please enter your name'); return; }
+    if (authModal === 'register') {
+      if (!form.firstName.trim() || !form.lastName.trim()) { setMsg('Please enter your full name'); return; }
+      if (!/^\d{10}$/.test(form.phone.trim())) { setMsg('Please enter a valid 10-digit phone number'); return; }
+      if (form.password !== form.confirm) { setMsg('Passwords do not match'); return; }
+    }
     try {
       const endpoint = authModal === 'register' ? '/auth/register' : '/auth/login';
       const payload  = authModal === 'register'
-        ? { name: form.name.trim(), email: form.email.trim(), password: form.password }
+        ? { name: `${form.firstName.trim()} ${form.lastName.trim()}`, email: form.email.trim(), phone: `+91${form.phone.trim()}`, password: form.password }
         : { email: form.email.trim(), password: form.password };
       const res = await api.post(endpoint, payload);
       if (!res.token) { setMsg(res.message || 'Something went wrong'); return; }
@@ -184,12 +199,12 @@ export default function App() {
       localStorage.setItem('user', JSON.stringify(res.user));
       setUser(res.user);
       setAuthModal(null);
-      setForm({ name: '', email: '', password: '' });
+      setForm({ firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '' });
       setMsg('');
     } catch { setMsg('Could not connect. Try again.'); }
   };
 
-  const closeAuthModal = () => { setAuthModal(null); setForm({ name: '', email: '', password: '' }); setMsg(''); };
+  const closeAuthModal = () => { setAuthModal(null); setForm({ firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '' }); setMsg(''); };
 
   const handleRent = async () => {
     if (!rentForm.treeId || !rentForm.deliveryAddress) { setMsg('Fill all fields'); return; }
@@ -296,13 +311,25 @@ export default function App() {
 
   const mediaUrl = (url: string) => url.startsWith('http') ? url : `${API_BASE}${url}`;
 
-  const addToCart = (box: { id: string; name: string; price: number; img: string }) => {
+  const addToCart = (box: { id: string; name: string; price: number; img: string }, andOpen = false) => {
     setCart(prev => {
       const existing = prev.find(i => i.id === box.id);
       if (existing) return prev.map(i => i.id === box.id ? { ...i, qty: i.qty + 1 } : i);
       return [...prev, { ...box, qty: 1 }];
     });
-    setMsg(`${box.name} added to cart`);
+    if (andOpen) setCartOpen(true);
+    else setMsg(`${box.name} added to cart`);
+  };
+
+  const addTreeToCart = (tree: Tree, andOpen = false) => {
+    if (!user) { setAuthModal('register'); return; }
+    setCart(prev => {
+      const existing = prev.find(i => i.id === tree._id);
+      if (existing) return prev;
+      return [...prev, { id: tree._id, name: tree.name, price: tree.pricePerSeason, qty: 1, img: '/hero-mango-v3.jpg', type: 'tree', treeObj: tree, season: '2026' }];
+    });
+    if (andOpen) setCartOpen(true);
+    else setMsg(`${tree.name} added to cart`);
   };
 
   const removeFromCart = (id: string) => setCart(prev => prev.filter(i => i.id !== id));
@@ -583,7 +610,12 @@ export default function App() {
                           <div className="plan-loc">📍 Ramnagar, Uttarakhand</div>
                           {treeRef
                             ? available > 0
-                              ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(treeRef); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
+                              ? (
+                                <div className="card-actions">
+                                  <button className="btn-outline" onClick={() => addTreeToCart(treeRef)}>Add to Cart</button>
+                                  <button className="btn-primary" onClick={() => addTreeToCart(treeRef, true)}>Buy Now</button>
+                                </div>
+                              )
                               : <div className="unavail-badge">Fully Booked</div>
                             : <button className="btn-primary full" onClick={() => { if (user) navigate('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
                           }
@@ -614,9 +646,10 @@ export default function App() {
                     <div className="box-name">{box.name}</div>
                     <p className="box-desc">{box.desc}</p>
                     <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
-                    <button className="btn-primary full" onClick={() => addToCart(box)}>
-                      Prebook Now
-                    </button>
+                    <div className="card-actions">
+                      <button className="btn-outline" onClick={() => addToCart(box)}>Add to Cart</button>
+                      <button className="btn-primary" onClick={() => addToCart(box, true)}>Buy Now</button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -658,11 +691,18 @@ export default function App() {
             <h2>{authModal === 'register' ? 'Create Account' : 'Welcome Back'}</h2>
             <p className="auth-sub">{authModal === 'register' ? 'Join YourOrchard to rent a tree' : 'Login to your YourOrchard account'}</p>
             {authModal === 'register' && (
-              <input
-                placeholder="Your Name"
-                value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-              />
+              <div className="auth-row">
+                <input
+                  placeholder="First name"
+                  value={form.firstName}
+                  onChange={e => setForm(f => ({ ...f, firstName: e.target.value }))}
+                />
+                <input
+                  placeholder="Last name"
+                  value={form.lastName}
+                  onChange={e => setForm(f => ({ ...f, lastName: e.target.value }))}
+                />
+              </div>
             )}
             <input
               placeholder="Email Address"
@@ -671,6 +711,20 @@ export default function App() {
               onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && handleAuth()}
             />
+            {authModal === 'register' && (
+              <div className="phone-input">
+                <span className="phone-prefix">🇮🇳 +91</span>
+                <input
+                  className="phone-field"
+                  placeholder="Phone number"
+                  type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
+                  value={form.phone}
+                  onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
+                />
+              </div>
+            )}
             <input
               placeholder="Password"
               type="password"
@@ -678,6 +732,15 @@ export default function App() {
               onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && handleAuth()}
             />
+            {authModal === 'register' && (
+              <input
+                placeholder="Confirm Password"
+                type="password"
+                value={form.confirm}
+                onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))}
+                onKeyDown={e => e.key === 'Enter' && handleAuth()}
+              />
+            )}
             <button className="btn-primary full" onClick={handleAuth}>
               {authModal === 'register' ? 'Create Account →' : 'Login →'}
             </button>

@@ -203,7 +203,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
   min-height: 100vh;
 }
 .hero-text {
-  max-width: 580px;
+  max-width: 760px;
   position: relative;
   z-index: 2;
 }
@@ -290,6 +290,27 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 }
 .hero-btns { display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap; }
 .hero-trust { display: flex; gap: 8px; flex-wrap: wrap; }
+.hero-cta-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: center; margin-bottom: 24px; max-width: 760px; }
+.hero-step { display: inline-flex; align-items: center; gap: 10px; background: rgba(14,32,21,0.78); color: #fff; padding: 12px 20px; border-radius: 50px; font-size: 0.88rem; font-weight: 700; border: 1px solid rgba(251,191,36,0.18); backdrop-filter: blur(10px); white-space: nowrap; }
+.hero-step svg { color: #FBBF24; flex-shrink: 0; }
+.btn-cta-amber { background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%); color: #2d1810; padding: 11px 22px; border-radius: 50px; font-size: 0.88rem; font-weight: 800; border: none; cursor: pointer; font-family: inherit; box-shadow: 0 6px 18px rgba(251,191,36,0.35); transition: transform 0.15s, box-shadow 0.2s; white-space: nowrap; animation: ctaPulse 1.8s ease-in-out infinite; }
+.btn-cta-amber:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(251,191,36,0.5); animation: none; }
+.cta-amber-wrap { display: flex; flex-basis: 100%; margin-top: 18px; justify-content: center; }
+.card-actions { display: flex; gap: 8px; width: 100%; }
+.card-actions .btn-primary, .card-actions .btn-outline { flex: 1; padding: 11px 16px; font-size: 0.88rem; justify-content: center; text-align: center; }
+@media (max-width: 600px) {
+  .card-actions { flex-direction: column; gap: 8px; }
+}
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 8px 22px rgba(251,191,36,0.35), 0 0 0 0 rgba(251,191,36,0.6); }
+  50% { box-shadow: 0 8px 22px rgba(251,191,36,0.5), 0 0 0 14px rgba(251,191,36,0); }
+}
+@media (max-width: 980px) {
+  .hero-cta-row { gap: 8px; max-width: 100%; }
+  .hero-step { padding: 10px 14px; font-size: 0.8rem; }
+  .cta-amber-wrap { display: flex; width: 100%; margin-top: 28px; }
+  .btn-cta-amber { width: 100%; padding: 14px 24px; }
+}
 .trust-item {
   display: flex; align-items: center; gap: 8px; background: #fff;
   padding: 11px 18px; font-size: 0.82rem; font-weight: 600; color: var(--dark);
@@ -325,13 +346,13 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
     background-size: 100% auto, 100% auto;
     background-position: center top, center top;
     background-repeat: no-repeat, no-repeat;
-    padding: 76vw 16px 40px;
+    padding: 76vw 0 40px;
     min-height: auto;
     margin-top: 0;
     display: flex;
     align-items: flex-start;
   }
-  .hero-text { max-width: 100%; padding: 0; }
+  .hero-text { max-width: 100%; padding: 0 16px; }
   .hero-heading { font-size: 2.8rem !important; line-height: 1 !important; }
   .hero-subheading { font-size: 1.1rem !important; }
 }
@@ -766,6 +787,13 @@ section.mango-box-section { background: var(--bg); padding-top: 32px !important;
 .auth-modal input:focus { border-color: var(--green); background: #fff; }
 .auth-toggle { margin-top: 18px; text-align: center; color: var(--gray); font-size: 0.9rem; }
 .auth-toggle span { color: var(--green); cursor: pointer; font-weight: 600; }
+.auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.auth-row input { margin-bottom: 12px; }
+.phone-input { display: flex; align-items: stretch; margin-bottom: 12px; border: 1.5px solid #e5e7eb; border-radius: 12px; background: var(--bg); overflow: hidden; transition: border-color 0.2s, background 0.2s; }
+.phone-input:focus-within { border-color: var(--green); background: #fff; }
+.phone-prefix { display: flex; align-items: center; padding: 0 14px; font-size: 0.95rem; font-weight: 600; color: var(--dark); border-right: 1.5px solid #e5e7eb; background: rgba(0,0,0,0.02); white-space: nowrap; }
+.phone-input .phone-field { flex: 1; border: none; border-radius: 0; margin: 0; background: transparent; padding: 13px 14px; }
+.phone-input .phone-field:focus { background: transparent; }
 .auth-link { color: var(--green); cursor: pointer; font-weight: 600; text-decoration: underline; }
 .phone-input-wrap { display: flex; align-items: center; border: 1.5px solid #e5e7eb; border-radius: 12px; background: var(--bg); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
 .phone-input-wrap:focus-within { border-color: var(--green); background: #fff; }
