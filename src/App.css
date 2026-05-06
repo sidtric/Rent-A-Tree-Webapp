@@ -889,7 +889,7 @@ section.mango-box-section { background: var(--bg); padding-top: 32px !important;
 }
 .farm-bg-video-overlay {
   position: relative; z-index: 1;
-  height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
   padding: 52px 80px;
   background: rgba(0,0,0,0.3);
   color: #fff;
@@ -899,7 +899,7 @@ section.mango-box-section { background: var(--bg); padding-top: 32px !important;
 .farm-hero-divider { width: 48px; height: 1px; background: rgba(255,255,255,0.3); margin: 24px 0 16px; }
 .farm-hero-h2 { font-size: 2.2rem; font-weight: 900; color: #fff; margin: 10px 0 14px; letter-spacing: -0.5px; line-height: 1.15; }
 .farm-hero-h2 span { color: #a8d5b5; }
-.farm-hero-body { color: rgba(255,255,255,0.8); line-height: 1.75; font-size: 0.92rem; max-width: 560px; }
+.farm-hero-body { color: rgba(255,255,255,0.8); line-height: 1.75; font-size: 0.92rem; max-width: 560px; margin-left: auto; margin-right: auto; }
 .farm-moments { background: #fff; }
 .farm-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto; gap: 16px; }
 .farm-img { border-radius: 16px; overflow: hidden; }
