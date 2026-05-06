@@ -810,3 +810,22 @@
   cursor: pointer; white-space: nowrap;
 }
 .adm-btn-danger-sm:hover { background: #fca5a5; }
+
+/* ── User Roles Tab ── */
+.adm-role-search-bar {
+  display: flex; gap: 12px; margin-bottom: 24px;
+}
+.adm-role-search-bar .adm-input { flex: 1; }
+.adm-role-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 0.78rem; font-weight: 600;
+}
+.adm-role-badge--admin { background: #fef3c7; color: #92400e; }
+.adm-role-badge--user  { background: #e0f2fe; color: #0369a1; }
+.adm-btn-primary-sm {
+  background: #2d6a4f; color: #fff; border: none;
+  border-radius: 6px; padding: 4px 12px; font-size: 0.8rem;
+  cursor: pointer; white-space: nowrap; font-weight: 600;
+}
+.adm-btn-primary-sm:hover { background: #1b4332; }
+.adm-btn-primary-sm:disabled, .adm-btn-danger-sm:disabled { opacity: 0.5; cursor: not-allowed; }

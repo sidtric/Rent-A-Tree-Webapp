@@ -5,14 +5,15 @@ import './admin.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
-type Tab = 'overview' | 'trees' | 'reviews' | 'farmupdates' | 'videos' | 'farmphotos' | 'publicupdates';
+type Tab = 'overview' | 'trees' | 'reviews' | 'farmupdates' | 'videos' | 'farmphotos' | 'publicupdates' | 'userroles';
 
 const TABS: { id: Tab; icon: string; label: string }[] = [
-  { id: 'overview',    icon: '📊', label: 'Overview'     },
-  { id: 'trees',       icon: '🌳', label: 'Trees'        },
+  { id: 'overview',      icon: '📊', label: 'Overview'      },
+  { id: 'trees',         icon: '🌳', label: 'Trees'         },
   { id: 'publicupdates', icon: '🌿', label: 'Life on Farm'  },
-  { id: 'farmupdates',  icon: '📷', label: 'User Updates'  },
-  { id: 'reviews',      icon: '⭐', label: 'Reviews'       },
+  { id: 'farmupdates',   icon: '📷', label: 'User Updates'  },
+  { id: 'reviews',       icon: '⭐', label: 'Reviews'       },
+  { id: 'userroles',     icon: '🔑', label: 'User Roles'    },
 ];
 
 interface TreeForm {
@@ -69,6 +70,12 @@ export default function AdminDashboard({ onExit, user }: Props) {
   const [puCaption, setPuCaption]           = useState('');
   const [puFiles, setPuFiles]               = useState<FileList | null>(null);
   const [puPosting, setPuPosting]           = useState(false);
+
+  // ── User Roles ────────────────────────────────────────────
+  const [roleSearch, setRoleSearch]         = useState('');
+  const [roleResults, setRoleResults]       = useState<any[]>([]);
+  const [roleSearching, setRoleSearching]   = useState(false);
+  const [roleUpdating, setRoleUpdating]     = useState<string | null>(null);
 
   const flash = (m: string) => { setMsg(m); setTimeout(() => setMsg(''), 3500); };
 
@@ -220,6 +227,29 @@ export default function AdminDashboard({ onExit, user }: Props) {
   const avgRating = reviews.length
     ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
     : '—';
+
+  const searchUsers = async () => {
+    if (!roleSearch.trim()) return;
+    setRoleSearching(true);
+    try {
+      const results = await api.get(`/admin/users/search?email=${encodeURIComponent(roleSearch.trim())}`);
+      setRoleResults(Array.isArray(results) ? results : []);
+      if (!Array.isArray(results) || results.length === 0) flash('No users found for that email');
+    } catch { flash('Search failed'); }
+    finally { setRoleSearching(false); }
+  };
+
+  const setRole = async (userId: string, role: 'user' | 'admin') => {
+    setRoleUpdating(userId);
+    try {
+      const updated = await api.patchBody(`/admin/users/${userId}/role`, { role });
+      if (updated._id) {
+        setRoleResults(prev => prev.map(u => u._id === userId ? updated : u));
+        flash(`Role updated to "${role}" successfully`);
+      } else flash(updated.message || 'Update failed');
+    } catch { flash('Failed to update role'); }
+    finally { setRoleUpdating(null); }
+  };
 
   const go = (t: Tab) => { setTab(t); setMobileOpen(false); };
 
@@ -903,6 +933,80 @@ export default function AdminDashboard({ onExit, user }: Props) {
                 <p className="adm-empty">No photos yet. Upload your first one above.</p>
               )}
             </div>
+          </div>
+        )}
+
+        {/* ── User Roles Tab ──────────────────────────── */}
+        {tab === 'userroles' && (
+          <div className="adm-section">
+            <div className="adm-section-hdr">
+              <h2>🔑 User Roles</h2>
+              <p className="adm-section-sub">Search a user by email and grant or revoke admin access.</p>
+            </div>
+
+            <div className="adm-role-search-bar">
+              <input
+                className="adm-input"
+                placeholder="Search by email address..."
+                value={roleSearch}
+                onChange={e => setRoleSearch(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && searchUsers()}
+              />
+              <button
+                className="adm-btn-primary"
+                onClick={searchUsers}
+                disabled={roleSearching}
+              >
+                {roleSearching ? 'Searching…' : 'Search'}
+              </button>
+            </div>
+
+            {roleResults.length > 0 && (
+              <div className="adm-table-wrap">
+                <table className="adm-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Current Role</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {roleResults.map(u => (
+                      <tr key={u._id}>
+                        <td>{u.name}</td>
+                        <td>{u.email}</td>
+                        <td>
+                          <span className={`adm-role-badge adm-role-badge--${u.role || 'user'}`}>
+                            {u.role === 'admin' ? '🔑 Admin' : '👤 User'}
+                          </span>
+                        </td>
+                        <td>
+                          {u.role === 'admin' ? (
+                            <button
+                              className="adm-btn-danger-sm"
+                              disabled={roleUpdating === u._id}
+                              onClick={() => setRole(u._id, 'user')}
+                            >
+                              {roleUpdating === u._id ? '…' : 'Revoke Admin'}
+                            </button>
+                          ) : (
+                            <button
+                              className="adm-btn-primary-sm"
+                              disabled={roleUpdating === u._id}
+                              onClick={() => setRole(u._id, 'admin')}
+                            >
+                              {roleUpdating === u._id ? '…' : 'Grant Admin'}
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 
