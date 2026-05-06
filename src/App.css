@@ -889,9 +889,9 @@ section.mango-box-section { background: var(--bg); padding-top: 32px !important;
 }
 .farm-bg-video-overlay {
   position: relative; z-index: 1;
-  height: 100%; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;
+  height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
   padding: 52px 80px;
-  background: linear-gradient(rgba(0,0,0,0.45) 0%, transparent 55%);
+  background: rgba(0,0,0,0.3);
   color: #fff;
 }
 .farm-hero-h1 { font-size: 3.2rem; font-weight: 900; margin: 12px 0 10px; letter-spacing: -1px; line-height: 1.1; color: #fff; }
