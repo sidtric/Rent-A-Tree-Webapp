@@ -783,3 +783,30 @@
   .adm-h1 { font-size: 1.5rem; }
   .adm-content { padding: 18px 16px; }
 }
+
+.adm-farm-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.adm-farm-photo-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7e5;
+  background: #fff;
+}
+.adm-farm-photo-card img {
+  width: 100%; height: 160px; object-fit: cover; display: block;
+}
+.adm-farm-photo-body {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; gap: 8px;
+}
+.adm-farm-photo-caption { font-size: 0.85rem; color: #444; flex: 1; }
+.adm-btn-danger-sm {
+  background: #fee2e2; color: #dc2626; border: none;
+  border-radius: 6px; padding: 4px 10px; font-size: 0.8rem;
+  cursor: pointer; white-space: nowrap;
+}
+.adm-btn-danger-sm:hover { background: #fca5a5; }

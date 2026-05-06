@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { api } from './api';
-import type { Tree, Rental, User, Review, FarmUpdate, Video } from './types';
+import type { Tree, Rental, User, Review, FarmUpdate, Video, FarmPhoto, PublicUpdate } from './types';
 import AdminDashboard from './admin/AdminDashboard';
 import './App.css';
 
@@ -47,6 +47,9 @@ const MANGO_BOXES = [
   { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1299, img: '/mango-close.jpg' },
   { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1499, img: '/mango-close.jpg' },
   { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1399, img: '/mango-close.jpg' },
+  { id: 'chausa',   name: 'Chausa Mango',   tag: '✨ Jewel of Ramnagar',   desc: 'Velvety smooth, saffron-hued, and so juicy it\'s best enjoyed straight from the skin. Straight from our bagiche.',  price: 1, img: '/mango-basket.jpg' },
+  { id: 'dasheri',  name: 'Dasheri Mango',  tag: '❤️ People\'s Favourite', desc: 'Honey-sweet, thin-skinned, and loved by everyone. Plucked fresh from our Ramnagar orchard at peak ripeness.',         price: 1, img: '/mango-dasheri.jpg' },
+  { id: 'langra',   name: 'Langra Mango',   tag: '💛 Most Fulfilling',     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar bagiche and you\'re fully satisfied.',               price: 1, img: '/mango-langra.jpg' },
 ];
 
 const VARIETIES = [
@@ -88,17 +91,40 @@ const TREE_SIZES = [
   { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: '/langra-tree.jpg' },
 ];
 
+function LoopVideo({ src, style }: { src: string; style?: React.CSSProperties }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current!;
+    v.muted = true;
+    const onEnded = () => { v.currentTime = 0; v.play().catch(() => {}); };
+    v.addEventListener('ended', onEnded);
+    v.play().catch(() => {});
+    return () => v.removeEventListener('ended', onEnded);
+  }, [src]);
+  return <video ref={ref} src={src} muted playsInline preload="auto" style={style} />;
+}
+
+function SeamlessVideo({ src }: { src: string }) {
+  const style: React.CSSProperties = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' };
+  return <video src={src} autoPlay muted loop playsInline preload="auto" style={style} />;
+}
+
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [trees, setTrees] = useState<Tree[]>([]);
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
+  const [farmPhotos, setFarmPhotos] = useState<FarmPhoto[]>([]);
+  const [publicUpdates, setPublicUpdates] = useState<PublicUpdate[]>([]);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoForm, setVideoForm] = useState({ title: '', description: '' });
-  const [view, setView] = useState<'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin'>('home');
+  type View = 'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin';
+  const validViews: View[] = ['home','dashboard','about','contact','blog','terms','privacy','refund','shipping','farm','admin'];
+  const hashView = window.location.hash.replace('#','') as View;
+  const [view, setView] = useState<View>(validViews.includes(hashView) ? hashView : 'home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '' });
   const [rentModal, setRentModal] = useState<Tree | null>(null);
   const [rentForm, setRentForm] = useState({ treeId: '', deliveryAddress: '', season: '2026' });
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', name: '' });
@@ -111,7 +137,14 @@ export default function App() {
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [activeBlog, setActiveBlog] = useState<{ emoji: string; title: string; date: string; desc: string } | null>(null);
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
-  const [cart, setCart] = useState<{ id: string; name: string; price: number; qty: number; img: string; type?: 'tree'; treeObj?: Tree; season?: string }[]>([]);
+  const [cart, setCart] = useState<{ id: string; name: string; price: number; qty: number; img: string; type?: 'tree'; treeObj?: Tree; season?: string }[]>(() => {
+    try {
+      const saved = localStorage.getItem('cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [cartOpen, setCartOpen] = useState(false);
   const [cartStep, setCartStep] = useState<'items' | 'address'>('items');
   const [addrForm, setAddrForm] = useState({ name: '', phone: '', house: '', street: '', city: '', state: '', pin: '' });
@@ -122,9 +155,15 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
+  useEffect(() => {
     api.get('/trees').then(setTrees).catch(() => {});
     api.get('/reviews').then(setReviews).catch(() => {});
     api.get('/videos').then(setVideos).catch(() => {});
+    api.get('/farm-photos').then(setFarmPhotos).catch(() => {});
+    api.get('/public-updates').then(setPublicUpdates).catch(() => {});
     const saved = localStorage.getItem('user');
     if (localStorage.getItem('token') && saved) setUser(JSON.parse(saved));
   }, []);
@@ -142,15 +181,20 @@ export default function App() {
     }
   }, [user]);
 
-  const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setView('home'); };
+  const navigate = (v: View) => { setView(v); window.location.hash = v === 'home' ? '' : v; };
+  const logout = () => { localStorage.clear(); setUser(null); setRentals([]); setCart([]); setCartOpen(false); navigate('home'); };
 
   const handleAuth = async () => {
     if (!form.email.trim() || !form.password.trim()) { setMsg('Please fill all fields'); return; }
-    if (authModal === 'register' && !form.name.trim()) { setMsg('Please enter your name'); return; }
+    if (authModal === 'register') {
+      if (!form.firstName.trim() || !form.lastName.trim()) { setMsg('Please enter your full name'); return; }
+      if (!/^\d{10}$/.test(form.phone.trim())) { setMsg('Please enter a valid 10-digit phone number'); return; }
+      if (form.password !== form.confirm) { setMsg('Passwords do not match'); return; }
+    }
     try {
       const endpoint = authModal === 'register' ? '/auth/register' : '/auth/login';
       const payload  = authModal === 'register'
-        ? { name: form.name.trim(), email: form.email.trim(), password: form.password }
+        ? { name: `${form.firstName.trim()} ${form.lastName.trim()}`, email: form.email.trim(), phone: `+91${form.phone.trim()}`, password: form.password }
         : { email: form.email.trim(), password: form.password };
       const res = await api.post(endpoint, payload);
       if (!res.token) { setMsg(res.message || 'Something went wrong'); return; }
@@ -158,12 +202,12 @@ export default function App() {
       localStorage.setItem('user', JSON.stringify(res.user));
       setUser(res.user);
       setAuthModal(null);
-      setForm({ name: '', email: '', password: '' });
+      setForm({ firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '' });
       setMsg('');
     } catch { setMsg('Could not connect. Try again.'); }
   };
 
-  const closeAuthModal = () => { setAuthModal(null); setForm({ name: '', email: '', password: '' }); setMsg(''); };
+  const closeAuthModal = () => { setAuthModal(null); setForm({ firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '' }); setMsg(''); };
 
   const handleRent = async () => {
     if (!rentForm.treeId || !rentForm.deliveryAddress) { setMsg('Fill all fields'); return; }
@@ -200,7 +244,7 @@ export default function App() {
             setRentForm({ treeId: '', deliveryAddress: '', season: '2026' });
             api.get('/trees').then(setTrees);
             api.get('/rentals/my').then(setRentals);
-            setView('dashboard');
+            navigate('dashboard');
           } else {
             setMsg(rental.message || 'Payment received but rental creation failed. Contact support.');
           }
@@ -270,13 +314,25 @@ export default function App() {
 
   const mediaUrl = (url: string) => url.startsWith('http') ? url : `${API_BASE}${url}`;
 
-  const addToCart = (box: { id: string; name: string; price: number; img: string }) => {
+  const addToCart = (box: { id: string; name: string; price: number; img: string }, andOpen = false) => {
     setCart(prev => {
       const existing = prev.find(i => i.id === box.id);
       if (existing) return prev.map(i => i.id === box.id ? { ...i, qty: i.qty + 1 } : i);
       return [...prev, { ...box, qty: 1 }];
     });
-    setMsg(`${box.name} added to cart`);
+    if (andOpen) setCartOpen(true);
+    else setMsg(`${box.name} added to cart`);
+  };
+
+  const addTreeToCart = (tree: Tree, andOpen = false) => {
+    if (!user) { setAuthModal('register'); return; }
+    setCart(prev => {
+      const existing = prev.find(i => i.id === tree._id);
+      if (existing) return prev;
+      return [...prev, { id: tree._id, name: tree.name, price: tree.pricePerSeason, qty: 1, img: '/hero-mango-v3.jpg', type: 'tree', treeObj: tree, season: '2026' }];
+    });
+    if (andOpen) setCartOpen(true);
+    else setMsg(`${tree.name} added to cart`);
   };
 
   const removeFromCart = (id: string) => setCart(prev => prev.filter(i => i.id !== id));
@@ -331,7 +387,7 @@ export default function App() {
               setMsg('Tree rented! Welcome to YourOrchard');
               api.get('/trees').then(setTrees);
               api.get('/rentals/my').then(setRentals);
-              setView('dashboard');
+              navigate('dashboard');
               setCartOpen(false);
             } else {
               setMsg(rental.message || 'Payment received but rental creation failed. Contact support.');
@@ -377,7 +433,7 @@ export default function App() {
   if (view === 'admin' && user && isAdmin(user)) {
     return (
       <div className="app">
-        <AdminDashboard user={user} onExit={() => setView('home')} />
+        <AdminDashboard user={user} onExit={() => navigate('home')} />
       </div>
     );
   }
@@ -385,17 +441,18 @@ export default function App() {
   return (
     <div className="app">
       <nav className="nav">
-        <img className="logo-full" src="/logo-full.jpeg" alt="YourOrchard — Rooted in Nature, Delivered with Care" onClick={() => { setView('home'); setMobileMenu(false); }} />
+        <img className="logo-full" src="/logo-full.jpeg" alt="YourOrchard — Rooted in Nature, Delivered with Care" onClick={() => { navigate('home'); setMobileMenu(false); }} />
         <div className="nav-center">
-          <span className={`nav-link ${view === 'home' ? 'nav-link-active' : ''}`} onClick={() => setView('home')}>Home</span>
-          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How It Works</span>
-          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees</span>
-          <span className={`nav-link ${view === 'about' ? 'nav-link-active' : ''}`} onClick={() => setView('about')}>About Us</span>
-          <span className={`nav-link ${view === 'blog' ? 'nav-link-active' : ''}`} onClick={() => setView('blog')}>Blog</span>
-          <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => setView('contact')}>Contact</span>
-          <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
-          {user && <span className={`nav-link ${view === 'dashboard' ? 'nav-link-active' : ''}`} onClick={() => setView('dashboard')}>My Tree</span>}
-          {isAdmin(user) && <span className="nav-link nav-link-admin" onClick={() => setView('admin')}>⚙ Admin</span>}
+          <span className={`nav-link ${view === 'home' ? 'nav-link-active' : ''}`} onClick={() => navigate('home')}>Home</span>
+          <span className="nav-link" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How It Works</span>
+          <span className="nav-link" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees</span>
+          <span className={`nav-link ${view === 'farm' ? 'nav-link-active' : ''}`} onClick={() => navigate('farm')}>Life on Farm</span>
+          <span className={`nav-link ${view === 'about' ? 'nav-link-active' : ''}`} onClick={() => navigate('about')}>About Us</span>
+          <span className={`nav-link ${view === 'blog' ? 'nav-link-active' : ''}`} onClick={() => navigate('blog')}>Blog</span>
+          <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => navigate('contact')}>Contact</span>
+          <span className="nav-link" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
+          {user && <span className={`nav-link ${view === 'dashboard' ? 'nav-link-active' : ''}`} onClick={() => navigate('dashboard')}>My Tree</span>}
+          {isAdmin(user) && <span className="nav-link nav-link-admin" onClick={() => navigate('admin')}>⚙ Admin</span>}
         </div>
         <div className="nav-links">
           <button className="cart-btn" onClick={() => setCartOpen(true)}>
@@ -423,13 +480,13 @@ export default function App() {
           {user && (
             <div className="mobile-welcome">🌳 Hello {(user.name || '').split(' ')[0] || 'friend'}, welcome to your bagicha</div>
           )}
-          <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); }}>Home</span>
-          <span className="mobile-nav-link" onClick={() => { setView('about'); setMobileMenu(false); }}>About</span>
-          <span className="mobile-nav-link" onClick={() => { setView('farm'); setMobileMenu(false); }}>Life on Farm</span>
-          <span className="mobile-nav-link" onClick={() => { setView('blog'); setMobileMenu(false); }}>Blog</span>
-          <span className="mobile-nav-link" onClick={() => { setView('contact'); setMobileMenu(false); }}>Contact</span>
-          {user && <span className="mobile-nav-link" onClick={() => { setView('dashboard'); setMobileMenu(false); }}>My Tree</span>}
-          <span className="mobile-nav-link" onClick={() => { setView('home'); setMobileMenu(false); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('home'); setMobileMenu(false); }}>Home</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('about'); setMobileMenu(false); }}>About</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('farm'); setMobileMenu(false); }}>Life on Farm</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('blog'); setMobileMenu(false); }}>Blog</span>
+          <span className="mobile-nav-link" onClick={() => { navigate('contact'); setMobileMenu(false); }}>Contact</span>
+          {user && <span className="mobile-nav-link" onClick={() => { navigate('dashboard'); setMobileMenu(false); }}>My Tree</span>}
+          <span className="mobile-nav-link" onClick={() => { navigate('home'); setMobileMenu(false); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
           {!user && (
             <div className="mobile-menu-auth">
               <button className="btn-sm outline" onClick={() => { setAuthModal('login'); setMobileMenu(false); }}>Login</button>
@@ -460,15 +517,24 @@ export default function App() {
               <h1 className="hero-heading">Rent a <span>Tree.</span></h1>
               <p className="hero-subheading">Fresh Harvest, Delivered to You.</p>
               <p className="hero-sub">Own the harvest without owning the farm. Rent your own tree in Ramnagar, Uttarakhand and enjoy farm-fresh fruits delivered straight to your door.</p>
-              <div className="hero-btns">
-                <button className="btn-primary" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees →</button>
-                <button className="btn-outline" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>▶ How it works</button>
-              </div>
-              <div className="hero-trust">
-                <div className="trust-item"><span>📷</span> Weekly Updates</div>
-                <div className="trust-item"><span>🌿</span> Natural Farming</div>
-                <div className="trust-item"><span>🚚</span> Free Delivery</div>
-                <div className="trust-item"><span>🔒</span> Safe & Secure</div>
+              <div className="hero-cta-block">
+                <div className="hero-cta-pills">
+                  <div className="hero-step">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L8 7h2v4H6l4 5h-2l4 6 4-6h-2l4-5h-4V7h2z"/></svg>
+                    <span>Select Your Tree</span>
+                  </div>
+                  <div className="hero-step">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                    <span>Track Harvest</span>
+                  </div>
+                  <div className="hero-step">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                    <span>Get Delivered</span>
+                  </div>
+                </div>
+                <div className="cta-amber-wrap">
+                  <button className="btn-cta-amber" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Rent Your Tree Now</button>
+                </div>
               </div>
             </div>
             <div className="hero-visual">
@@ -516,57 +582,78 @@ export default function App() {
               <p>Pick a variety, then choose your tree size. All plans include free home delivery.</p>
             </div>
 
-            <div className="variety-row">
-              {VARIETIES.map(variety => (
-                <div
-                  key={variety.id}
-                  className={`variety-card ${selectedVariety === variety.id ? 'active' : ''}`}
-                  onClick={() => setSelectedVariety(selectedVariety === variety.id ? null : variety.id)}
-                >
-                  <div className="variety-card-img" style={{ backgroundImage: `url(${variety.img})` }} />
-                  <div className="variety-card-info">
-                    <span className="variety-card-name">{variety.name} Aam</span>
-                    <span className="variety-card-tagline">{variety.tagline}</span>
+            {(() => {
+              const renderPopup = (variantClass: string) => {
+                const variety = VARIETIES.find(v => v.id === selectedVariety);
+                if (!variety) return null;
+                return (
+                  <div className={`tree-size-popup ${variantClass}`}>
+                    <div className="tree-size-popup-header">
+                      {variety.name} Aam — Choose Tree Size
+                    </div>
+                    <div className="tree-size-grid">
+                      {TREE_SIZES.map(size => {
+                        const available = trees.filter(t => t.plan === size.plan && t.isAvailable).length;
+                        const treeRef = planCards.find(t => t.plan === size.plan);
+                        const treeImage = variety.treeImg || size.img;
+                        return (
+                          <div key={size.plan} className={`tsize-card ${treeRef && available === 0 ? 'unavailable' : ''}`}>
+                            <div className="tsize-img" style={{ backgroundImage: `url(${treeImage})` }}>
+                              <span className="tsize-badge">{size.icon} {size.label}</span>
+                            </div>
+                            <div className="tsize-body">
+                              <div className="tsize-yield">{treeRef ? `${treeRef.yieldMin}–${treeRef.yieldMax}` : size.yield} kg / season</div>
+                              <p className="tsize-perks">{size.perks}</p>
+                              {treeRef && <div className="tsize-price">₹{treeRef.priceMin.toLocaleString()} <span>– ₹{treeRef.priceMax.toLocaleString()}</span></div>}
+                              <div className="plan-loc">📍 Ramnagar, Uttarakhand</div>
+                              {treeRef
+                                ? available > 0
+                                  ? (
+                                    <div className="card-actions">
+                                      <button className="btn-outline" onClick={() => addTreeToCart(treeRef)}>Add to Cart</button>
+                                      <button className="btn-primary" onClick={() => addTreeToCart(treeRef, true)}>Prebook</button>
+                                    </div>
+                                  )
+                                  : <div className="unavail-badge">Fully Booked</div>
+                                : <button className="btn-primary full" onClick={() => { if (user) navigate('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
+                              }
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <span className="variety-card-arrow">{selectedVariety === variety.id ? '▲' : '▼'}</span>
-                </div>
-              ))}
-            </div>
-
-            {selectedVariety && (
-              <div className="tree-size-popup">
-                <div className="tree-size-popup-header">
-                  {VARIETIES.find(v => v.id === selectedVariety)?.name} Aam — Choose Tree Size
-                </div>
-                <div className="tree-size-grid">
-                  {TREE_SIZES.map(size => {
-                    const available = trees.filter(t => t.plan === size.plan && t.isAvailable).length;
-                    const treeRef = planCards.find(t => t.plan === size.plan);
-                    const variety = VARIETIES.find(v => v.id === selectedVariety);
-                    const treeImage = variety?.treeImg || size.img;
-                    return (
-                      <div key={size.plan} className={`tsize-card ${treeRef && available === 0 ? 'unavailable' : ''}`}>
-                        <div className="tsize-img" style={{ backgroundImage: `url(${treeImage})` }}>
-                          <span className="tsize-badge">{size.icon} {size.label}</span>
+                );
+              };
+              return (
+                <>
+                  <div className="variety-row">
+                    {VARIETIES.map(variety => (
+                      <Fragment key={variety.id}>
+                        <div
+                          className={`variety-card ${selectedVariety === variety.id ? 'active' : ''}`}
+                          onClick={(e) => {
+                            const card = e.currentTarget;
+                            const willOpen = selectedVariety !== variety.id;
+                            setSelectedVariety(willOpen ? variety.id : null);
+                            if (willOpen) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+                          }}
+                        >
+                          <div className="variety-card-img" style={{ backgroundImage: `url(${variety.img})` }} />
+                          <div className="variety-card-info">
+                            <span className="variety-card-name">{variety.name} Aam</span>
+                            <span className="variety-card-tagline">{variety.tagline}</span>
+                          </div>
+                          <span className="variety-card-arrow">{selectedVariety === variety.id ? '▲' : '▼'}</span>
                         </div>
-                        <div className="tsize-body">
-                          <div className="tsize-yield">{treeRef ? `${treeRef.yieldMin}–${treeRef.yieldMax}` : size.yield} kg / season</div>
-                          <p className="tsize-perks">{size.perks}</p>
-                          {treeRef && <div className="tsize-price">₹{treeRef.priceMin.toLocaleString()} <span>– ₹{treeRef.priceMax.toLocaleString()}</span></div>}
-                          <div className="plan-loc">📍 Ramnagar, Uttarakhand</div>
-                          {treeRef
-                            ? available > 0
-                              ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(treeRef); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
-                              : <div className="unavail-badge">Fully Booked</div>
-                            : <button className="btn-primary full" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
-                          }
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+                        {selectedVariety === variety.id && renderPopup('tree-size-popup-mobile')}
+                      </Fragment>
+                    ))}
+                  </div>
+                  {selectedVariety && renderPopup('tree-size-popup-desktop')}
+                </>
+              );
+            })()}
           </section>
 
           <section className="section mango-box-section" id="boxes">
@@ -587,9 +674,10 @@ export default function App() {
                     <div className="box-name">{box.name}</div>
                     <p className="box-desc">{box.desc}</p>
                     <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
-                    <button className="btn-primary full" onClick={() => addToCart(box)}>
-                      Prebook Now
-                    </button>
+                    <div className="card-actions">
+                      <button className="btn-outline" onClick={() => addToCart(box)}>Add to Cart</button>
+                      <button className="btn-primary" onClick={() => addToCart(box, true)}>Prebook</button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -631,11 +719,18 @@ export default function App() {
             <h2>{authModal === 'register' ? 'Create Account' : 'Welcome Back'}</h2>
             <p className="auth-sub">{authModal === 'register' ? 'Join YourOrchard to rent a tree' : 'Login to your YourOrchard account'}</p>
             {authModal === 'register' && (
-              <input
-                placeholder="Your Name"
-                value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-              />
+              <div className="auth-row">
+                <input
+                  placeholder="First name"
+                  value={form.firstName}
+                  onChange={e => setForm(f => ({ ...f, firstName: e.target.value }))}
+                />
+                <input
+                  placeholder="Last name"
+                  value={form.lastName}
+                  onChange={e => setForm(f => ({ ...f, lastName: e.target.value }))}
+                />
+              </div>
             )}
             <input
               placeholder="Email Address"
@@ -644,6 +739,20 @@ export default function App() {
               onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && handleAuth()}
             />
+            {authModal === 'register' && (
+              <div className="phone-input">
+                <span className="phone-prefix">🇮🇳 +91</span>
+                <input
+                  className="phone-field"
+                  placeholder="Phone number"
+                  type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
+                  value={form.phone}
+                  onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
+                />
+              </div>
+            )}
             <input
               placeholder="Password"
               type="password"
@@ -651,6 +760,15 @@ export default function App() {
               onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && handleAuth()}
             />
+            {authModal === 'register' && (
+              <input
+                placeholder="Confirm Password"
+                type="password"
+                value={form.confirm}
+                onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))}
+                onKeyDown={e => e.key === 'Enter' && handleAuth()}
+              />
+            )}
             <button className="btn-primary full" onClick={handleAuth}>
               {authModal === 'register' ? 'Create Account →' : 'Login →'}
             </button>
@@ -1086,6 +1204,17 @@ export default function App() {
               <div className="farm-intro-img">
                 <img src="/orchard-hero.jpg" alt="Mango orchard" />
               </div>
+          <div className="farm-bg-video farm-bg-video--full">
+            <SeamlessVideo src="/farm-intro.mp4" />
+            <div className="farm-bg-video-overlay">
+              <span className="section-label" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.8)' }}>Ramnagar, Uttarakhand</span>
+              <h1 className="farm-hero-h1">Life on the Farm</h1>
+              <p className="farm-hero-sub">Step inside our orchard. This is where your mangoes grow, ripen, and begin their journey to you.</p>
+              <div className="farm-hero-divider" />
+              <span className="section-label" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)', marginTop: 8 }}>Our Bagiche</span>
+              <h2 className="farm-hero-h2">A Living, <span>Breathing Orchard</span></h2>
+              <p className="farm-hero-body">Nestled in the foothills of the Himalayas, our orchard in Ramnagar sits at the edge of Corbett country. The soil is rich, the water is clean, and the air carries the scent of mango blossoms every spring.</p>
+              <p className="farm-hero-body" style={{ marginTop: 12 }}>Our orchardists have been growing mangoes here for two generations — no chemicals, no shortcuts, just traditional farming, patient hands, and deep knowledge of the land.</p>
             </div>
           </div>
 
@@ -1112,15 +1241,19 @@ export default function App() {
             </div>
             {videos.length === 0 ? (
               <p className="empty" style={{ textAlign: 'center' }}>No videos yet — our orchardist is filming! Check back soon.</p>
+            {publicUpdates.length === 0 ? (
+              <p className="empty" style={{ textAlign: 'center' }}>Content coming soon — our orchardist is out in the field!</p>
             ) : (
-              <div className="videos-grid">
-                {videos.map(v => (
-                  <div key={v._id} className="video-card">
-                    <video src={`${API_BASE}${v.url}`} controls />
-                    <div className="video-info">
-                      <div className="video-title">{v.title}</div>
-                      {v.description && <div className="video-desc">{v.description}</div>}
-                    </div>
+              <div className="farm-media-grid">
+                {publicUpdates.flatMap(update =>
+                  update.media.map(m => ({ ...m, caption: update.caption }))
+                ).map((m, i) => (
+                  <div key={m.url + i} className="farm-media-card">
+                    {m.type === 'image' ? (
+                      <img src={m.url} alt={m.caption || 'Farm photo'} />
+                    ) : (
+                      <LoopVideo src={m.url} style={{ width: '100%', height: 'auto', display: 'block' }} />
+                    )}
                   </div>
                 ))}
               </div>
@@ -1128,9 +1261,9 @@ export default function App() {
           </div>
 
           <div className="farm-cta">
-            <h2>Own a Piece of This Orchard 🌳</h2>
+            <h2>Own a Piece of This Orchard</h2>
             <p>Rent a tree, get weekly updates from this very farm, and receive your harvest at home.</p>
-            <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree This Season →</button>
+            <button className="btn-primary" onClick={() => { if (user) navigate('dashboard'); else setAuthModal('register'); }}>Rent a Tree This Season →</button>
           </div>
         </div>
       )}
@@ -1270,27 +1403,27 @@ export default function App() {
           <div className="footer-col">
             <h4>Explore</h4>
             <ul className="footer-links">
-              <li onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How it works</li>
-              <li onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Our Trees</li>
-              <li onClick={() => setView('about')}>About</li>
-              <li onClick={() => setView('blog')}>Blog</li>
-              <li onClick={() => setView('contact')}>Contact</li>
+              <li onClick={() => { navigate('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How it works</li>
+              <li onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Our Trees</li>
+              <li onClick={() => navigate('about')}>About</li>
+              <li onClick={() => navigate('blog')}>Blog</li>
+              <li onClick={() => navigate('contact')}>Contact</li>
             </ul>
           </div>
           <div className="footer-col">
             <h4>Legal</h4>
             <ul className="footer-links">
-              <li onClick={() => setView('terms')}>Terms & Conditions</li>
-              <li onClick={() => setView('privacy')}>Privacy Policy</li>
-              <li onClick={() => setView('refund')}>Refund Policy</li>
-              <li onClick={() => setView('shipping')}>Shipping & Delivery</li>
+              <li onClick={() => navigate('terms')}>Terms & Conditions</li>
+              <li onClick={() => navigate('privacy')}>Privacy Policy</li>
+              <li onClick={() => navigate('refund')}>Refund Policy</li>
+              <li onClick={() => navigate('shipping')}>Shipping & Delivery</li>
             </ul>
           </div>
           <div className="footer-col">
             <h4>Contact</h4>
             <p className="footer-contact-line">hello@yourorchard.in</p>
             <p className="footer-contact-line dim">Ramnagar, Uttarakhand</p>
-            <button className="footer-reserve-btn" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Rent a Tree →</button>
+            <button className="footer-reserve-btn" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Rent a Tree →</button>
           </div>
         </div>
         <div className="footer-bottom">
