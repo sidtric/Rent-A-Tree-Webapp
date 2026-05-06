@@ -5,7 +5,7 @@ import './admin.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
-type Tab = 'overview' | 'trees' | 'reviews' | 'farmupdates' | 'videos' | 'farmphotos' | 'publicupdates' | 'userroles';
+type Tab = 'overview' | 'trees' | 'reviews' | 'farmupdates' | 'videos' | 'farmphotos' | 'publicupdates' | 'userroles' | 'payments';
 
 const TABS: { id: Tab; icon: string; label: string }[] = [
   { id: 'overview',      icon: '📊', label: 'Overview'      },
@@ -14,6 +14,7 @@ const TABS: { id: Tab; icon: string; label: string }[] = [
   { id: 'farmupdates',   icon: '📷', label: 'User Updates'  },
   { id: 'reviews',       icon: '⭐', label: 'Reviews'       },
   { id: 'userroles',     icon: '🔑', label: 'User Roles'    },
+  { id: 'payments',      icon: '💳', label: 'Payments'      },
 ];
 
 interface TreeForm {
@@ -70,6 +71,14 @@ export default function AdminDashboard({ onExit, user }: Props) {
   const [puCaption, setPuCaption]           = useState('');
   const [puFiles, setPuFiles]               = useState<FileList | null>(null);
   const [puPosting, setPuPosting]           = useState(false);
+
+  // ── Payments ─────────────────────────────────────────────
+  const [payments, setPayments]             = useState<any[]>([]);
+  const [paymentsTotal, setPaymentsTotal]   = useState(0);
+  const [paymentsCaptured, setPaymentsCaptured] = useState(0);
+  const [paymentsLoading, setPaymentsLoading]   = useState(false);
+  const [paymentsError, setPaymentsError]       = useState('');
+  const [payCount, setPayCount]             = useState(50);
 
   // ── User Roles ────────────────────────────────────────────
   const [roleSearch, setRoleSearch]         = useState('');
@@ -227,6 +236,18 @@ export default function AdminDashboard({ onExit, user }: Props) {
   const avgRating = reviews.length
     ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
     : '—';
+
+  const fetchPayments = async (count = payCount) => {
+    setPaymentsLoading(true); setPaymentsError('');
+    try {
+      const data = await api.get(`/admin/payments?count=${count}`);
+      if (data.message) { setPaymentsError(data.message); return; }
+      setPayments(data.payments || []);
+      setPaymentsTotal(data.total || 0);
+      setPaymentsCaptured(data.totalCaptured || 0);
+    } catch { setPaymentsError('Failed to load payments'); }
+    finally { setPaymentsLoading(false); }
+  };
 
   const searchUsers = async () => {
     if (!roleSearch.trim()) return;
@@ -933,6 +954,103 @@ export default function AdminDashboard({ onExit, user }: Props) {
                 <p className="adm-empty">No photos yet. Upload your first one above.</p>
               )}
             </div>
+          </div>
+        )}
+
+        {/* ── Payments Tab ────────────────────────────── */}
+        {tab === 'payments' && (
+          <div className="adm-section">
+            <div className="adm-section-hdr">
+              <h2>💳 Payments</h2>
+              <p className="adm-section-sub">Live payment data pulled directly from Razorpay.</p>
+            </div>
+
+            {/* Controls */}
+            <div className="adm-pay-controls">
+              <select
+                className="adm-input adm-pay-count-select"
+                value={payCount}
+                onChange={e => setPayCount(Number(e.target.value))}
+              >
+                {[10, 25, 50, 100].map(n => <option key={n} value={n}>Last {n} payments</option>)}
+              </select>
+              <button className="adm-btn-primary" onClick={() => fetchPayments(payCount)} disabled={paymentsLoading}>
+                {paymentsLoading ? 'Loading…' : payments.length ? 'Refresh' : 'Load Payments'}
+              </button>
+            </div>
+
+            {paymentsError && <div className="adm-error-box">⚠️ {paymentsError}</div>}
+
+            {/* Summary KPI cards */}
+            {payments.length > 0 && (
+              <>
+                <div className="adm-kpi-row" style={{ marginBottom: 24 }}>
+                  <div className="adm-kpi adm-kpi--green">
+                    <div className="adm-kpi-label">Total Captured</div>
+                    <div className="adm-kpi-val">₹{paymentsCaptured.toLocaleString('en-IN')}</div>
+                  </div>
+                  <div className="adm-kpi adm-kpi--blue">
+                    <div className="adm-kpi-label">Payments Shown</div>
+                    <div className="adm-kpi-val">{payments.length}</div>
+                  </div>
+                  <div className="adm-kpi adm-kpi--orange">
+                    <div className="adm-kpi-label">Captured</div>
+                    <div className="adm-kpi-val">{payments.filter(p => p.status === 'captured').length}</div>
+                  </div>
+                  <div className="adm-kpi adm-kpi--red">
+                    <div className="adm-kpi-label">Failed</div>
+                    <div className="adm-kpi-val">{payments.filter(p => p.status === 'failed').length}</div>
+                  </div>
+                </div>
+
+                <div className="adm-table-wrap">
+                  <table className="adm-table">
+                    <thead>
+                      <tr>
+                        <th>Payment ID</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Method</th>
+                        <th>Customer</th>
+                        <th>Rental</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {payments.map(p => (
+                        <tr key={p.id}>
+                          <td><span className="adm-mono">{p.id}</span></td>
+                          <td><strong>₹{p.amount.toLocaleString('en-IN')}</strong></td>
+                          <td>
+                            <span className={`adm-pay-status adm-pay-status--${p.status}`}>
+                              {p.status === 'captured' ? '✅ Captured' : p.status === 'failed' ? '❌ Failed' : p.status === 'refunded' ? '↩️ Refunded' : p.status}
+                            </span>
+                          </td>
+                          <td className="adm-capitalize">{p.method || '—'}</td>
+                          <td>
+                            {p.rental?.user
+                              ? <><div>{(p.rental.user as any).name}</div><div className="adm-sub-text">{(p.rental.user as any).email}</div></>
+                              : <span className="adm-sub-text">{p.email || '—'}</span>
+                            }
+                          </td>
+                          <td>
+                            {p.rental
+                              ? <><div>{(p.rental.tree as any)?.name || '—'}</div><div className="adm-sub-text">{(p.rental.tree as any)?.plan}</div></>
+                              : <span className="adm-sub-text">—</span>
+                            }
+                          </td>
+                          <td className="adm-sub-text">{new Date(p.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+
+            {!paymentsLoading && payments.length === 0 && !paymentsError && (
+              <p className="adm-empty">Click "Load Payments" to fetch live data from Razorpay.</p>
+            )}
           </div>
         )}
 
