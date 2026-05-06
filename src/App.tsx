@@ -88,6 +88,53 @@ const TREE_SIZES = [
   { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: '/langra-tree.jpg' },
 ];
 
+function SeamlessVideo({ src }: { src: string }) {
+  const aRef = useRef<HTMLVideoElement>(null);
+  const bRef = useRef<HTMLVideoElement>(null);
+  const active = useRef<'a' | 'b'>('a');
+  const FADE = 1.2; // seconds of crossfade
+
+  useEffect(() => {
+    const a = aRef.current!;
+    const b = bRef.current!;
+    a.muted = true; b.muted = true;
+    b.style.opacity = '0';
+
+    const tick = () => {
+      const curr = active.current === 'a' ? a : b;
+      const next = active.current === 'a' ? b : a;
+      if (!curr.duration) return;
+      const remaining = curr.duration - curr.currentTime;
+      if (remaining <= FADE && parseFloat(next.style.opacity) === 0) {
+        next.currentTime = 0;
+        next.play().catch(() => {});
+        next.style.transition = `opacity ${FADE}s linear`;
+        next.style.opacity = '1';
+        curr.style.transition = `opacity ${FADE}s linear`;
+        curr.style.opacity = '0';
+        active.current = active.current === 'a' ? 'b' : 'a';
+      }
+    };
+
+    a.addEventListener('timeupdate', tick);
+    b.addEventListener('timeupdate', tick);
+    a.play().catch(() => {});
+
+    return () => {
+      a.removeEventListener('timeupdate', tick);
+      b.removeEventListener('timeupdate', tick);
+    };
+  }, [src]);
+
+  const style: React.CSSProperties = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' };
+  return (
+    <>
+      <video ref={aRef} src={src} muted playsInline preload="auto" style={style} />
+      <video ref={bRef} src={src} muted playsInline preload="auto" style={style} />
+    </>
+  );
+}
+
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [trees, setTrees] = useState<Tree[]>([]);
@@ -1081,23 +1128,7 @@ export default function App() {
           </div>
 
           <div className="farm-bg-video">
-            <video
-              ref={(el) => {
-                if (!el) return;
-                el.muted = true;
-                el.play().catch(() => {});
-                el.ontimeupdate = () => {
-                  if (el.duration && el.currentTime >= el.duration - 0.15) {
-                    el.currentTime = 0;
-                    el.play().catch(() => {});
-                  }
-                };
-              }}
-              src="/farm-intro.mp4"
-              autoPlay
-              muted
-              playsInline
-            />
+            <SeamlessVideo src="/farm-intro.mp4" />
             <div className="farm-bg-video-overlay">
               <span className="section-label" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)' }}>Our Bagiche</span>
               <h2>A Living, <span>Breathing Orchard</span></h2>
