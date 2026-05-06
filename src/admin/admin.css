@@ -844,3 +844,263 @@
 .adm-error-box { background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; }
 .adm-kpi--red    { border-top: 3px solid #ef4444; }
 .adm-kpi--orange { border-top: 3px solid #f97316; }
+
+/* ══════════════════════════════════════════════
+   PAYMENTS PAGE — Redesign
+   ══════════════════════════════════════════════ */
+
+/* ── Page wrapper ─────────────────────────── */
+.adm-pay-page { padding: 28px 32px; max-width: 1200px; }
+
+/* ── Header row ───────────────────────────── */
+.adm-pay-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.adm-pay-header-left h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0e2015;
+  margin: 0 0 4px;
+}
+.adm-pay-header-left p { margin: 0; font-size: 0.85rem; color: #6b7280; }
+
+/* ── Controls bar ─────────────────────────── */
+.adm-pay-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.adm-pay-bar label { font-size: 0.82rem; font-weight: 600; color: #6b7280; white-space: nowrap; }
+.adm-pay-bar select {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 0.85rem;
+  background: #f9fafb;
+  color: #111827;
+  cursor: pointer;
+  outline: none;
+}
+.adm-pay-bar select:focus { border-color: #2d6a4f; }
+.adm-pay-refresh {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0e2015;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.adm-pay-refresh:hover { background: #1a3d28; }
+.adm-pay-refresh:disabled { opacity: 0.5; cursor: not-allowed; }
+.adm-pay-refresh .spin {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── KPI strip ────────────────────────────── */
+.adm-pay-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.adm-pay-kpi {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: box-shadow 0.15s;
+}
+.adm-pay-kpi:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.07); }
+.adm-pay-kpi-icon {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.adm-pay-kpi-icon--green  { background: #dcfce7; }
+.adm-pay-kpi-icon--blue   { background: #dbeafe; }
+.adm-pay-kpi-icon--amber  { background: #fef3c7; }
+.adm-pay-kpi-icon--red    { background: #fee2e2; }
+.adm-pay-kpi-body { min-width: 0; }
+.adm-pay-kpi-val  { font-size: 1.35rem; font-weight: 800; color: #0e2015; line-height: 1.2; }
+.adm-pay-kpi-lbl  { font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+/* ── Table card ───────────────────────────── */
+.adm-pay-table-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.adm-pay-table-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.adm-pay-table-head h3 { font-size: 0.95rem; font-weight: 700; color: #111827; margin: 0; }
+.adm-pay-count-pill {
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.adm-pay-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.adm-pay-table th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+.adm-pay-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #111827;
+  vertical-align: middle;
+}
+.adm-pay-table tr:last-child td { border-bottom: none; }
+.adm-pay-table tbody tr:hover td { background: #fafafa; }
+
+/* Payment ID chip */
+.adm-pay-id {
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  color: #374151;
+  background: #f3f4f6;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Amount */
+.adm-pay-amount { font-weight: 700; font-size: 0.95rem; color: #0e2015; }
+
+/* Status badges */
+.adm-pay-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.adm-pay-badge--captured   { background: #dcfce7; color: #15803d; }
+.adm-pay-badge--failed     { background: #fee2e2; color: #dc2626; }
+.adm-pay-badge--refunded   { background: #fef3c7; color: #92400e; }
+.adm-pay-badge--authorized { background: #dbeafe; color: #1d4ed8; }
+.adm-pay-badge--created    { background: #ede9fe; color: #6d28d9; }
+.adm-pay-badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* Method pill */
+.adm-pay-method {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-block;
+}
+
+/* Customer cell */
+.adm-pay-customer-name  { font-weight: 600; color: #111827; font-size: 0.85rem; }
+.adm-pay-customer-email { font-size: 0.76rem; color: #6b7280; margin-top: 1px; }
+
+/* Rental cell */
+.adm-pay-rental-tree { font-weight: 600; font-size: 0.85rem; color: #111827; }
+.adm-pay-rental-plan {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1px 7px;
+  border-radius: 4px;
+  margin-top: 3px;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+/* Date */
+.adm-pay-date { font-size: 0.8rem; color: #6b7280; white-space: nowrap; }
+
+/* Empty / error states */
+.adm-pay-empty {
+  text-align: center;
+  padding: 60px 24px;
+  color: #9ca3af;
+}
+.adm-pay-empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.adm-pay-empty h4   { font-size: 1rem; font-weight: 600; color: #374151; margin: 0 0 6px; }
+.adm-pay-empty p    { font-size: 0.85rem; margin: 0; }
+
+.adm-pay-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 14px 18px;
+  color: #b91c1c;
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .adm-pay-kpis { grid-template-columns: repeat(2, 1fr); }
+  .adm-pay-page { padding: 20px 16px; }
+}
+@media (max-width: 560px) {
+  .adm-pay-kpis { grid-template-columns: 1fr 1fr; }
+}

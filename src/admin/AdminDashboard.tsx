@@ -89,10 +89,10 @@ export default function AdminDashboard({ onExit, user }: Props) {
   const flash = (m: string) => { setMsg(m); setTimeout(() => setMsg(''), 3500); };
 
   useEffect(() => {
-    api.get('/admin/trees').then(setTrees).catch(() => {});
-    api.get('/admin/reviews').then(setReviews).catch(() => {});
-    api.get('/admin/videos').then(setVideos).catch(() => {});
-    api.get('/admin/rentals').then(setMyRentals).catch(() => {});
+    api.get("/admin/trees").then(d => setTrees(Array.isArray(d) ? d : [])).catch(() => {});
+    api.get("/admin/reviews").then(d => setReviews(Array.isArray(d) ? d : [])).catch(() => {});
+    api.get("/admin/videos").then(d => setVideos(Array.isArray(d) ? d : [])).catch(() => {});
+    api.get("/admin/rentals").then(d => setMyRentals(Array.isArray(d) ? d : [])).catch(() => {});
     api.get('/admin/stats').then(setStats).catch(() => {});
     api.get('/farm-photos').then(setFarmPhotos).catch(() => {});
     api.get('/public-updates').then(setPublicUpdates).catch(() => {});
@@ -957,99 +957,139 @@ export default function AdminDashboard({ onExit, user }: Props) {
           </div>
         )}
 
-        {/* ── Payments Tab ────────────────────────────── */}
+        {/* ── Payments Tab ───────────────────────────── */}
         {tab === 'payments' && (
-          <div className="adm-section">
-            <div className="adm-section-hdr">
-              <h2>💳 Payments</h2>
-              <p className="adm-section-sub">Live payment data pulled directly from Razorpay.</p>
+          <div className="adm-pay-page">
+
+            {/* Header */}
+            <div className="adm-pay-header">
+              <div className="adm-pay-header-left">
+                <h2>💳 Payments</h2>
+                <p>Live payment data from Razorpay — {payments.length > 0 ? `${payments.length} transactions loaded` : 'No data loaded yet'}</p>
+              </div>
             </div>
 
-            {/* Controls */}
-            <div className="adm-pay-controls">
-              <select
-                className="adm-input adm-pay-count-select"
-                value={payCount}
-                onChange={e => setPayCount(Number(e.target.value))}
-              >
+            {/* Controls bar */}
+            <div className="adm-pay-bar">
+              <label>Show</label>
+              <select value={payCount} onChange={e => setPayCount(Number(e.target.value))}>
                 {[10, 25, 50, 100].map(n => <option key={n} value={n}>Last {n} payments</option>)}
               </select>
-              <button className="adm-btn-primary" onClick={() => fetchPayments(payCount)} disabled={paymentsLoading}>
-                {paymentsLoading ? 'Loading…' : payments.length ? 'Refresh' : 'Load Payments'}
+              <button className="adm-pay-refresh" onClick={() => fetchPayments(payCount)} disabled={paymentsLoading}>
+                {paymentsLoading ? <><span className="spin" />Loading…</> : payments.length ? '↻ Refresh' : '↻ Load Payments'}
               </button>
             </div>
 
-            {paymentsError && <div className="adm-error-box">⚠️ {paymentsError}</div>}
+            {/* Error */}
+            {paymentsError && (
+              <div className="adm-pay-error">⚠️ {paymentsError}</div>
+            )}
 
-            {/* Summary KPI cards */}
+            {/* KPI Strip */}
             {payments.length > 0 && (
               <>
-                <div className="adm-kpi-row" style={{ marginBottom: 24 }}>
-                  <div className="adm-kpi adm-kpi--green">
-                    <div className="adm-kpi-label">Total Captured</div>
-                    <div className="adm-kpi-val">₹{paymentsCaptured.toLocaleString('en-IN')}</div>
+                <div className="adm-pay-kpis">
+                  <div className="adm-pay-kpi">
+                    <div className="adm-pay-kpi-icon adm-pay-kpi-icon--green">💰</div>
+                    <div className="adm-pay-kpi-body">
+                      <div className="adm-pay-kpi-val">₹{paymentsCaptured.toLocaleString('en-IN')}</div>
+                      <div className="adm-pay-kpi-lbl">Revenue Captured</div>
+                    </div>
                   </div>
-                  <div className="adm-kpi adm-kpi--blue">
-                    <div className="adm-kpi-label">Payments Shown</div>
-                    <div className="adm-kpi-val">{payments.length}</div>
+                  <div className="adm-pay-kpi">
+                    <div className="adm-pay-kpi-icon adm-pay-kpi-icon--blue">📋</div>
+                    <div className="adm-pay-kpi-body">
+                      <div className="adm-pay-kpi-val">{payments.length}</div>
+                      <div className="adm-pay-kpi-lbl">Total Transactions</div>
+                    </div>
                   </div>
-                  <div className="adm-kpi adm-kpi--orange">
-                    <div className="adm-kpi-label">Captured</div>
-                    <div className="adm-kpi-val">{payments.filter(p => p.status === 'captured').length}</div>
+                  <div className="adm-pay-kpi">
+                    <div className="adm-pay-kpi-icon adm-pay-kpi-icon--amber">✅</div>
+                    <div className="adm-pay-kpi-body">
+                      <div className="adm-pay-kpi-val">{payments.filter(p => p.status === 'captured').length}</div>
+                      <div className="adm-pay-kpi-lbl">Successful</div>
+                    </div>
                   </div>
-                  <div className="adm-kpi adm-kpi--red">
-                    <div className="adm-kpi-label">Failed</div>
-                    <div className="adm-kpi-val">{payments.filter(p => p.status === 'failed').length}</div>
+                  <div className="adm-pay-kpi">
+                    <div className="adm-pay-kpi-icon adm-pay-kpi-icon--red">❌</div>
+                    <div className="adm-pay-kpi-body">
+                      <div className="adm-pay-kpi-val">{payments.filter(p => p.status === 'failed').length}</div>
+                      <div className="adm-pay-kpi-lbl">Failed</div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="adm-table-wrap">
-                  <table className="adm-table">
-                    <thead>
-                      <tr>
-                        <th>Payment ID</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Method</th>
-                        <th>Customer</th>
-                        <th>Rental</th>
-                        <th>Date</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {payments.map(p => (
-                        <tr key={p.id}>
-                          <td><span className="adm-mono">{p.id}</span></td>
-                          <td><strong>₹{p.amount.toLocaleString('en-IN')}</strong></td>
-                          <td>
-                            <span className={`adm-pay-status adm-pay-status--${p.status}`}>
-                              {p.status === 'captured' ? '✅ Captured' : p.status === 'failed' ? '❌ Failed' : p.status === 'refunded' ? '↩️ Refunded' : p.status}
-                            </span>
-                          </td>
-                          <td className="adm-capitalize">{p.method || '—'}</td>
-                          <td>
-                            {p.rental?.user
-                              ? <><div>{(p.rental.user as any).name}</div><div className="adm-sub-text">{(p.rental.user as any).email}</div></>
-                              : <span className="adm-sub-text">{p.email || '—'}</span>
-                            }
-                          </td>
-                          <td>
-                            {p.rental
-                              ? <><div>{(p.rental.tree as any)?.name || '—'}</div><div className="adm-sub-text">{(p.rental.tree as any)?.plan}</div></>
-                              : <span className="adm-sub-text">—</span>
-                            }
-                          </td>
-                          <td className="adm-sub-text">{new Date(p.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                {/* Table */}
+                <div className="adm-pay-table-card">
+                  <div className="adm-pay-table-head">
+                    <h3>Transaction History</h3>
+                    <span className="adm-pay-count-pill">{payments.length} records</span>
+                  </div>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table className="adm-pay-table">
+                      <thead>
+                        <tr>
+                          <th>Payment ID</th>
+                          <th>Amount</th>
+                          <th>Status</th>
+                          <th>Method</th>
+                          <th>Customer</th>
+                          <th>Rental</th>
+                          <th>Date</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {payments.map(p => {
+                          const statusLabel = { captured: 'Captured', failed: 'Failed', refunded: 'Refunded', authorized: 'Authorized', created: 'Pending' };
+                          return (
+                            <tr key={p.id}>
+                              <td><span className="adm-pay-id" title={p.id}>{p.id}</span></td>
+                              <td><span className="adm-pay-amount">₹{p.amount.toLocaleString('en-IN')}</span></td>
+                              <td>
+                                <span className={`adm-pay-badge adm-pay-badge--${p.status}`}>
+                                  <span className="adm-pay-badge-dot" />
+                                  {(statusLabel)[p.status] || p.status}
+                                </span>
+                              </td>
+                              <td><span className="adm-pay-method">{p.method || '—'}</span></td>
+                              <td>
+                                {p.rental?.user
+                                  ? <>
+                                      <div className="adm-pay-customer-name">{(p.rental.user).name}</div>
+                                      <div className="adm-pay-customer-email">{(p.rental.user).email}</div>
+                                    </>
+                                  : <div className="adm-pay-customer-email">{p.email || '—'}</div>
+                                }
+                              </td>
+                              <td>
+                                {p.rental
+                                  ? <>
+                                      <div className="adm-pay-rental-tree">{(p.rental.tree)?.name || '—'}</div>
+                                      <span className="adm-pay-rental-plan">{(p.rental.tree)?.plan}</span>
+                                    </>
+                                  : <span className="adm-pay-customer-email">—</span>
+                                }
+                              </td>
+                              <td><span className="adm-pay-date">{new Date(p.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span></td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </>
             )}
 
+            {/* Empty state */}
             {!paymentsLoading && payments.length === 0 && !paymentsError && (
-              <p className="adm-empty">Click "Load Payments" to fetch live data from Razorpay.</p>
+              <div className="adm-pay-table-card">
+                <div className="adm-pay-empty">
+                  <div className="adm-pay-empty-icon">💳</div>
+                  <h4>No payments loaded</h4>
+                  <p>Click “Load Payments” above to fetch live transaction data from Razorpay.</p>
+                </div>
+              </div>
             )}
           </div>
         )}

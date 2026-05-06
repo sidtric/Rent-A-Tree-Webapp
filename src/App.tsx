@@ -1187,23 +1187,6 @@ export default function App() {
 
       {view === 'farm' && (
         <div className="info-page farm-page">
-          <div className="info-hero farm-hero">
-            <span className="section-label">Ramnagar, Uttarakhand</span>
-            <h1>Life on the Farm 🌿</h1>
-            <p>Step inside our orchard. This is where your mangoes grow, ripen, and begin their journey to you.</p>
-          </div>
-
-          <div className="farm-intro section">
-            <div className="farm-intro-grid">
-              <div className="farm-intro-text">
-                <span className="section-label">Our Bagiche</span>
-                <h2>A Living, <span>Breathing Orchard</span></h2>
-                <p>Nestled in the foothills of the Himalayas, our orchard in Ramnagar sits at the edge of Corbett country. The soil is rich, the water is clean, and the air carries the scent of mango blossoms every spring.</p>
-                <p style={{ marginTop: '16px' }}>Our orchardists have been growing mangoes here for two generations. No chemicals, no shortcuts — just traditional farming, patient hands, and deep knowledge of the land.</p>
-              </div>
-              <div className="farm-intro-img">
-                <img src="/orchard-hero.jpg" alt="Mango orchard" />
-              </div>
           <div className="farm-bg-video farm-bg-video--full">
             <SeamlessVideo src="/farm-intro.mp4" />
             <div className="farm-bg-video-overlay">
@@ -1224,23 +1207,6 @@ export default function App() {
               <h2>Moments From <span>Our Farm</span></h2>
               <p>Unfiltered glimpses of daily life at the bagiche — the people, the trees, and the harvest.</p>
             </div>
-            <div className="farm-grid">
-              <div className="farm-img farm-img-wide"><img src="/orchard-hero.jpg" alt="Mangoes on tree" /></div>
-              <div className="farm-img"><img src="/orchard-hero.jpg" alt="Mango basket" /></div>
-              <div className="farm-img"><img src="/orchard-hero.jpg" alt="Fresh mangoes" /></div>
-              <div className="farm-img"><img src="/orchard-hero.jpg" alt="Orchard trees" /></div>
-              <div className="farm-img farm-img-wide"><img src="/orchard-hero.jpg" alt="Farm landscape" /></div>
-            </div>
-          </div>
-
-          <div className="farm-videos section">
-            <div className="section-title">
-              <span className="section-label">Live From the Orchard</span>
-              <h2>Videos From <span>the Bagiche</span></h2>
-              <p>Our orchardist films the trees, the harvest, and the farm every week.</p>
-            </div>
-            {videos.length === 0 ? (
-              <p className="empty" style={{ textAlign: 'center' }}>No videos yet — our orchardist is filming! Check back soon.</p>
             {publicUpdates.length === 0 ? (
               <p className="empty" style={{ textAlign: 'center' }}>Content coming soon — our orchardist is out in the field!</p>
             ) : (
