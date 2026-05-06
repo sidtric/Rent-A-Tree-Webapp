@@ -876,16 +876,12 @@ section.mango-box-section { background: var(--bg); padding-top: 32px !important;
 
 /* ── Life on Farm Page ── */
 /* Compact green header */
-.farm-hero-compact {
-  background: var(--green-dark); color: #fff;
-  text-align: center; padding: 32px 80px;
-}
-.farm-hero-compact h1 { font-size: 1.8rem; font-weight: 900; margin: 10px 0 8px; letter-spacing: -0.5px; }
-.farm-hero-compact p { font-size: 0.88rem; color: rgba(255,255,255,0.65); }
-
-/* Full-bleed background video with text overlay */
+/* Full-bleed background video — fills viewport from nav to bottom */
 .farm-bg-video {
   position: relative; width: 100%; height: 75vh; overflow: hidden;
+}
+.farm-bg-video--full {
+  height: calc(100vh - 64px);
 }
 .farm-bg-video video {
   position: absolute; inset: 0;
@@ -893,14 +889,13 @@ section.mango-box-section { background: var(--bg); padding-top: 32px !important;
 }
 .farm-bg-video-overlay {
   position: relative; z-index: 1;
-  height: 100%; display: flex; flex-direction: column; justify-content: flex-start;
-  padding: 60px 80px;
-  background: linear-gradient(rgba(0,0,0,0.45) 0%, transparent 60%);
+  height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 52px 80px;
+  background: linear-gradient(transparent 40%, rgba(0,0,0,0.7) 100%);
   color: #fff;
 }
-.farm-bg-video-overlay h2 { font-size: 2.8rem; font-weight: 900; color: #fff; margin: 12px 0 16px; letter-spacing: -1px; line-height: 1.1; }
-.farm-bg-video-overlay h2 span { color: #a8d5b5; }
-.farm-bg-video-overlay p { color: rgba(255,255,255,0.8); line-height: 1.75; font-size: 0.95rem; max-width: 620px; }
+.farm-hero-h1 { font-size: 3.2rem; font-weight: 900; margin: 12px 0 10px; letter-spacing: -1px; line-height: 1.1; color: #fff; }
+.farm-hero-sub { font-size: 1rem; color: rgba(255,255,255,0.75); max-width: 520px; line-height: 1.6; }
 .farm-moments { background: #fff; }
 .farm-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto; gap: 16px; }
 .farm-img { border-radius: 16px; overflow: hidden; }
