@@ -766,6 +766,13 @@ section.mango-box-section { background: var(--bg); padding-top: 32px !important;
 .auth-modal input:focus { border-color: var(--green); background: #fff; }
 .auth-toggle { margin-top: 18px; text-align: center; color: var(--gray); font-size: 0.9rem; }
 .auth-toggle span { color: var(--green); cursor: pointer; font-weight: 600; }
+.auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.auth-row input { margin-bottom: 12px; }
+.phone-input { display: flex; align-items: stretch; margin-bottom: 12px; border: 1.5px solid #e5e7eb; border-radius: 12px; background: var(--bg); overflow: hidden; transition: border-color 0.2s, background 0.2s; }
+.phone-input:focus-within { border-color: var(--green); background: #fff; }
+.phone-prefix { display: flex; align-items: center; padding: 0 14px; font-size: 0.95rem; font-weight: 600; color: var(--dark); border-right: 1.5px solid #e5e7eb; background: rgba(0,0,0,0.02); white-space: nowrap; }
+.phone-input .phone-field { flex: 1; border: none; border-radius: 0; margin: 0; background: transparent; padding: 13px 14px; }
+.phone-input .phone-field:focus { background: transparent; }
 .auth-link { color: var(--green); cursor: pointer; font-weight: 600; text-decoration: underline; }
 .phone-input-wrap { display: flex; align-items: center; border: 1.5px solid #e5e7eb; border-radius: 12px; background: var(--bg); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
 .phone-input-wrap:focus-within { border-color: var(--green); background: #fff; }
