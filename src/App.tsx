@@ -613,7 +613,7 @@ export default function App() {
                               ? (
                                 <div className="card-actions">
                                   <button className="btn-outline" onClick={() => addTreeToCart(treeRef)}>Add to Cart</button>
-                                  <button className="btn-primary" onClick={() => addTreeToCart(treeRef, true)}>Buy Now</button>
+                                  <button className="btn-primary" onClick={() => addTreeToCart(treeRef, true)}>Prebook</button>
                                 </div>
                               )
                               : <div className="unavail-badge">Fully Booked</div>
@@ -648,7 +648,7 @@ export default function App() {
                     <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
                     <div className="card-actions">
                       <button className="btn-outline" onClick={() => addToCart(box)}>Add to Cart</button>
-                      <button className="btn-primary" onClick={() => addToCart(box, true)}>Buy Now</button>
+                      <button className="btn-primary" onClick={() => addToCart(box, true)}>Prebook</button>
                     </div>
                   </div>
                 </div>
