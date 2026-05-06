@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { api } from './api';
 import type { Tree, Rental, User, Review, FarmUpdate, Video, FarmPhoto, PublicUpdate } from './types';
 import AdminDashboard from './admin/AdminDashboard';
@@ -581,60 +581,59 @@ export default function App() {
 
             <div className="variety-row">
               {VARIETIES.map(variety => (
-                <div
-                  key={variety.id}
-                  className={`variety-card ${selectedVariety === variety.id ? 'active' : ''}`}
-                  onClick={() => setSelectedVariety(selectedVariety === variety.id ? null : variety.id)}
-                >
-                  <div className="variety-card-img" style={{ backgroundImage: `url(${variety.img})` }} />
-                  <div className="variety-card-info">
-                    <span className="variety-card-name">{variety.name} Aam</span>
-                    <span className="variety-card-tagline">{variety.tagline}</span>
+                <Fragment key={variety.id}>
+                  <div
+                    className={`variety-card ${selectedVariety === variety.id ? 'active' : ''}`}
+                    onClick={() => setSelectedVariety(selectedVariety === variety.id ? null : variety.id)}
+                  >
+                    <div className="variety-card-img" style={{ backgroundImage: `url(${variety.img})` }} />
+                    <div className="variety-card-info">
+                      <span className="variety-card-name">{variety.name} Aam</span>
+                      <span className="variety-card-tagline">{variety.tagline}</span>
+                    </div>
+                    <span className="variety-card-arrow">{selectedVariety === variety.id ? '▲' : '▼'}</span>
                   </div>
-                  <span className="variety-card-arrow">{selectedVariety === variety.id ? '▲' : '▼'}</span>
-                </div>
+                  {selectedVariety === variety.id && (
+                    <div className="tree-size-popup">
+                      <div className="tree-size-popup-header">
+                        {variety.name} Aam — Choose Tree Size
+                      </div>
+                      <div className="tree-size-grid">
+                        {TREE_SIZES.map(size => {
+                          const available = trees.filter(t => t.plan === size.plan && t.isAvailable).length;
+                          const treeRef = planCards.find(t => t.plan === size.plan);
+                          const treeImage = variety.treeImg || size.img;
+                          return (
+                            <div key={size.plan} className={`tsize-card ${treeRef && available === 0 ? 'unavailable' : ''}`}>
+                              <div className="tsize-img" style={{ backgroundImage: `url(${treeImage})` }}>
+                                <span className="tsize-badge">{size.icon} {size.label}</span>
+                              </div>
+                              <div className="tsize-body">
+                                <div className="tsize-yield">{treeRef ? `${treeRef.yieldMin}–${treeRef.yieldMax}` : size.yield} kg / season</div>
+                                <p className="tsize-perks">{size.perks}</p>
+                                {treeRef && <div className="tsize-price">₹{treeRef.priceMin.toLocaleString()} <span>– ₹{treeRef.priceMax.toLocaleString()}</span></div>}
+                                <div className="plan-loc">📍 Ramnagar, Uttarakhand</div>
+                                {treeRef
+                                  ? available > 0
+                                    ? (
+                                      <div className="card-actions">
+                                        <button className="btn-outline" onClick={() => addTreeToCart(treeRef)}>Add to Cart</button>
+                                        <button className="btn-primary" onClick={() => addTreeToCart(treeRef, true)}>Prebook</button>
+                                      </div>
+                                    )
+                                    : <div className="unavail-badge">Fully Booked</div>
+                                  : <button className="btn-primary full" onClick={() => { if (user) navigate('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
+                                }
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </Fragment>
               ))}
             </div>
-
-            {selectedVariety && (
-              <div className="tree-size-popup">
-                <div className="tree-size-popup-header">
-                  {VARIETIES.find(v => v.id === selectedVariety)?.name} Aam — Choose Tree Size
-                </div>
-                <div className="tree-size-grid">
-                  {TREE_SIZES.map(size => {
-                    const available = trees.filter(t => t.plan === size.plan && t.isAvailable).length;
-                    const treeRef = planCards.find(t => t.plan === size.plan);
-                    const variety = VARIETIES.find(v => v.id === selectedVariety);
-                    const treeImage = variety?.treeImg || size.img;
-                    return (
-                      <div key={size.plan} className={`tsize-card ${treeRef && available === 0 ? 'unavailable' : ''}`}>
-                        <div className="tsize-img" style={{ backgroundImage: `url(${treeImage})` }}>
-                          <span className="tsize-badge">{size.icon} {size.label}</span>
-                        </div>
-                        <div className="tsize-body">
-                          <div className="tsize-yield">{treeRef ? `${treeRef.yieldMin}–${treeRef.yieldMax}` : size.yield} kg / season</div>
-                          <p className="tsize-perks">{size.perks}</p>
-                          {treeRef && <div className="tsize-price">₹{treeRef.priceMin.toLocaleString()} <span>– ₹{treeRef.priceMax.toLocaleString()}</span></div>}
-                          <div className="plan-loc">📍 Ramnagar, Uttarakhand</div>
-                          {treeRef
-                            ? available > 0
-                              ? (
-                                <div className="card-actions">
-                                  <button className="btn-outline" onClick={() => addTreeToCart(treeRef)}>Add to Cart</button>
-                                  <button className="btn-primary" onClick={() => addTreeToCart(treeRef, true)}>Prebook</button>
-                                </div>
-                              )
-                              : <div className="unavail-badge">Fully Booked</div>
-                            : <button className="btn-primary full" onClick={() => { if (user) navigate('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
-                          }
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
           </section>
 
           <section className="section mango-box-section" id="boxes">

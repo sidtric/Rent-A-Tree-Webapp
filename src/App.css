@@ -605,7 +605,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .variety-card-tagline { font-size: 0.72rem; color: var(--gray); }
 .variety-card-arrow { font-size: 0.65rem; color: var(--gray); margin-left: auto; }
 
-.tree-size-popup { background: #fff; border: 1px solid rgba(0,0,0,0.09); border-radius: 24px; overflow: hidden; animation: popupIn 0.22s ease; margin-top: 4px; }
+.tree-size-popup { background: #fff; border: 1px solid rgba(0,0,0,0.09); border-radius: 24px; overflow: hidden; animation: popupIn 0.22s ease; margin-top: 4px; flex-basis: 100%; width: 100%; }
 .tree-size-popup-header { background: var(--green-dark); color: #fff; padding: 14px 28px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.3px; }
 .tree-size-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
 @media (max-width: 768px) {
@@ -798,6 +798,16 @@ section.mango-box-section { background: var(--bg); padding-top: 32px !important;
 .auth-modal input:focus { border-color: var(--green); background: #fff; }
 .auth-toggle { margin-top: 18px; text-align: center; color: var(--gray); font-size: 0.9rem; }
 .auth-toggle span { color: var(--green); cursor: pointer; font-weight: 600; }
+@media (max-width: 768px) {
+  .auth-overlay { align-items: flex-end; padding: 0; }
+  .auth-modal { max-width: 100%; border-radius: 24px 24px 0 0; padding: 28px 22px 32px; box-shadow: 0 -12px 40px rgba(0,0,0,0.25); animation: sheetUp 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+  .auth-close { top: 12px; right: 14px; }
+  .auth-modal::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 40px; height: 4px; background: rgba(0,0,0,0.18); border-radius: 2px; }
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
 .auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .auth-row input { margin-bottom: 12px; }
 .phone-input { display: flex; align-items: stretch; margin-bottom: 12px; border: 1.5px solid #e5e7eb; border-radius: 12px; background: var(--bg); overflow: hidden; transition: border-color 0.2s, background 0.2s; }
