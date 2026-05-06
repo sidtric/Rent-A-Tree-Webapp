@@ -447,7 +447,7 @@ export default function App() {
           <span className={`nav-link ${view === 'home' ? 'nav-link-active' : ''}`} onClick={() => setView('home')}>Home</span>
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>How It Works</span>
           <span className="nav-link" onClick={() => { setView('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Browse Trees</span>
-          <span className={`nav-link ${view === 'farm' ? 'nav-link-active' : ''}`} onClick={() => setView('farm')}>🌿 Life on Farm</span>
+          <span className={`nav-link ${view === 'farm' ? 'nav-link-active' : ''}`} onClick={() => setView('farm')}>Life on Farm</span>
           <span className={`nav-link ${view === 'about' ? 'nav-link-active' : ''}`} onClick={() => setView('about')}>About Us</span>
           <span className={`nav-link ${view === 'blog' ? 'nav-link-active' : ''}`} onClick={() => setView('blog')}>Blog</span>
           <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => setView('contact')}>Contact</span>
@@ -1129,7 +1129,7 @@ export default function App() {
         <div className="info-page farm-page">
           <div className="farm-hero-compact">
             <span className="section-label" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.8)' }}>Ramnagar, Uttarakhand</span>
-            <h1>Life on the Farm 🌿</h1>
+            <h1>Life on the Farm</h1>
             <p>Step inside our orchard. This is where your mangoes grow, ripen, and begin their journey to you.</p>
           </div>
 
@@ -1154,14 +1154,13 @@ export default function App() {
             ) : (
               <div className="farm-updates-feed">
                 {publicUpdates.map(update => {
-                  const shuffled = [...update.media].sort(() => Math.random() - 0.5);
                   const ratios = ['4/3','3/4','1/1','4/5','16/9','2/3'];
                   return (
                     <div key={update._id} className="farm-update-post">
                       {update.caption && <p className="farm-update-caption">{update.caption}</p>}
                       <div className="farm-media-grid">
-                        {shuffled.map((m, i) => (
-                          <div key={i} className="farm-media-card" style={m.type === 'image' ? { aspectRatio: ratios[i % ratios.length] } : {}}>
+                        {update.media.map((m, i) => (
+                          <div key={m.url} className="farm-media-card" style={m.type === 'image' ? { aspectRatio: ratios[i % ratios.length] } : {}}>
                             {m.type === 'image' ? (
                               <img src={m.url} alt={update.caption || 'Farm photo'} />
                             ) : (
@@ -1178,7 +1177,7 @@ export default function App() {
           </div>
 
           <div className="farm-cta">
-            <h2>Own a Piece of This Orchard 🌳</h2>
+            <h2>Own a Piece of This Orchard</h2>
             <p>Rent a tree, get weekly updates from this very farm, and receive your harvest at home.</p>
             <button className="btn-primary" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>Rent a Tree This Season →</button>
           </div>
