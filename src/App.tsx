@@ -1152,21 +1152,16 @@ export default function App() {
             {publicUpdates.length === 0 ? (
               <p className="empty" style={{ textAlign: 'center' }}>Content coming soon — our orchardist is out in the field!</p>
             ) : (
-              <div className="farm-updates-feed">
-                {publicUpdates.map(update => (
-                  <div key={update._id} className="farm-update-post">
-                    {update.caption && <p className="farm-update-caption">{update.caption}</p>}
-                    <div className="farm-media-grid">
-                      {update.media.map((m) => (
-                        <div key={m.url} className="farm-media-card">
-                          {m.type === 'image' ? (
-                            <img src={m.url} alt={update.caption || 'Farm photo'} />
-                          ) : (
-                            <video src={m.url} autoPlay muted loop playsInline />
-                          )}
-                        </div>
-                      ))}
-                    </div>
+              <div className="farm-media-grid">
+                {publicUpdates.flatMap(update =>
+                  update.media.map(m => ({ ...m, caption: update.caption }))
+                ).map((m, i) => (
+                  <div key={m.url + i} className="farm-media-card">
+                    {m.type === 'image' ? (
+                      <img src={m.url} alt={m.caption || 'Farm photo'} />
+                    ) : (
+                      <video src={m.url} autoPlay muted loop playsInline />
+                    )}
                   </div>
                 ))}
               </div>

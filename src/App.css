@@ -1062,13 +1062,6 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.5); padding: 6
 
 /* ── Farm Media Grid (photos + videos mixed) ── */
 /* ── Public Farm Updates Feed ── */
-.farm-updates-feed { margin-top: 32px; }
-.farm-update-post { margin-bottom: 48px; }
-.farm-update-caption {
-  font-size: 1rem; color: var(--dark);
-  margin-bottom: 16px; font-weight: 500; line-height: 1.5;
-}
-
 /* Masonry grid */
 .farm-media-grid {
   columns: 3;
