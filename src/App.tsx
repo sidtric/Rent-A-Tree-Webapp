@@ -289,13 +289,25 @@ export default function App() {
 
   const mediaUrl = (url: string) => url.startsWith('http') ? url : `${API_BASE}${url}`;
 
-  const addToCart = (box: { id: string; name: string; price: number; img: string }) => {
+  const addToCart = (box: { id: string; name: string; price: number; img: string }, andOpen = false) => {
     setCart(prev => {
       const existing = prev.find(i => i.id === box.id);
       if (existing) return prev.map(i => i.id === box.id ? { ...i, qty: i.qty + 1 } : i);
       return [...prev, { ...box, qty: 1 }];
     });
-    setMsg(`${box.name} added to cart`);
+    if (andOpen) setCartOpen(true);
+    else setMsg(`${box.name} added to cart`);
+  };
+
+  const addTreeToCart = (tree: Tree, andOpen = false) => {
+    if (!user) { setAuthModal('register'); return; }
+    setCart(prev => {
+      const existing = prev.find(i => i.id === tree._id);
+      if (existing) return prev;
+      return [...prev, { id: tree._id, name: tree.name, price: tree.pricePerSeason, qty: 1, img: '/hero-mango-v3.jpg', type: 'tree', treeObj: tree, season: '2026' }];
+    });
+    if (andOpen) setCartOpen(true);
+    else setMsg(`${tree.name} added to cart`);
   };
 
   const removeFromCart = (id: string) => setCart(prev => prev.filter(i => i.id !== id));
@@ -583,7 +595,12 @@ export default function App() {
                           <div className="plan-loc">📍 Ramnagar, Uttarakhand</div>
                           {treeRef
                             ? available > 0
-                              ? <button className="btn-primary full" onClick={() => { if (user) setRentModal(treeRef); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
+                              ? (
+                                <div className="card-actions">
+                                  <button className="btn-outline" onClick={() => addTreeToCart(treeRef)}>Add to Cart</button>
+                                  <button className="btn-primary" onClick={() => addTreeToCart(treeRef, true)}>Buy Now</button>
+                                </div>
+                              )
                               : <div className="unavail-badge">Fully Booked</div>
                             : <button className="btn-primary full" onClick={() => { if (user) setView('dashboard'); else setAuthModal('register'); }}>{user ? 'Rent Now' : 'Sign Up to Rent'}</button>
                           }
@@ -614,9 +631,10 @@ export default function App() {
                     <div className="box-name">{box.name}</div>
                     <p className="box-desc">{box.desc}</p>
                     <div className="box-price">₹{box.price.toLocaleString()} <span>/ box</span></div>
-                    <button className="btn-primary full" onClick={() => addToCart(box)}>
-                      Prebook Now
-                    </button>
+                    <div className="card-actions">
+                      <button className="btn-outline" onClick={() => addToCart(box)}>Add to Cart</button>
+                      <button className="btn-primary" onClick={() => addToCart(box, true)}>Buy Now</button>
+                    </div>
                   </div>
                 </div>
               ))}
