@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { api } from './api';
 import type { Tree, Rental, User, Review, FarmUpdate, Video, FarmPhoto, PublicUpdate } from './types';
 import AdminDashboard from './admin/AdminDashboard';
@@ -1081,7 +1081,23 @@ export default function App() {
           </div>
 
           <div className="farm-bg-video">
-            <video src="/farm-intro.mp4" autoPlay muted loop playsInline />
+            <video
+              ref={(el) => {
+                if (!el) return;
+                el.muted = true;
+                el.play().catch(() => {});
+                el.ontimeupdate = () => {
+                  if (el.duration && el.currentTime >= el.duration - 0.15) {
+                    el.currentTime = 0;
+                    el.play().catch(() => {});
+                  }
+                };
+              }}
+              src="/farm-intro.mp4"
+              autoPlay
+              muted
+              playsInline
+            />
             <div className="farm-bg-video-overlay">
               <span className="section-label" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)' }}>Our Bagiche</span>
               <h2>A Living, <span>Breathing Orchard</span></h2>
