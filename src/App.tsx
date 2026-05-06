@@ -88,6 +88,19 @@ const TREE_SIZES = [
   { plan: 'grand',   label: 'Big Tree',   icon: '🏕️', yield: '60–80 kg', perks: 'Maximum yield. Best for large families or gifting boxes to loved ones.', img: '/langra-tree.jpg' },
 ];
 
+function LoopVideo({ src, style }: { src: string; style?: React.CSSProperties }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current!;
+    v.muted = true;
+    const onEnded = () => { v.currentTime = 0; v.play().catch(() => {}); };
+    v.addEventListener('ended', onEnded);
+    v.play().catch(() => {});
+    return () => v.removeEventListener('ended', onEnded);
+  }, [src]);
+  return <video ref={ref} src={src} muted playsInline preload="auto" style={style} />;
+}
+
 function SeamlessVideo({ src }: { src: string }) {
   const aRef = useRef<HTMLVideoElement>(null);
   const bRef = useRef<HTMLVideoElement>(null);
@@ -1160,7 +1173,7 @@ export default function App() {
                     {m.type === 'image' ? (
                       <img src={m.url} alt={m.caption || 'Farm photo'} />
                     ) : (
-                      <video src={m.url} autoPlay muted loop playsInline />
+                      <LoopVideo src={m.url} style={{ width: '100%', height: 'auto', display: 'block' }} />
                     )}
                   </div>
                 ))}
