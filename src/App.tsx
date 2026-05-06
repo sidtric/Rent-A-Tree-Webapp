@@ -104,8 +104,7 @@ function LoopVideo({ src, style }: { src: string; style?: React.CSSProperties })
 function SeamlessVideo({ src }: { src: string }) {
   const aRef = useRef<HTMLVideoElement>(null);
   const bRef = useRef<HTMLVideoElement>(null);
-  const active = useRef<'a' | 'b'>('a');
-  const switching = useRef(false);
+  const state = useRef({ active: 'a' as 'a' | 'b', prepared: false });
 
   useEffect(() => {
     const a = aRef.current!;
@@ -113,25 +112,28 @@ function SeamlessVideo({ src }: { src: string }) {
     a.muted = true; b.muted = true;
     b.style.opacity = '0';
 
-    // Pre-load B so it's ready to play instantly when needed
-    b.load();
-
     const tick = () => {
-      const curr = active.current === 'a' ? a : b;
-      const next = active.current === 'a' ? b : a;
-      if (!curr.duration || switching.current) return;
+      const { active, prepared } = state.current;
+      const curr = active === 'a' ? a : b;
+      const next = active === 'a' ? b : a;
+      if (!curr.duration) return;
       const remaining = curr.duration - curr.currentTime;
-      // Start next video 0.5s before current ends so it's buffered at frame 0
-      if (remaining <= 0.5) {
-        switching.current = true;
+
+      // 2 s before end: start next video playing silently so it's already rendering when we cut
+      if (remaining <= 2.0 && !prepared) {
+        state.current.prepared = true;
         next.currentTime = 0;
-        next.play().then(() => {
-          // Instant cut — no fade, just swap z-index visibility
-          next.style.opacity = '1';
-          curr.style.opacity = '0';
-          active.current = active.current === 'a' ? 'b' : 'a';
-          switching.current = false;
-        }).catch(() => { switching.current = false; });
+        next.play().catch(() => {});
+      }
+
+      // At the very last frame: instant cut — next is already playing, no async needed
+      if (remaining <= 0.07) {
+        next.style.opacity = '1';
+        curr.style.opacity = '0';
+        curr.pause();
+        curr.currentTime = 0;
+        state.current.active = active === 'a' ? 'b' : 'a';
+        state.current.prepared = false;
       }
     };
 
