@@ -1153,25 +1153,22 @@ export default function App() {
               <p className="empty" style={{ textAlign: 'center' }}>Content coming soon — our orchardist is out in the field!</p>
             ) : (
               <div className="farm-updates-feed">
-                {publicUpdates.map(update => {
-                  const ratios = ['4/3','3/4','1/1','4/5','16/9','2/3'];
-                  return (
-                    <div key={update._id} className="farm-update-post">
-                      {update.caption && <p className="farm-update-caption">{update.caption}</p>}
-                      <div className="farm-media-grid">
-                        {update.media.map((m, i) => (
-                          <div key={m.url} className="farm-media-card" style={m.type === 'image' ? { aspectRatio: ratios[i % ratios.length] } : {}}>
-                            {m.type === 'image' ? (
-                              <img src={m.url} alt={update.caption || 'Farm photo'} />
-                            ) : (
-                              <video src={m.url} autoPlay muted loop playsInline style={{ width: '100%', height: 'auto', display: 'block' }} />
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                {publicUpdates.map(update => (
+                  <div key={update._id} className="farm-update-post">
+                    {update.caption && <p className="farm-update-caption">{update.caption}</p>}
+                    <div className="farm-media-grid">
+                      {update.media.map((m) => (
+                        <div key={m.url} className="farm-media-card">
+                          {m.type === 'image' ? (
+                            <img src={m.url} alt={update.caption || 'Farm photo'} />
+                          ) : (
+                            <video src={m.url} autoPlay muted loop playsInline />
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             )}
           </div>

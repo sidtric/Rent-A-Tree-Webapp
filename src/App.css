@@ -1072,18 +1072,18 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.5); padding: 6
 /* Masonry grid */
 .farm-media-grid {
   columns: 3;
-  column-gap: 4px;
+  column-gap: 6px;
 }
 .farm-media-card {
   break-inside: avoid;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   overflow: hidden;
   background: #d4d8d0;
+  border-radius: 6px;
 }
 .farm-media-card img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   display: block;
 }
 .farm-media-card video {
