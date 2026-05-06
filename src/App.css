@@ -271,7 +271,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
   .howit-card { padding: 22px 18px 26px; }
   .howit-card h4 { font-size: 1.05rem; }
   .howit-card p { font-size: 0.88rem; }
-  .trust-howit { padding: 56px 24px; }
+  .trust-howit { padding: 0 24px; }
   .trust-title { font-size: 1.4rem; }
   .howit-title { font-size: 1.4rem; }
   .trust-reviews { flex-wrap: wrap; }
@@ -1049,6 +1049,9 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.5); padding: 6
 @media (max-width: 768px) {
   .hero { flex-direction: column; padding: 24px 24px; min-height: auto; text-align: center; }
   .hero-heading { font-size: 3rem; }
+  .plans-section .section-title { margin-bottom: 12px; }
+  .plans-section .section-title h2 { margin-bottom: 8px; font-size: 2rem; }
+  .plans-section .section-title p { font-size: 0.9rem; }
   .hero-img { width: 100%; max-width: 340px; height: 360px; }
   .hero-img-wrap { width: 100%; display: flex; justify-content: center; }
   .hero-btns { justify-content: center; }
