@@ -1070,7 +1070,9 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.5); padding: 6
   .team-section { padding: 60px 24px; }
   .team-grid { grid-template-columns: 1fr 1fr; }
   .blog-grid { padding: 60px 24px; }
-  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px 24px; }
+  .footer-grid > div:first-child { grid-column: 1 / -1; }
+  .footer-grid > .footer-col:last-child { grid-column: 1 / -1; }
   footer { padding: 48px 24px 24px; }
   .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 180px); }
   .gi-1, .gi-2, .gi-3, .gi-4, .gi-5, .gi-6 { grid-column: auto; grid-row: auto; }
