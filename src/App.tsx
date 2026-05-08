@@ -8,6 +8,7 @@ import TreeVideos from './components/TreeVideos';
 import Footer from './components/Footer';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
+import About from './pages/About';
 
 function Home() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </div>
   );

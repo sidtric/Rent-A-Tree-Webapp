@@ -1,0 +1,284 @@
+.about {
+  background: #fff;
+}
+
+.about-label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 14px;
+}
+
+/* Hero */
+.about-hero {
+  background: #111;
+  padding: 96px 24px;
+}
+
+.about-hero-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about-hero .about-label {
+  color: rgba(255,255,255,0.45);
+}
+
+.about-hero-title {
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.about-hero-sub {
+  font-size: 18px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+  max-width: 620px;
+}
+
+/* Story */
+.about-story {
+  padding: 96px 24px;
+  background: #fff;
+}
+
+.about-story-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.about-story-text h2 {
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.8px;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+.about-story-text p {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+.about-story-img img {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+  object-fit: cover;
+  height: 460px;
+}
+
+/* Farm */
+.about-farm {
+  padding: 96px 24px;
+  background: #fafafa;
+}
+
+.about-farm-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.about-farm-text h2 {
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.8px;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+.about-farm-text p {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+.about-farm-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.about-stat {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 28px 24px;
+}
+
+.about-stat-num {
+  font-size: 40px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -1px;
+  margin-bottom: 6px;
+}
+
+.about-stat-label {
+  font-size: 13px;
+  color: #888;
+}
+
+/* Values */
+.about-values {
+  padding: 96px 24px;
+  background: #fff;
+}
+
+.about-values-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.about-values-header {
+  margin-bottom: 48px;
+}
+
+.about-values-header h2 {
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.8px;
+}
+
+.about-values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.about-value-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 28px 24px;
+}
+
+.about-value-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.about-value-card p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.65;
+}
+
+/* Team */
+.about-team {
+  padding: 96px 24px;
+  background: #fafafa;
+}
+
+.about-team-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.about-team-header {
+  margin-bottom: 48px;
+}
+
+.about-team-header h2 {
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.8px;
+}
+
+.about-team-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.about-team-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 28px;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.about-team-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.about-team-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 2px;
+}
+
+.about-team-role {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.about-team-bg {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .about-story-inner,
+  .about-farm-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .about-story-img img {
+    height: 280px;
+  }
+
+  .about-values-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .about-values-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-farm-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
