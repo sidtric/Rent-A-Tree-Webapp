@@ -13,7 +13,7 @@ const LINKS: NavLink[] = [
   { label: 'How It Works', scrollTo: 'how-it-works' },
   { label: 'Browse Trees', scrollTo: 'browse-trees' },
   { label: 'About', href: '/about' },
-  { label: 'Contact', href: '#' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 function scrollTo(id: string) {
