@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 type NavLink = {
@@ -8,7 +9,7 @@ type NavLink = {
 };
 
 const LINKS: NavLink[] = [
-  { label: 'Home', href: '#' },
+  { label: 'Home', href: '/' },
   { label: 'How It Works', scrollTo: 'how-it-works' },
   { label: 'Browse Trees', scrollTo: 'browse-trees' },
   { label: 'About', href: '#' },
@@ -21,6 +22,7 @@ function scrollTo(id: string) {
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleClick = (link: NavLink) => {
     if (link.scrollTo) scrollTo(link.scrollTo);
@@ -30,7 +32,9 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <div className="navbar-logo">YourOrchard</div>
+        <div className="navbar-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+          YourOrchard
+        </div>
 
         <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           {LINKS.map(link => (
@@ -48,7 +52,7 @@ export default function Navbar() {
 
         <div className="navbar-auth">
           <button className="btn-ghost">Login</button>
-          <button className="btn-solid">Sign Up</button>
+          <button className="btn-solid" onClick={() => navigate('/signup')}>Sign Up</button>
         </div>
 
         <button className="navbar-hamburger" onClick={() => setMenuOpen(o => !o)}>
