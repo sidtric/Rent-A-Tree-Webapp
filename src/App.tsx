@@ -1,16 +1,11 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
 import { api } from './api';
 import type { Tree, Rental, User, Review, FarmUpdate, Video, FarmPhoto, PublicUpdate } from './types';
-import AdminDashboard from './admin/AdminDashboard';
 import './App.css';
 
 const PLAN_EMOJI:  Record<string, string> = { sapling: '🌳', adult: '🌳', grand: '🌳' };
 const PLAN_LABEL:  Record<string, string> = { sapling: 'Small Tree Pack', adult: 'Medium Tree Pack', grand: 'Premium Tree Pack' };
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
-const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '').split(',').map((e: string) => e.trim().toLowerCase()).filter(Boolean);
-
-const isAdmin = (user: { email?: string } | null) =>
-  !!user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
 
 const STEPS = [
   { n: 1, icon: '🌳', h: 'Choose Your Tree',   p: 'Pick a plan — Sapling, Adult, or Grand — from our Ramnagar orchard.' },
@@ -119,8 +114,8 @@ export default function App() {
   const [publicUpdates, setPublicUpdates] = useState<PublicUpdate[]>([]);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoForm, setVideoForm] = useState({ title: '', description: '' });
-  type View = 'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm' | 'admin';
-  const validViews: View[] = ['home','dashboard','about','contact','blog','terms','privacy','refund','shipping','farm','admin'];
+  type View = 'home' | 'dashboard' | 'about' | 'contact' | 'blog' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'farm';
+  const validViews: View[] = ['home','dashboard','about','contact','blog','terms','privacy','refund','shipping','farm'];
   const hashView = window.location.hash.replace('#','') as View;
   const [view, setView] = useState<View>(validViews.includes(hashView) ? hashView : 'home');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
@@ -430,14 +425,6 @@ export default function App() {
     trees.reduce((acc, t) => { acc[t.plan] = acc[t.plan] || t; return acc; }, {} as Record<string, Tree>)
   );
 
-  if (view === 'admin' && user && isAdmin(user)) {
-    return (
-      <div className="app">
-        <AdminDashboard user={user} onExit={() => navigate('home')} />
-      </div>
-    );
-  }
-
   return (
     <div className="app">
       <nav className="nav">
@@ -452,7 +439,6 @@ export default function App() {
           <span className={`nav-link ${view === 'contact' ? 'nav-link-active' : ''}`} onClick={() => navigate('contact')}>Contact</span>
           <span className="nav-link" onClick={() => { navigate('home'); setTimeout(() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>Shop</span>
           {user && <span className={`nav-link ${view === 'dashboard' ? 'nav-link-active' : ''}`} onClick={() => navigate('dashboard')}>My Tree</span>}
-          {isAdmin(user) && <span className="nav-link nav-link-admin" onClick={() => navigate('admin')}>⚙ Admin</span>}
         </div>
         <div className="nav-links">
           <button className="cart-btn" onClick={() => setCartOpen(true)}>
