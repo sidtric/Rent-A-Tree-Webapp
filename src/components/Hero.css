@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 64px);
   display: flex;
   align-items: center;
   background-size: cover;

@@ -9,7 +9,7 @@ type NavLink = {
 };
 
 const LINKS: NavLink[] = [
-  { label: 'Home', href: '/' },
+  { label: 'Home', scrollTo: 'root-top' },
   { label: 'How It Works', scrollTo: 'how-it-works' },
   { label: 'Browse Trees', scrollTo: 'browse-trees' },
   { label: 'About', href: '#' },
@@ -32,9 +32,12 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <div className="navbar-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          YourOrchard
-        </div>
+        <img
+          src="/logo.jpeg"
+          alt="YourOrchard"
+          className="navbar-logo"
+          onClick={() => navigate('/')}
+        />
 
         <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           {LINKS.map(link => (
@@ -51,7 +54,7 @@ export default function Navbar() {
         </ul>
 
         <div className="navbar-auth">
-          <button className="btn-ghost">Login</button>
+          <button className="btn-ghost" onClick={() => navigate('/login')}>Login</button>
           <button className="btn-solid" onClick={() => navigate('/signup')}>Sign Up</button>
         </div>
 

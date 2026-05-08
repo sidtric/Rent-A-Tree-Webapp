@@ -7,6 +7,7 @@ import MangoBoxes from './components/MangoBoxes';
 import TreeVideos from './components/TreeVideos';
 import Footer from './components/Footer';
 import SignUp from './pages/SignUp';
+import Login from './pages/Login';
 
 function Home() {
   return (
@@ -23,11 +24,12 @@ function Home() {
 
 export default function App() {
   return (
-    <div>
+    <div id="root-top">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </div>
   );

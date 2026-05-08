@@ -40,6 +40,7 @@ export default function SignUp() {
 
     // TODO: call backend /api/auth/register
     console.log('Register:', form);
+    navigate('/login');
   };
 
   return (
