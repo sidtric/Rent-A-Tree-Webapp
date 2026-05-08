@@ -1040,7 +1040,7 @@ export default function AdminDashboard({ onExit, user }: Props) {
                       </thead>
                       <tbody>
                         {payments.map(p => {
-                          const statusLabel = { captured: 'Captured', failed: 'Failed', refunded: 'Refunded', authorized: 'Authorized', created: 'Pending' };
+                          const statusLabel: Record<string, string> = { captured: 'Captured', failed: 'Failed', refunded: 'Refunded', authorized: 'Authorized', created: 'Pending' };
                           return (
                             <tr key={p.id}>
                               <td><span className="adm-pay-id" title={p.id}>{p.id}</span></td>
