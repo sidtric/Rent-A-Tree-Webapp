@@ -1,0 +1,188 @@
+.mb {
+  padding: 96px 24px;
+  background: #fafafa;
+}
+
+.mb-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mb-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.mb-label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.mb-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -1px;
+  margin-bottom: 12px;
+}
+
+.mb-sub {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.mb-harvest-note {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #444;
+}
+
+.mb-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.mb-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.mb-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+
+.mb-card-img {
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.mb-card-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+}
+
+.mb-card-body {
+  padding: 24px;
+}
+
+.mb-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.mb-card-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.3px;
+}
+
+.mb-card-weight {
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.mb-card-desc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.mb-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mb-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.mb-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+}
+
+.mb-price-note {
+  font-size: 13px;
+  color: #888;
+}
+
+.mb-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mb-btn-ghost {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  background: transparent;
+  color: #111;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mb-btn-ghost:hover {
+  background: #f3f4f6;
+}
+
+.mb-btn-solid {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mb-btn-solid:hover {
+  background: #333;
+}
+
+@media (max-width: 900px) {
+  .mb-cards {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
