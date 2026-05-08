@@ -34,7 +34,7 @@ const TREES = [
 
 export default function BrowseTrees() {
   return (
-    <section className="bt">
+    <section className="bt" id="browse-trees">
       <div className="bt-inner">
         <div className="bt-header">
           <span className="bt-label">Seasonal Plans</span>

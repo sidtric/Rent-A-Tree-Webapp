@@ -1,10 +1,31 @@
 import { useState } from 'react';
 import './Navbar.css';
 
-const LINKS = ['Home', 'How It Works', 'Browse Trees', 'About', 'Contact'];
+type NavLink = {
+  label: string;
+  scrollTo?: string;
+  href?: string;
+};
+
+const LINKS: NavLink[] = [
+  { label: 'Home', href: '#' },
+  { label: 'How It Works', scrollTo: 'how-it-works' },
+  { label: 'Browse Trees', scrollTo: 'browse-trees' },
+  { label: 'About', href: '#' },
+  { label: 'Contact', href: '#' },
+];
+
+function scrollTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+}
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleClick = (link: NavLink) => {
+    if (link.scrollTo) scrollTo(link.scrollTo);
+    setMenuOpen(false);
+  };
 
   return (
     <nav className="navbar">
@@ -13,7 +34,15 @@ export default function Navbar() {
 
         <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           {LINKS.map(link => (
-            <li key={link}><a href="#">{link}</a></li>
+            <li key={link.label}>
+              <a
+                href={link.scrollTo ? undefined : link.href}
+                onClick={link.scrollTo ? () => handleClick(link) : undefined}
+                style={link.scrollTo ? { cursor: 'pointer' } : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
           ))}
         </ul>
 
