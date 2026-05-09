@@ -9,6 +9,7 @@ interface RazorpayOrder {
 
 interface OpenCheckoutOpts {
   type: 'rental' | 'box';
+  plan?: string;
   treeId?: string;
   variety?: string;
   quantity?: number;
@@ -22,7 +23,7 @@ interface OpenCheckoutOpts {
 export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
   const order = await apiFetch<RazorpayOrder>('/api/payments/create-order', {
     method: 'POST',
-    body: JSON.stringify({ type: opts.type, treeId: opts.treeId, variety: opts.variety, quantity: opts.quantity }),
+    body: JSON.stringify({ type: opts.type, plan: opts.plan, treeId: opts.treeId, variety: opts.variety, quantity: opts.quantity }),
   });
 
   const rzp = new (window as any).Razorpay({

@@ -65,6 +65,7 @@ export default function BrowseTrees() {
     try {
       await openRazorpayCheckout({
         type: 'rental',
+        plan: checkoutTree.id,
         variety: selectedVariety,
         userName: user.name,
         userEmail: user.email,
@@ -73,7 +74,7 @@ export default function BrowseTrees() {
           await apiFetch('/api/rentals', {
             method: 'POST',
             body: JSON.stringify({
-              tree: checkoutTree.id,
+              plan: checkoutTree.id,
               variety: selectedVariety,
               deliveryAddress,
               razorpayOrderId: orderId,
