@@ -1,13 +1,18 @@
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Footer.css';
 
-const EXPLORE = [
-  { label: 'Home', href: '#' },
+type ExploreItem =
+  | { label: string; scrollTo: string; href?: never }
+  | { label: string; href: string; scrollTo?: never };
+
+const EXPLORE: ExploreItem[] = [
+  { label: 'Home', href: '/' },
   { label: 'How It Works', scrollTo: 'how-it-works' },
   { label: 'Browse Trees', scrollTo: 'browse-trees' },
   { label: 'Mango Boxes', scrollTo: 'mango-boxes' },
-  { label: 'About Us', href: '#' },
-  { label: 'Blog', href: '#' },
-  { label: 'Contact', href: '#' },
+  { label: 'Life on the Farm', href: '/farm-life' },
+  { label: 'About Us', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 const LEGAL = [
@@ -17,11 +22,33 @@ const LEGAL = [
   { label: 'Shipping & Delivery', href: '/shipping' },
 ];
 
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-}
-
 export default function Footer() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  function handleExplore(item: ExploreItem) {
+    if (item.href) {
+      navigate(item.href);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => document.getElementById(item.scrollTo!)?.scrollIntoView({ behavior: 'smooth' }), 120);
+    } else {
+      document.getElementById(item.scrollTo!)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function goToBrowseTrees() {
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => document.getElementById('browse-trees')?.scrollIntoView({ behavior: 'smooth' }), 120);
+    } else {
+      document.getElementById('browse-trees')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   return (
     <footer className="footer">
       <div className="footer-inner">
@@ -44,11 +71,7 @@ export default function Footer() {
             <ul className="footer-links">
               {EXPLORE.map(item => (
                 <li key={item.label}>
-                  {item.scrollTo ? (
-                    <button onClick={() => scrollTo(item.scrollTo!)}>{item.label}</button>
-                  ) : (
-                    <a href={item.href}>{item.label}</a>
-                  )}
+                  <button onClick={() => handleExplore(item)}>{item.label}</button>
                 </li>
               ))}
             </ul>
@@ -70,7 +93,7 @@ export default function Footer() {
             <p className="footer-season-text">
               Harvest window: May 15 – July 31. Tree rentals are now open. Book early — slots are limited.
             </p>
-            <button className="footer-cta" onClick={() => scrollTo('browse-trees')}>
+            <button className="footer-cta" onClick={goToBrowseTrees}>
               Rent a Tree
             </button>
           </div>
