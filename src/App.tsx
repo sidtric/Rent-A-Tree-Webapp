@@ -10,6 +10,7 @@ import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Dashboard from './pages/Dashboard';
 
 function Home() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </div>
   );

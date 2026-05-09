@@ -89,7 +89,7 @@ export default function MangoBoxes() {
   }
 
   return (
-    <section className="mb">
+    <section className="mb" id="mango-boxes">
       <div className="mb-inner">
         <div className="mb-header">
           <span className="mb-label">Just Want Mangoes?</span>
