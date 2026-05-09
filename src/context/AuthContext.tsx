@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { apiFetch } from '../lib/api';
 
 export interface AuthUser {
@@ -18,18 +18,14 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(!!localStorage.getItem('token'));
+function storedUser(): AuthUser | null {
+  try { return JSON.parse(localStorage.getItem('user') || 'null'); }
+  catch { return null; }
+}
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    apiFetch<AuthUser>('/api/auth/me')
-      .then(setUser)
-      .catch(() => { localStorage.removeItem('token'); })
-      .finally(() => setLoading(false));
-  }, []);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<AuthUser | null>(storedUser);
+  const loading = false;
 
   async function login(email: string, password: string) {
     const data = await apiFetch<{ token: string; user: AuthUser }>('/api/auth/login', {
@@ -37,6 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify({ email, password }),
     });
     localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
     setUser(data.user);
   }
 
@@ -46,11 +43,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify({ name, email, password, phone }),
     });
     localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
     setUser(data.user);
   }
 
   function logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
   }
 

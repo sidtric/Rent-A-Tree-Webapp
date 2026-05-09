@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
@@ -24,11 +24,18 @@ function scrollTo(id: string) {
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
 
   const handleClick = (link: NavLink) => {
-    if (link.scrollTo) scrollTo(link.scrollTo);
     setMenuOpen(false);
+    if (!link.scrollTo) return;
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => scrollTo(link.scrollTo!), 100);
+    } else {
+      scrollTo(link.scrollTo);
+    }
   };
 
   const handleLogout = () => {
