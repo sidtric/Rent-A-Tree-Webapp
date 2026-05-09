@@ -3,35 +3,68 @@ import './HowItWorks.css';
 const STEPS = [
   {
     number: '01',
-    title: 'Choose Your Tree',
-    desc: 'Pick a mango variety — Chausa, Dasheri, or Langra — and select your tree size. We have trees for every family.',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22V12" /><path d="M12 12C12 7 7 4 3 6" /><path d="M12 12C12 7 17 4 21 6" />
+        <path d="M3 6c0 5 3 8 9 10" /><path d="M21 6c0 5-3 8-9 10" />
+      </svg>
+    ),
+    title: 'Pick Your Variety & Plan',
+    desc: 'Choose from Chausa, Dasheri, or Langra. Then pick your tree size — Sapling (15–20 kg), Adult (30–45 kg), or Grand (60–80 kg). Every plan is a real, tagged tree on our Ramnagar farm.',
   },
   {
     number: '02',
-    title: 'We Grow & Care',
-    desc: 'Our orchardists in Ramnagar tend your tagged tree all season. You get weekly photos and videos straight to your dashboard.',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" />
+      </svg>
+    ),
+    title: 'Pay & Confirm in Seconds',
+    desc: 'Check out securely via Razorpay — UPI, cards, or net banking. Your booking is confirmed instantly and shows up in your dashboard. No paperwork, no calls.',
   },
   {
     number: '03',
-    title: 'Harvest Delivered',
-    desc: 'When the mangoes are ripe, we handpick and dispatch your harvest within 24 hours — fresh from your tree to your door.',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+        <circle cx="12" cy="13" r="3" />
+      </svg>
+    ),
+    title: 'Watch Your Tree All Season',
+    desc: 'Our orchardists in Ramnagar care for your tree throughout the season. You receive weekly photo and video updates straight from the farm — posted on your dashboard and on Life on the Farm.',
+  },
+  {
+    number: '04',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 12H3l9-9 9 9h-2" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
+        <path d="M10 22v-6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6" />
+      </svg>
+    ),
+    title: 'Harvest Delivered to Your Door',
+    desc: 'When your mangoes are ripe, we handpick them and dispatch within 24 hours — straight from your tree to your doorstep. Free delivery, anywhere in India.',
   },
 ];
 
 export default function HowItWorks() {
+  function scrollToBrowse() {
+    document.getElementById('browse-trees')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
   return (
     <section className="hiw" id="how-it-works">
       <div className="hiw-inner">
         <div className="hiw-header">
           <span className="hiw-label">Simple Process</span>
           <h2 className="hiw-title">How It Works</h2>
-          <p className="hiw-sub">Three steps to owning a harvest without owning a farm.</p>
+          <p className="hiw-sub">Four steps from choosing your tree to eating your mangoes.</p>
         </div>
 
         <div className="hiw-cards">
           {STEPS.map((step, i) => (
             <div key={step.number} className="hiw-card">
               <div className="hiw-card-top">
+                <div className="hiw-icon">{step.icon}</div>
                 <span className="hiw-number">{step.number}</span>
               </div>
               <h3 className="hiw-card-title">{step.title}</h3>
@@ -39,6 +72,11 @@ export default function HowItWorks() {
               {i < STEPS.length - 1 && <div className="hiw-connector" />}
             </div>
           ))}
+        </div>
+
+        <div className="hiw-cta-row">
+          <button className="hiw-cta" onClick={scrollToBrowse}>Browse Trees &amp; Rent Now</button>
+          <p className="hiw-cta-note">Season 2026 · Harvest window May 15 – July 31 · Limited slots</p>
         </div>
       </div>
     </section>
