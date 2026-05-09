@@ -72,6 +72,7 @@ export default function Navbar() {
           {user ? (
             <>
               <span className="navbar-username">Hi, {user.name.split(' ')[0]}</span>
+              <button className="btn-ghost" onClick={() => { setMenuOpen(false); navigate('/dashboard'); }}>Dashboard</button>
               <button className="btn-ghost" onClick={handleLogout}>Logout</button>
             </>
           ) : (
