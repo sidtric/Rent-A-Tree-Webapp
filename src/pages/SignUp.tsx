@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './SignUp.css';
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -13,14 +15,14 @@ export default function SignUp() {
     confirm: '',
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const set = (field: string, value: string) =>
     setForm(f => ({ ...f, [field]: value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
     if (!form.firstName || !form.lastName || !form.email || !form.phone || !form.password) {
       setError('Please fill in all fields.');
       return;
@@ -37,10 +39,15 @@ export default function SignUp() {
       setError('Passwords do not match.');
       return;
     }
-
-    // TODO: call backend /api/auth/register
-    console.log('Register:', form);
-    navigate('/login');
+    setLoading(true);
+    try {
+      await register(`${form.firstName} ${form.lastName}`, form.email, form.password, form.phone);
+      navigate('/');
+    } catch (err: any) {
+      setError(err.message || 'Registration failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -119,7 +126,9 @@ export default function SignUp() {
 
           {error && <p className="signup-error">{error}</p>}
 
-          <button type="submit" className="signup-btn">Create Account</button>
+          <button type="submit" className="signup-btn" disabled={loading}>
+            {loading ? 'Creating account…' : 'Create Account'}
+          </button>
         </form>
 
         <p className="signup-login">

@@ -1,0 +1,51 @@
+import { apiFetch } from './api';
+
+interface RazorpayOrder {
+  orderId: string;
+  amount: number;
+  currency: string;
+  key: string;
+}
+
+interface OpenCheckoutOpts {
+  type: 'rental' | 'box';
+  treeId?: string;
+  variety?: string;
+  quantity?: number;
+  userName: string;
+  userEmail: string;
+  userPhone?: string;
+  onSuccess: (paymentId: string, orderId: string, signature: string) => void;
+  onDismiss?: () => void;
+}
+
+export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
+  const order = await apiFetch<RazorpayOrder>('/api/payments/create-order', {
+    method: 'POST',
+    body: JSON.stringify({ type: opts.type, treeId: opts.treeId, variety: opts.variety, quantity: opts.quantity }),
+  });
+
+  const rzp = new (window as any).Razorpay({
+    key: order.key,
+    amount: order.amount,
+    currency: order.currency,
+    order_id: order.orderId,
+    name: 'YourOrchard',
+    description: opts.type === 'rental' ? 'Tree Rental — Mango Season 2026' : 'Mango Box Prebook',
+    prefill: { name: opts.userName, email: opts.userEmail, contact: opts.userPhone },
+    theme: { color: '#2d5a27' },
+    modal: { ondismiss: opts.onDismiss },
+    handler: async (response: any) => {
+      await apiFetch('/api/payments/verify', {
+        method: 'POST',
+        body: JSON.stringify({
+          razorpayOrderId: response.razorpay_order_id,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpaySignature: response.razorpay_signature,
+        }),
+      });
+      opts.onSuccess(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
+    },
+  });
+  rzp.open();
+}

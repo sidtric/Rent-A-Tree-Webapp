@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
 type NavLink = {
@@ -23,9 +24,16 @@ function scrollTo(id: string) {
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleClick = (link: NavLink) => {
     if (link.scrollTo) scrollTo(link.scrollTo);
+    setMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
     setMenuOpen(false);
   };
 
@@ -54,8 +62,17 @@ export default function Navbar() {
         </ul>
 
         <div className="navbar-auth">
-          <button className="btn-ghost" onClick={() => navigate('/login')}>Login</button>
-          <button className="btn-solid" onClick={() => navigate('/signup')}>Sign Up</button>
+          {user ? (
+            <>
+              <span className="navbar-username">Hi, {user.name.split(' ')[0]}</span>
+              <button className="btn-ghost" onClick={handleLogout}>Logout</button>
+            </>
+          ) : (
+            <>
+              <button className="btn-ghost" onClick={() => navigate('/login')}>Login</button>
+              <button className="btn-solid" onClick={() => navigate('/signup')}>Sign Up</button>
+            </>
+          )}
         </div>
 
         <button className="navbar-hamburger" onClick={() => setMenuOpen(o => !o)}>

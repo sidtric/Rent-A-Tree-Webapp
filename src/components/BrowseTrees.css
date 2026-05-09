@@ -50,6 +50,22 @@
   border-radius: 999px;
   font-size: 13px;
   color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.bt-variety-tag:hover { border-color: #2d5a27; color: #2d5a27; }
+.bt-variety-tag.active { background: #2d5a27; border-color: #2d5a27; color: #fff; }
+
+.bt-success {
+  background: #edf7ec;
+  border: 1px solid #a8d5a2;
+  color: #2d5a27;
+  border-radius: 10px;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .bt-cards {

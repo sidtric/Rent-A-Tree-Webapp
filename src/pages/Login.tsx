@@ -1,26 +1,34 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const set = (field: string, value: string) =>
     setForm(f => ({ ...f, [field]: value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
     if (!form.email || !form.password) {
       setError('Please fill in all fields.');
       return;
     }
-
-    // TODO: call backend /api/auth/login
-    console.log('Login:', form);
+    setLoading(true);
+    try {
+      await login(form.email, form.password);
+      navigate('/');
+    } catch (err: any) {
+      setError(err.message || 'Login failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,7 +62,9 @@ export default function Login() {
 
           {error && <p className="login-error">{error}</p>}
 
-          <button type="submit" className="login-btn">Log In</button>
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? 'Logging in…' : 'Log In'}
+          </button>
         </form>
 
         <p className="login-signup">

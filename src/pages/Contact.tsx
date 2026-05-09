@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { apiFetch } from '../lib/api';
 import './Contact.css';
 
 const INFO = [
@@ -30,16 +31,22 @@ export default function Contact() {
   const set = (field: string, value: string) =>
     setForm(f => ({ ...f, [field]: value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (!form.name || !form.email || !form.message) {
       setError('Please fill in all required fields.');
       return;
     }
-    // TODO: call backend /api/contact
-    console.log('Contact form:', form);
-    setSent(true);
+    try {
+      await apiFetch('/api/contact', {
+        method: 'POST',
+        body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
+      });
+      setSent(true);
+    } catch (err: any) {
+      setError(err.message || 'Failed to send message. Please try again.');
+    }
   };
 
   return (

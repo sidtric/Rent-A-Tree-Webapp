@@ -1,3 +1,9 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { openRazorpayCheckout } from '../lib/razorpay';
+import { apiFetch } from '../lib/api';
+import CheckoutModal from './CheckoutModal';
 import './MangoBoxes.css';
 
 const BOXES = [
@@ -7,6 +13,7 @@ const BOXES = [
     weight: '10 kg',
     price: 1299,
     available: 'May 15',
+    badge: 'Jewel of Ramnagar',
     desc: 'Velvety smooth, saffron-hued, and intensely sweet. Grown in our Ramnagar bagiche and harvested at peak ripeness.',
     img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=80',
   },
@@ -16,6 +23,7 @@ const BOXES = [
     weight: '10 kg',
     price: 1499,
     available: 'June 1',
+    badge: "People's Favourite",
     desc: 'Honey-sweet, thin-skinned, and loved across India. Plucked fresh from our orchard at peak ripeness.',
     img: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=600&q=80',
   },
@@ -25,12 +33,61 @@ const BOXES = [
     weight: '10 kg',
     price: 1399,
     available: 'June 10',
+    badge: 'Most Fulfilling',
     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar orchard and you will be fully satisfied.',
     img: 'https://images.unsplash.com/photo-1519096845289-95806ee03a1a?w=600&q=80',
   },
 ];
 
 export default function MangoBoxes() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [checkoutBox, setCheckoutBox] = useState<typeof BOXES[0] | null>(null);
+  const [paying, setPaying] = useState(false);
+  const [success, setSuccess] = useState('');
+
+  function handlePrebook(box: typeof BOXES[0]) {
+    if (!user) { navigate('/login'); return; }
+    setCheckoutBox(box);
+    setSuccess('');
+  }
+
+  async function handleConfirm({ deliveryAddress, phone, quantity }: { deliveryAddress: string; phone: string; quantity: number }) {
+    if (!checkoutBox || !user) return;
+    setPaying(true);
+    try {
+      await openRazorpayCheckout({
+        type: 'box',
+        variety: checkoutBox.id,
+        quantity,
+        userName: user.name,
+        userEmail: user.email,
+        userPhone: phone,
+        onSuccess: async (paymentId, orderId) => {
+          await apiFetch('/api/orders', {
+            method: 'POST',
+            body: JSON.stringify({
+              variety: checkoutBox.id,
+              quantity,
+              deliveryAddress,
+              phone,
+              razorpayOrderId: orderId,
+              paymentId,
+            }),
+          });
+          setCheckoutBox(null);
+          setSuccess(checkoutBox.name);
+          setTimeout(() => setSuccess(''), 5000);
+        },
+        onDismiss: () => setPaying(false),
+      });
+    } catch (err: any) {
+      alert(err.message || 'Payment failed. Please try again.');
+    } finally {
+      setPaying(false);
+    }
+  }
+
   return (
     <section className="mb">
       <div className="mb-inner">
@@ -40,6 +97,12 @@ export default function MangoBoxes() {
           <p className="mb-sub">No tree rental needed. Pick your variety and get a fresh 10 kg box delivered from Ramnagar.</p>
           <div className="mb-harvest-note">Harvest starts May 15 — prebook now to reserve yours</div>
         </div>
+
+        {success && (
+          <div className="mb-success">
+            {success} box prebooked! We will dispatch it as soon as the harvest starts.
+          </div>
+        )}
 
         <div className="mb-cards">
           {BOXES.map(box => (
@@ -55,12 +118,11 @@ export default function MangoBoxes() {
                 <p className="mb-card-desc">{box.desc}</p>
                 <div className="mb-card-footer">
                   <div className="mb-card-price">
-                    <span className="mb-price">₹{box.price.toLocaleString()}</span>
+                    <span className="mb-price">₹{box.price.toLocaleString('en-IN')}</span>
                     <span className="mb-price-note">/ box</span>
                   </div>
                   <div className="mb-actions">
-                    <button className="mb-btn-ghost">Add to Cart</button>
-                    <button className="mb-btn-solid">Prebook</button>
+                    <button className="mb-btn-solid" onClick={() => handlePrebook(box)}>Prebook</button>
                   </div>
                 </div>
               </div>
@@ -68,6 +130,17 @@ export default function MangoBoxes() {
           ))}
         </div>
       </div>
+
+      {checkoutBox && (
+        <CheckoutModal
+          mode="box"
+          variety={checkoutBox.id}
+          pricePerBox={checkoutBox.price}
+          loading={paying}
+          onClose={() => setCheckoutBox(null)}
+          onConfirm={handleConfirm}
+        />
+      )}
     </section>
   );
 }
