@@ -11,10 +11,10 @@ const EXPLORE = [
 ];
 
 const LEGAL = [
-  { label: 'Terms & Conditions', href: '#' },
-  { label: 'Privacy Policy', href: '#' },
-  { label: 'Refund & Cancellation', href: '#' },
-  { label: 'Shipping & Delivery', href: '#' },
+  { label: 'Terms & Conditions', href: '/terms' },
+  { label: 'Privacy Policy', href: '/privacy' },
+  { label: 'Refund & Cancellation', href: '/refund' },
+  { label: 'Shipping & Delivery', href: '/shipping' },
 ];
 
 function scrollTo(id: string) {
@@ -80,9 +80,9 @@ export default function Footer() {
         <div className="footer-bottom">
           <p className="footer-copy">© 2026 YourOrchard. All rights reserved.</p>
           <div className="footer-bottom-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Refunds</a>
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+            <a href="/refund">Refunds</a>
           </div>
         </div>
       </div>

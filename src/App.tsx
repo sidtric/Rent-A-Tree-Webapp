@@ -14,6 +14,10 @@ import Contact from './pages/Contact';
 import TreeDetail from './pages/TreeDetail';
 import Dashboard from './pages/Dashboard';
 import FarmLife from './pages/FarmLife';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Refund from './pages/Refund';
+import Shipping from './pages/Shipping';
 
 function Home() {
   return (
@@ -41,6 +45,10 @@ export default function App() {
         <Route path="/trees/:id" element={<TreeDetail />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/farm-life" element={<FarmLife />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/refund" element={<Refund />} />
+        <Route path="/shipping" element={<Shipping />} />
       </Routes>
       <Footer />
     </div>
