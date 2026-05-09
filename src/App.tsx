@@ -13,6 +13,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import TreeDetail from './pages/TreeDetail';
 import Dashboard from './pages/Dashboard';
+import FarmLife from './pages/FarmLife';
 
 function Home() {
   return (
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/trees/:id" element={<TreeDetail />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/farm-life" element={<FarmLife />} />
       </Routes>
       <Footer />
     </div>

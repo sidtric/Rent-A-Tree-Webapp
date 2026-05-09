@@ -13,6 +13,7 @@ const LINKS: NavLink[] = [
   { label: 'Home', scrollTo: 'root-top' },
   { label: 'How It Works', scrollTo: 'how-it-works' },
   { label: 'Pick Your Tree', scrollTo: 'browse-trees' },
+  { label: 'Life on the Farm', href: '/farm-life' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
