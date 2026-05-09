@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_BASE as string;
+const BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:5000';
 
 export async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const token = localStorage.getItem('token');
@@ -10,7 +10,8 @@ export async function apiFetch<T>(path: string, options?: RequestInit): Promise<
       ...options?.headers,
     },
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Request failed');
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : {};
+  if (!res.ok) throw new Error(data.message || `Request failed (${res.status})`);
   return data as T;
 }

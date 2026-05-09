@@ -18,30 +18,36 @@ const VARIETY_LABELS: Record<Variety, string> = {
 const TREES = [
   {
     id: 'sapling',
-    name: 'Sapling',
+    name: 'Base',
+    icon: '🌱',
     size: 'Small Tree',
     yield: '15 – 20 kg',
-    price: 2499,
+    price: 4499,
+    tokenPrice: 799,
     desc: 'Perfect for a small family. One young tree, full season harvest.',
-    img: 'https://images.unsplash.com/photo-1542223616-9de9adb5e3e8?w=600&q=80',
+    img: '/chausa-box.jpg',
   },
   {
     id: 'adult',
-    name: 'Adult',
+    name: 'Mid',
+    icon: '🌿',
     size: 'Mid Tree',
     yield: '30 – 45 kg',
     desc: 'The sweet spot — generous yield, great value for a family of four.',
-    price: 4499,
-    img: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80',
+    price: 6999,
+    tokenPrice: 1499,
+    img: '/dasheri-box.jpg',
   },
   {
     id: 'grand',
-    name: 'Grand',
+    name: 'Big',
+    icon: '🌳',
     size: 'Big Tree',
     yield: '60 – 80 kg',
     desc: 'Maximum yield. Best for large families or gifting boxes to loved ones.',
-    price: 7999,
-    img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
+    price: 9999,
+    tokenPrice: 2499,
+    img: '/langra-box.jpg',
   },
 ];
 
@@ -54,9 +60,7 @@ export default function BrowseTrees() {
   const [success, setSuccess] = useState(false);
 
   function handleRentNow(tree: typeof TREES[0]) {
-    if (!user) { navigate('/login'); return; }
-    setCheckoutTree(tree);
-    setSuccess(false);
+    navigate(`/trees/${tree.id}`);
   }
 
   async function handleConfirm({ deliveryAddress, phone }: { deliveryAddress: string; phone: string; quantity: number }) {
@@ -131,15 +135,16 @@ export default function BrowseTrees() {
                   <span className="bt-card-size">{tree.size}</span>
                   <span className="bt-card-yield">{tree.yield} / season</span>
                 </div>
-                <h3 className="bt-card-name">{tree.name}</h3>
+                <h3 className="bt-card-name"><span className="bt-card-icon">{tree.icon}</span> {tree.name} Tree</h3>
                 <p className="bt-card-desc">{tree.desc}</p>
-                <div className="bt-card-footer">
-                  <div className="bt-card-price">
-                    <span className="bt-price">₹{tree.price.toLocaleString('en-IN')}</span>
-                    <span className="bt-price-note">/ season</span>
-                  </div>
-                  <button className="bt-btn" onClick={() => handleRentNow(tree)}>Rent Now</button>
+                <div className="bt-card-token">
+                  <span className="bt-token-amount">₹{tree.tokenPrice.toLocaleString('en-IN')}</span>
+                  <span className="bt-token-caption">Pre-book token amount due now</span>
                 </div>
+                <div className="bt-card-full-note">
+                  Total ₹{tree.price.toLocaleString('en-IN')} · balance ₹{(tree.price - tree.tokenPrice).toLocaleString('en-IN')} due in 7 days
+                </div>
+                <button className="bt-btn bt-btn-full" onClick={() => handleRentNow(tree)}>Pre-book Now</button>
               </div>
             </div>
           ))}

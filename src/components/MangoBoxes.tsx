@@ -15,7 +15,7 @@ const BOXES = [
     available: 'May 15',
     badge: 'Jewel of Ramnagar',
     desc: 'Velvety smooth, saffron-hued, and intensely sweet. Grown in our Ramnagar bagiche and harvested at peak ripeness.',
-    img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=80',
+    img: '/chausa-box.jpg',
   },
   {
     id: 'dasheri',
@@ -25,7 +25,7 @@ const BOXES = [
     available: 'June 1',
     badge: "People's Favourite",
     desc: 'Honey-sweet, thin-skinned, and loved across India. Plucked fresh from our orchard at peak ripeness.',
-    img: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=600&q=80',
+    img: '/dasheri-box.jpg',
   },
   {
     id: 'langra',
@@ -35,7 +35,7 @@ const BOXES = [
     available: 'June 10',
     badge: 'Most Fulfilling',
     desc: 'Buttery, fiberless, and deeply aromatic. One box from our Ramnagar orchard and you will be fully satisfied.',
-    img: 'https://images.unsplash.com/photo-1519096845289-95806ee03a1a?w=600&q=80',
+    img: '/langra-box.jpg',
   },
 ];
 

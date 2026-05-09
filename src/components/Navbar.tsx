@@ -12,7 +12,7 @@ type NavLink = {
 const LINKS: NavLink[] = [
   { label: 'Home', scrollTo: 'root-top' },
   { label: 'How It Works', scrollTo: 'how-it-works' },
-  { label: 'Browse Trees', scrollTo: 'browse-trees' },
+  { label: 'Pick Your Tree', scrollTo: 'browse-trees' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
