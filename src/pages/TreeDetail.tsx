@@ -21,9 +21,9 @@ interface Tree {
 }
 
 const VARIETY_IMG: Record<Variety, string> = {
-  chausa: '/chausa-box.jpg',
-  dasheri: '/dasheri-box.jpg',
-  langra: '/langra-box.jpg',
+  chausa:  'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&q=80',
+  dasheri: 'https://images.unsplash.com/photo-1542223616-9de9adb5e3e8?w=800&q=80',
+  langra:  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
 };
 
 const VARIETY_LABEL: Record<Variety, string> = {
