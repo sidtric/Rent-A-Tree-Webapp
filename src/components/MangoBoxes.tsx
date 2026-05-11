@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { openRazorpayCheckout } from '../lib/razorpay';
 import { apiFetch } from '../lib/api';
+import { useCart } from '../context/CartContext';
 import CheckoutModal from './CheckoutModal';
 import './MangoBoxes.css';
 
@@ -42,12 +43,13 @@ const BOXES = [
 export default function MangoBoxes() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { addItem } = useCart();
   const [checkoutBox, setCheckoutBox] = useState<typeof BOXES[0] | null>(null);
   const [paying, setPaying] = useState(false);
   const [success, setSuccess] = useState('');
 
   function handlePrebook(box: typeof BOXES[0]) {
-    if (!user) { navigate('/login'); return; }
+    if (!user) { navigate('/login', { state: { from: '/' } }); return; }
     setCheckoutBox(box);
     setSuccess('');
   }
@@ -107,7 +109,36 @@ export default function MangoBoxes() {
         <div className="mb-cards">
           {BOXES.map(box => (
             <div key={box.id} className="mb-card">
-              <div className="mb-card-img" style={{ backgroundImage: `url(${box.img})` }}>
+              <div className="mb-card-img">
+                <div className="mb-box-scene">
+                  {/* Back mangoes */}
+                  <span className="mb-mango mb-mango-back-l">🥭</span>
+                  <span className="mb-mango mb-mango-back-r">🥭</span>
+
+                  {/* The box */}
+                  <div className="mb-box">
+                    <span className="mb-box-dot mb-box-dot-tl" />
+                    <span className="mb-box-dot mb-box-dot-tr" />
+                    <span className="mb-box-dot mb-box-dot-ml" />
+                    <span className="mb-box-dot mb-box-dot-mr" />
+                    <span className="mb-box-dot mb-box-dot-bl" />
+                    <span className="mb-box-dot mb-box-dot-br" />
+                    <div className="mb-box-content">
+                      <div className="mb-box-left">
+                        <img src="/logo.jpeg" alt="YourOrchard" className="mb-box-logo" />
+                        <span className="mb-box-fresh">Farm Fresh</span>
+                        <span className="mb-box-variety">{box.name}<br />Aam</span>
+                        <span className="mb-box-natural">Natural · Chemical Free</span>
+                      </div>
+                      {/* Large mango overlapping out of box */}
+                      <span className="mb-mango-hero">🥭</span>
+                    </div>
+                  </div>
+
+                  {/* Front mangoes on tray */}
+                  <span className="mb-mango mb-mango-front-l">🥭</span>
+                  <span className="mb-mango mb-mango-front-r">🥭</span>
+                </div>
                 <div className="mb-card-tag">Available from {box.available}</div>
               </div>
               <div className="mb-card-body">
@@ -118,10 +149,10 @@ export default function MangoBoxes() {
                 <p className="mb-card-desc">{box.desc}</p>
                 <div className="mb-card-footer">
                   <div className="mb-card-price">
-                    <span className="mb-price">₹{box.price.toLocaleString('en-IN')}</span>
-                    <span className="mb-price-note">/ box</span>
+                    <span className="mb-coming-soon">Coming Soon</span>
                   </div>
                   <div className="mb-actions">
+                    <button className="mb-btn-outline" onClick={() => addItem({ id: `box-${box.id}`, name: box.name, variety: box.id, type: 'box', price: box.price, img: box.img })}>Add to Cart</button>
                     <button className="mb-btn-solid" onClick={() => handlePrebook(box)}>Prebook</button>
                   </div>
                 </div>

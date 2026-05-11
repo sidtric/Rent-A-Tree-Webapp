@@ -66,10 +66,125 @@
 
 .mb-card-img {
   height: 220px;
-  background-size: cover;
-  background-position: center;
   position: relative;
+  background: linear-gradient(135deg, #fef9ee 0%, #fdf0d0 100%);
+  overflow: hidden;
 }
+
+/* Box scene */
+.mb-box-scene {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #f8f8f5 0%, #efefea 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* White cardboard box — tall landscape */
+.mb-box {
+  position: relative;
+  width: 200px;
+  height: 138px;
+  background: #ffffff;
+  border: 1.5px solid #d0d0cc;
+  border-radius: 4px;
+  box-shadow:
+    4px 6px 20px rgba(0,0,0,0.13),
+    inset 0 0 0 1px rgba(255,255,255,0.9);
+  z-index: 2;
+  overflow: visible;
+}
+
+/* Ventilation hole dots */
+.mb-box-dot {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  z-index: 3;
+}
+.mb-box-dot-tl { top:  8px; left:  8px; }
+.mb-box-dot-tr { top:  8px; right: 8px; }
+.mb-box-dot-ml { top: 50%; left:  -5px; transform: translateY(-50%); }
+.mb-box-dot-mr { top: 50%; right: -5px; transform: translateY(-50%); }
+.mb-box-dot-bl { bottom: 8px; left:  8px; }
+.mb-box-dot-br { bottom: 8px; right: 8px; }
+
+/* Box content layout */
+.mb-box-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  overflow: visible;
+}
+
+/* Left text area */
+.mb-box-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.mb-box-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #e0e0e0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin-bottom: 2px;
+}
+
+.mb-box-fresh {
+  font-size: 11px;
+  font-style: italic;
+  color: #888;
+  letter-spacing: 0.2px;
+}
+
+.mb-box-variety {
+  font-size: 18px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.mb-box-natural {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+/* Hero mango overlapping the right side of box and outside */
+.mb-mango-hero {
+  font-size: 82px;
+  line-height: 1;
+  position: absolute;
+  right: -28px;
+  top: 50%;
+  transform: translateY(-52%);
+  filter: drop-shadow(2px 6px 10px rgba(0,0,0,0.18));
+  z-index: 4;
+}
+
+/* Scattered mangoes */
+.mb-mango {
+  position: absolute;
+  line-height: 1;
+  filter: drop-shadow(1px 3px 8px rgba(0,0,0,0.13));
+}
+.mb-mango-back-l { font-size: 38px; top: 12px;  left: 12px;  transform: rotate(25deg);  z-index: 1; }
+.mb-mango-back-r { font-size: 34px; top: 10px;  right: 10px; transform: rotate(-20deg); z-index: 1; }
+.mb-mango-front-l { font-size: 44px; bottom: 2px; left: 20px;  transform: rotate(15deg);  z-index: 3; }
+.mb-mango-front-r { font-size: 40px; bottom: 4px; right: 10px; transform: rotate(-8deg);  z-index: 3; }
 
 .mb-card-tag {
   position: absolute;
@@ -142,6 +257,18 @@
   color: #888;
 }
 
+.mb-coming-soon {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b45309;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 999px;
+  padding: 4px 12px;
+  letter-spacing: 0.3px;
+}
+
 .mb-actions {
   display: flex;
   gap: 8px;
@@ -162,6 +289,19 @@
 .mb-btn-ghost:hover {
   background: #f3f4f6;
 }
+
+.mb-btn-outline {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #fff;
+  color: #111;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.mb-btn-outline:hover { border-color: #2d5a27; color: #2d5a27; }
 
 .mb-btn-solid {
   padding: 8px 16px;

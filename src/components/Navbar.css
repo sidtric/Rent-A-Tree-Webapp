@@ -124,3 +124,34 @@
     display: block;
   }
 }
+
+.navbar-cart {
+  position: relative;
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #333;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.15s;
+}
+.navbar-cart:hover { border-color: #2d5a27; color: #2d5a27; }
+
+.navbar-cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #2d5a27;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}

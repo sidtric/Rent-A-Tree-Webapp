@@ -24,7 +24,7 @@ const INFO = [
 ];
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
 
@@ -125,16 +125,6 @@ export default function Contact() {
                       onChange={e => set('email', e.target.value)}
                     />
                   </div>
-                </div>
-
-                <div className="contact-field">
-                  <label>Subject</label>
-                  <input
-                    type="text"
-                    placeholder="Tree rental enquiry, harvest question…"
-                    value={form.subject}
-                    onChange={e => set('subject', e.target.value)}
-                  />
                 </div>
 
                 <div className="contact-field">

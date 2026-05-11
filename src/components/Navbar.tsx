@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import './Navbar.css';
 
 type NavLink = {
@@ -27,6 +28,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { count, setOpen: openCart } = useCart();
 
   const handleClick = (link: NavLink) => {
     setMenuOpen(false);
@@ -83,6 +85,14 @@ export default function Navbar() {
             </>
           )}
         </div>
+
+        <button className="navbar-cart" onClick={() => openCart(true)} aria-label="Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          {count > 0 && <span className="navbar-cart-badge">{count}</span>}
+        </button>
 
         <button className="navbar-hamburger" onClick={() => setMenuOpen(o => !o)}>
           {menuOpen ? '✕' : '☰'}

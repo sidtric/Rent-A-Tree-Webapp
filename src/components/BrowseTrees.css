@@ -222,6 +222,55 @@
   background: #333;
 }
 
+.bt-single-card {
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+}
+
+.bt-single-card:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.bt-single-img {
+  height: 320px;
+  background-size: cover;
+  background-position: center;
+}
+
+.bt-single-body {
+  padding: 28px;
+}
+
+.bt-single-name {
+  font-size: 26px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.bt-single-desc {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.bt-single-meta {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
 .bt-note {
   text-align: center;
   margin-top: 40px;

@@ -21,9 +21,9 @@ interface Tree {
 }
 
 const VARIETY_IMG: Record<Variety, string> = {
-  chausa:  'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&q=80',
-  dasheri: 'https://images.unsplash.com/photo-1542223616-9de9adb5e3e8?w=800&q=80',
-  langra:  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+  chausa:  '/chausa-tree.jpg',
+  dasheri: '/dasheri-tree.jpg',
+  langra:  '/langra-tree.jpg',
 };
 
 const VARIETY_LABEL: Record<Variety, string> = {
@@ -45,6 +45,7 @@ const VARIETY_CODE: Record<Variety, string> = {
 };
 
 const TIER_NUM: Record<Tier, string> = { Base: '01', Mid: '02', Big: '03' };
+const TIER_TO_PLAN: Record<Tier, string> = { Base: 'sapling', Mid: 'adult', Big: 'grand' };
 
 function buildTrees(): Tree[] {
   const list: Tree[] = [];
@@ -122,6 +123,7 @@ export default function TreeDetail() {
     try {
       await openRazorpayCheckout({
         type: 'rental',
+        plan: TIER_TO_PLAN[tree.tier],
         variety: tree.variety,
         userName: user.name,
         userEmail: user.email,
@@ -191,6 +193,7 @@ export default function TreeDetail() {
               {paying ? 'Processing…' : 'Pre-book Now'}
             </button>
           )}
+
         </div>
       </div>
 
@@ -201,24 +204,27 @@ export default function TreeDetail() {
           {sameVarietyTrees.map(t => {
             const tBooked = booked.includes(t.slug);
             return (
-              <div key={t.slug} className={`td-related-card ${tBooked ? 'is-booked' : ''}`}>
+              <div key={t.slug} className={`td-related-card ${tBooked ? 'is-booked' : ''} ${t.slug === tree.slug ? 'is-current' : ''}`}>
                 <div className="td-related-img" style={{ backgroundImage: `url(${t.img})` }}>
                   {tBooked && <span className="td-related-booked-badge">Booked</span>}
                 </div>
                 <div className="td-related-body">
-                  <div className="td-related-tier-row">
-                    <span className="td-related-tier" style={{ background: TIER_COLOR[t.tier] }}>{t.tier}</span>
-                    <span className="td-related-yield">{t.yield}</span>
+                  <div className="td-plan-header">
+                    <span className="td-plan-name">{t.tier} Tree</span>
+                    <span className={`td-plan-badge td-plan-badge-${t.tier.toLowerCase()}`}>{t.tier}</span>
                   </div>
-                  <p className="td-related-id">{t.id}</p>
-                  <div className="td-related-price">
-                    <span className="td-related-token">₹{t.tokenPrice.toLocaleString('en-IN')}</span>
-                    <span className="td-related-token-note">token</span>
-                  </div>
+                  <p className="td-plan-prebook">Pre-book available</p>
+                  <ul className="td-plan-features">
+                    <li className={`td-plan-highlight td-plan-hl-${t.tier.toLowerCase()}`}>{t.yield} minimum guaranteed</li>
+                    <li>Fresh delivery included</li>
+                    <li>Weekly video updates</li>
+                    <li>Personal nameplate on tree</li>
+                  </ul>
+                  <div className="td-plan-custom">₹{t.tokenPrice.toLocaleString('en-IN')} <span>token · {t.id}</span></div>
                   {tBooked ? (
                     <button className="td-related-btn td-related-btn-disabled" disabled>Tree is booked</button>
                   ) : (
-                    <Link className="td-related-btn" to={`/trees/${t.slug}`}>View &amp; Pre-book →</Link>
+                    <Link className={`td-plan-btn td-plan-btn-${t.tier.toLowerCase()}`} to={`/trees/${t.slug}`}>Pre-book</Link>
                   )}
                 </div>
               </div>

@@ -1,5 +1,9 @@
 import './Hero.css';
 
+function scrollTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+}
+
 export default function Hero() {
   return (
     <section className="hero">
@@ -13,8 +17,8 @@ export default function Hero() {
         <h1 className="hero-heading">Rent a Tree.</h1>
         <p className="hero-sub">Own the harvest without owning the farm. Get fresh mangoes delivered straight from your tree.</p>
         <div className="hero-actions">
-          <button className="hero-btn-primary">Browse Trees</button>
-          <button className="hero-btn-ghost">How It Works</button>
+          <button className="hero-btn-primary" onClick={() => scrollTo('browse-trees')}>Browse Trees</button>
+          <button className="hero-btn-ghost" onClick={() => scrollTo('how-it-works')}>How It Works</button>
         </div>
       </div>
     </section>

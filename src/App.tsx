@@ -7,6 +7,7 @@ import BrowseTrees from './components/BrowseTrees';
 import MangoBoxes from './components/MangoBoxes';
 import TreeVideos from './components/TreeVideos';
 import Footer from './components/Footer';
+import CartDrawer from './components/CartDrawer';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import About from './pages/About';
@@ -36,6 +37,7 @@ export default function App() {
     <div id="root-top">
       <ScrollToTop />
       <Navbar />
+      <CartDrawer />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
