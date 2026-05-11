@@ -1,43 +1,57 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { apiFetch } from '../lib/api';
 import './TreeVideos.css';
 
-const VIDEOS = [
+interface MediaItem {
+  url: string;
+  type: 'image' | 'video';
+}
+
+interface Update {
+  _id: string;
+  caption: string;
+  variety?: string;
+  media: MediaItem[];
+  createdAt: string;
+}
+
+const FALLBACK: Update[] = [
   {
-    id: 1,
-    videoId: 'iO7iQzGQpgY',
-    customer: 'Sharma Family',
-    location: 'Delhi',
-    tree: 'Chausa — Adult Tree',
-    date: 'Week 4 Update',
+    _id: 'f1',
+    caption: 'Chausa trees in full bloom — Week 4 update from our Ramnagar orchard.',
+    variety: 'chausa',
+    media: [{ url: 'https://www.w3schools.com/html/mov_bbb.mp4', type: 'video' }],
+    createdAt: new Date().toISOString(),
   },
   {
-    id: 2,
-    videoId: 'aCZWNNsecdQ',
-    customer: 'Mehta Family',
-    location: 'Mumbai',
-    tree: 'Dasheri — Grand Tree',
-    date: 'Week 6 Update',
-  },
-  {
-    id: 3,
-    videoId: 'jh_ukt8g53c',
-    customer: 'Kapoor Family',
-    location: 'Bengaluru',
-    tree: 'Langra — Sapling',
-    date: 'Week 2 Update',
-  },
-  {
-    id: 4,
-    videoId: 'iO7iQzGQpgY',
-    customer: 'Verma Family',
-    location: 'Pune',
-    tree: 'Chausa — Grand Tree',
-    date: 'Week 8 Update',
+    _id: 'f2',
+    caption: 'Dasheri mangoes setting fruit — looking great this season.',
+    variety: 'dasheri',
+    media: [{ url: 'https://www.w3schools.com/html/movie.mp4', type: 'video' }],
+    createdAt: new Date().toISOString(),
   },
 ];
 
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
 export default function TreeVideos() {
-  const [active, setActive] = useState<(typeof VIDEOS)[0] | null>(null);
+  const [updates, setUpdates] = useState<Update[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [active, setActive] = useState<{ url: string; caption: string } | null>(null);
+
+  useEffect(() => {
+    apiFetch<Update[]>('/api/public-updates')
+      .then(data => {
+        const videos = data.filter(u => u.media.some(m => m.type === 'video'));
+        setUpdates(videos.length > 0 ? videos : FALLBACK);
+      })
+      .catch(() => setUpdates(FALLBACK))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return null;
 
   return (
     <section className="tv">
@@ -49,29 +63,31 @@ export default function TreeVideos() {
         </div>
 
         <div className="tv-grid">
-          {VIDEOS.map(v => (
-            <div
-              key={v.id}
-              className="tv-card"
-              onClick={() => setActive(v)}
-              style={{ backgroundImage: `url(https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg)` }}
-            >
-              <div className="tv-card-overlay" />
-              <div className="tv-play">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="5,3 19,12 5,21" />
-                </svg>
-              </div>
-              <div className="tv-date">{v.date}</div>
-              <div className="tv-card-info">
-                <div className="tv-tree">{v.tree}</div>
-                <div className="tv-customer">
-                  <span className="tv-name">{v.customer}</span>
-                  <span className="tv-loc">{v.location}</span>
+          {updates.map(u => {
+            const video = u.media.find(m => m.type === 'video')!;
+            return (
+              <div
+                key={u._id}
+                className="tv-card tv-card-native"
+                onClick={() => setActive({ url: video.url, caption: u.caption })}
+              >
+                <video src={video.url} className="tv-native-bg" muted preload="metadata" />
+                <div className="tv-card-overlay" />
+                <div className="tv-play">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,3 19,12 5,21" />
+                  </svg>
+                </div>
+                {u.variety && <div className="tv-date">{u.variety.charAt(0).toUpperCase() + u.variety.slice(1)}</div>}
+                <div className="tv-card-info">
+                  <div className="tv-tree">{u.caption}</div>
+                  <div className="tv-customer">
+                    <span className="tv-loc">{formatDate(u.createdAt)}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -80,16 +96,10 @@ export default function TreeVideos() {
           <div className="tv-modal" onClick={e => e.stopPropagation()}>
             <button className="tv-modal-close" onClick={() => setActive(null)}>✕</button>
             <div className="tv-embed-wrap">
-              <iframe
-                src={`https://www.youtube.com/embed/${active.videoId}?autoplay=1`}
-                title={active.tree}
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              />
+              <video src={active.url} controls autoPlay className="tv-native-player" />
             </div>
             <div className="tv-modal-info">
-              <div className="tv-modal-tree">{active.tree}</div>
-              <div className="tv-modal-customer">{active.customer} · {active.location}</div>
+              <div className="tv-modal-tree">{active.caption}</div>
             </div>
           </div>
         </div>

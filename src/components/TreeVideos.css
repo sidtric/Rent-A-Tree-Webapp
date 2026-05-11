@@ -183,6 +183,30 @@
   border: none;
 }
 
+/* native video card */
+.tv-card-native {
+  background: #111;
+}
+
+.tv-native-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* native video in modal */
+.tv-native-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
 .tv-modal-info {
   padding: 16px 20px;
 }
