@@ -128,26 +128,6 @@ export default function About() {
         </div>
       </section>
 
-      <section className="about-team">
-        <div className="about-team-inner">
-          <div className="about-team-header">
-            <span className="about-label">The Team</span>
-            <h2>People behind YourOrchard</h2>
-          </div>
-          <div className="about-team-grid">
-            {TEAM.map(person => (
-              <div key={person.name} className="about-team-card">
-                <div className="about-team-avatar">{person.name[0]}</div>
-                <div className="about-team-info">
-                  <div className="about-team-name">{person.name}</div>
-                  <div className="about-team-role">{person.role}</div>
-                  <p className="about-team-bg">{person.bg}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
     </div>
   );

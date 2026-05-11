@@ -54,7 +54,7 @@ export default function MangoBoxes() {
     setSuccess('');
   }
 
-  async function handleConfirm({ deliveryAddress, phone, quantity }: { deliveryAddress: string; phone: string; quantity: number }) {
+  async function handleConfirm({ name, email, phone, deliveryAddress, quantity }: { name: string; email: string; phone: string; deliveryAddress: string; quantity: number }) {
     if (!checkoutBox || !user) return;
     setPaying(true);
     try {
@@ -62,8 +62,8 @@ export default function MangoBoxes() {
         type: 'box',
         variety: checkoutBox.id,
         quantity,
-        userName: user.name,
-        userEmail: user.email,
+        userName: name,
+        userEmail: email,
         userPhone: phone,
         onSuccess: async (paymentId, orderId) => {
           await apiFetch('/api/orders', {
@@ -71,8 +71,10 @@ export default function MangoBoxes() {
             body: JSON.stringify({
               variety: checkoutBox.id,
               quantity,
-              deliveryAddress,
+              name,
+              email,
               phone,
+              deliveryAddress,
               razorpayOrderId: orderId,
               paymentId,
             }),
@@ -111,33 +113,7 @@ export default function MangoBoxes() {
             <div key={box.id} className="mb-card">
               <div className="mb-card-img">
                 <div className="mb-box-scene">
-                  {/* Back mangoes */}
-                  <span className="mb-mango mb-mango-back-l">🥭</span>
-                  <span className="mb-mango mb-mango-back-r">🥭</span>
-
-                  {/* The box */}
-                  <div className="mb-box">
-                    <span className="mb-box-dot mb-box-dot-tl" />
-                    <span className="mb-box-dot mb-box-dot-tr" />
-                    <span className="mb-box-dot mb-box-dot-ml" />
-                    <span className="mb-box-dot mb-box-dot-mr" />
-                    <span className="mb-box-dot mb-box-dot-bl" />
-                    <span className="mb-box-dot mb-box-dot-br" />
-                    <div className="mb-box-content">
-                      <div className="mb-box-left">
-                        <img src="/logo.jpeg" alt="YourOrchard" className="mb-box-logo" />
-                        <span className="mb-box-fresh">Farm Fresh</span>
-                        <span className="mb-box-variety">{box.name}<br />Aam</span>
-                        <span className="mb-box-natural">Natural · Chemical Free</span>
-                      </div>
-                      {/* Large mango overlapping out of box */}
-                      <span className="mb-mango-hero">🥭</span>
-                    </div>
-                  </div>
-
-                  {/* Front mangoes on tray */}
-                  <span className="mb-mango mb-mango-front-l">🥭</span>
-                  <span className="mb-mango mb-mango-front-r">🥭</span>
+                  <img src="/mango-crate.png" alt="Mango crate" className="mb-crate-photo" />
                 </div>
                 <div className="mb-card-tag">Available from {box.available}</div>
               </div>

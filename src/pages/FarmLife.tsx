@@ -65,26 +65,44 @@ export default function FarmLife() {
 
   return (
     <div className="fl">
-      <div className="fl-inner">
-        <div className="fl-header">
-          <span className="fl-label">From the Orchard</span>
-          <h1 className="fl-title">Life on the Farm</h1>
-          <p className="fl-sub">Peek inside our Ramnagar orchard — updates, harvests, and everyday moments from the bagiche.</p>
+      {/* ── Hero ── */}
+      <div className="fl-hero">
+        <div className="fl-hero-overlay" />
+        <div className="fl-hero-content">
+          <span className="fl-location-pill">Ramnagar, Uttarakhand</span>
+          <h1 className="fl-hero-title">Life on the Farm</h1>
+          <p className="fl-hero-sub">
+            Step inside our orchard. This is where your mangoes grow, ripen, and begin their journey to you.
+          </p>
+          <div className="fl-hero-divider" />
+          <span className="fl-bagiche-pill">Our Bagiche</span>
+          <h2 className="fl-orchard-title">
+            A Living, <span className="fl-orchard-green">Breathing Orchard</span>
+          </h2>
+          <p className="fl-orchard-para">
+            Nestled in the foothills of the Himalayas, our orchard in Ramnagar sits at the edge of Corbett country. The soil is rich, the water is clean, and the air carries the scent of mango blossoms every spring.
+          </p>
+          <p className="fl-orchard-para">
+            Our orchardists have been growing mangoes here for two generations — no chemicals, no shortcuts, just traditional farming, patient hands, and deep knowledge of the land.
+          </p>
         </div>
+      </div>
 
-        {loading ? (
-          <div className="fl-loading">
-            <div className="fl-spinner" />
-          </div>
-        ) : updates.length === 0 ? (
-          <div className="fl-empty">
-            <p>Updates coming soon — we're getting the camera ready. 🌿</p>
-          </div>
-        ) : (
-          <div className="fl-grid">
-            {updates.map(u => <UpdateCard key={u._id} update={u} />)}
-          </div>
-        )}
+      {/* ── Updates grid ── */}
+      <div className="fl-updates">
+        <div className="fl-updates-inner">
+          {loading ? (
+            <div className="fl-loading"><div className="fl-spinner" /></div>
+          ) : updates.length === 0 ? (
+            <div className="fl-empty">
+              <p>Updates coming soon — we're getting the camera ready. 🌿</p>
+            </div>
+          ) : (
+            <div className="fl-grid">
+              {updates.map(u => <UpdateCard key={u._id} update={u} />)}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
