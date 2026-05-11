@@ -12,6 +12,7 @@ interface Rental {
   deliveryAddress: string;
   status: 'pending_payment' | 'active' | 'completed' | 'cancelled';
   createdAt: string;
+  user?: { name: string };
 }
 
 interface BoxOrder {
@@ -63,6 +64,9 @@ export default function Dashboard() {
   const [orders, setOrders] = useState<BoxOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [rentalView, setRentalView] = useState<'mine' | 'all'>('mine');
+  const [allRentals, setAllRentals] = useState<Rental[]>([]);
+  const [allLoading, setAllLoading] = useState(false);
 
   useEffect(() => {
     if (!user) { navigate('/login', { state: { from: '/dashboard' } }); return; }
@@ -74,6 +78,20 @@ export default function Dashboard() {
       setOrders(o);
     }).finally(() => setLoading(false));
   }, [user, navigate]);
+
+  async function handleViewAll() {
+    setRentalView('all');
+    if (allRentals.length > 0) return;
+    setAllLoading(true);
+    try {
+      const data = await apiFetch<Rental[]>('/api/rentals/all');
+      setAllRentals(data);
+    } catch {
+      // silently fail
+    } finally {
+      setAllLoading(false);
+    }
+  }
 
   async function handleCancelRental(id: string) {
     if (!confirm('Cancel this rental? This cannot be undone.')) return;
@@ -133,12 +151,71 @@ export default function Dashboard() {
         {/* Rentals */}
         <section className="dash-section">
           <div className="dash-section-header">
-            <span className="dash-section-label">Season Plans</span>
-            <h2 className="dash-section-title">My Tree Rentals</h2>
-            <p className="dash-section-sub">Your tagged trees in Ramnagar, tended by our orchardists all season.</p>
+            <div className="dash-section-top">
+              <div>
+                <span className="dash-section-label">Season Plans</span>
+                <h2 className="dash-section-title">
+                  {rentalView === 'mine' ? 'My Tree Rentals' : 'All Trees in the Orchard'}
+                </h2>
+                <p className="dash-section-sub">
+                  {rentalView === 'mine'
+                    ? 'Your tagged trees in Ramnagar, tended by our orchardists all season.'
+                    : 'Every active tree rented this season across all orchard members.'}
+                </p>
+              </div>
+              <div className="dash-view-toggle">
+                <button
+                  className={`dash-toggle-btn ${rentalView === 'mine' ? 'active' : ''}`}
+                  onClick={() => setRentalView('mine')}
+                >
+                  My Trees
+                </button>
+                <button
+                  className={`dash-toggle-btn ${rentalView === 'all' ? 'active' : ''}`}
+                  onClick={handleViewAll}
+                >
+                  All Orchard Trees
+                </button>
+              </div>
+            </div>
           </div>
 
-          {rentals.length === 0 ? (
+          {rentalView === 'all' ? (
+            allLoading ? (
+              <div className="dash-loading-inline"><div className="dash-spinner" /></div>
+            ) : allRentals.length === 0 ? (
+              <div className="dash-empty">
+                <h3 className="dash-empty-title">No active trees yet</h3>
+                <p className="dash-empty-desc">Be the first to rent a tree this season.</p>
+              </div>
+            ) : (
+              <div className="dash-cards">
+                {allRentals.map(r => {
+                  const plan = PLAN_META[r.plan];
+                  const variety = VARIETY_META[r.variety];
+                  const ownerFirst = r.user?.name?.split(' ')[0] ?? 'A member';
+                  return (
+                    <div key={r._id} className="dash-card">
+                      <div className="dash-card-img" style={{ backgroundImage: `url(${plan.img})` }}>
+                        <span className="dash-card-badge badge-green">Active</span>
+                      </div>
+                      <div className="dash-card-body">
+                        <div className="dash-card-meta">
+                          <span className="dash-card-size">{plan.size}</span>
+                          <span className="dash-card-yield">{plan.yield} / season</span>
+                        </div>
+                        <h3 className="dash-card-name">{plan.label}</h3>
+                        <p className="dash-card-variety">{variety.label} · Season {r.season}</p>
+                        <div className="dash-card-footer">
+                          <span className="dash-card-date">Owned by {ownerFirst}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )
+          ) : rentals.length === 0 ? (
             <div className="dash-empty">
               <div className="dash-empty-icon">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2d5a27" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

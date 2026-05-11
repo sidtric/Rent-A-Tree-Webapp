@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -8,6 +8,7 @@ type NavLink = {
   label: string;
   scrollTo?: string;
   href?: string;
+  dropdown?: { label: string; href: string }[];
 };
 
 const LINKS: NavLink[] = [
@@ -17,6 +18,15 @@ const LINKS: NavLink[] = [
   { label: 'Life on the Farm', href: '/farm-life' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
+  {
+    label: 'Shop',
+    href: '/shop',
+    dropdown: [
+      { label: 'Rent a Tree', href: '/shop#rent-a-tree' },
+      { label: 'Mango Box', href: '/shop#mango-boxes' },
+      { label: 'Litchi', href: '/shop#litchi' },
+    ],
+  },
 ];
 
 function scrollTo(id: string) {
@@ -25,6 +35,8 @@ function scrollTo(id: string) {
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [shopOpen, setShopOpen] = useState(false);
+  const shopRef = useRef<HTMLLIElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
@@ -59,14 +71,31 @@ export default function Navbar() {
 
         <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           {LINKS.map(link => (
-            <li key={link.label}>
+            <li
+              key={link.label}
+              ref={link.dropdown ? shopRef : undefined}
+              className={link.dropdown ? 'navbar-dropdown-parent' : undefined}
+              onMouseEnter={link.dropdown ? () => setShopOpen(true) : undefined}
+              onMouseLeave={link.dropdown ? () => setShopOpen(false) : undefined}
+            >
               <a
                 href={link.scrollTo ? undefined : link.href}
-                onClick={link.scrollTo ? () => handleClick(link) : undefined}
-                style={link.scrollTo ? { cursor: 'pointer' } : undefined}
+                onClick={link.scrollTo ? () => handleClick(link) : link.dropdown ? (e) => { e.preventDefault(); setShopOpen(o => !o); } : undefined}
+                style={link.scrollTo || link.dropdown ? { cursor: 'pointer' } : undefined}
+                className={link.dropdown ? 'navbar-dropdown-toggle' : undefined}
               >
                 {link.label}
+                {link.dropdown && <span className="navbar-dropdown-arrow">▾</span>}
               </a>
+              {link.dropdown && shopOpen && (
+                <ul className="navbar-dropdown">
+                  {link.dropdown.map(item => (
+                    <li key={item.label}>
+                      <a href={item.href} onClick={() => { setShopOpen(false); setMenuOpen(false); }}>{item.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>

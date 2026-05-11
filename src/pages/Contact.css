@@ -2,30 +2,30 @@
   background: #fff;
 }
 
-.contact-label {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #888;
-  margin-bottom: 14px;
-}
-
 /* Hero */
 .contact-hero {
-  padding: 80px 24px 64px;
-  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #1a3a16 0%, #2d5a27 60%, #3d7a34 100%);
+  padding: 80px 24px 72px;
 }
 
 .contact-hero-inner {
   max-width: 720px;
 }
 
+.contact-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 14px;
+}
+
 .contact-title {
   font-size: clamp(32px, 5vw, 52px);
   font-weight: 800;
-  color: #111;
+  color: #fff;
   letter-spacing: -1.5px;
   line-height: 1.1;
   margin-bottom: 16px;
@@ -33,13 +33,14 @@
 
 .contact-sub {
   font-size: 17px;
-  color: #666;
+  color: rgba(255,255,255,0.75);
   line-height: 1.65;
 }
 
 /* Body */
 .contact-body {
   padding: 72px 24px 96px;
+  background: #f8faf7;
 }
 
 .contact-body-inner {
@@ -51,25 +52,32 @@
   align-items: start;
 }
 
-/* Info */
+/* Info cards */
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .contact-info-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #dde8db;
+  border-radius: 12px;
   padding: 22px 20px;
+  border-left: 4px solid #2d5a27;
+  transition: box-shadow 0.15s;
+}
+
+.contact-info-card:hover {
+  box-shadow: 0 4px 16px rgba(45,90,39,0.1);
 }
 
 .contact-info-title {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: #aaa;
+  color: #2d5a27;
   margin-bottom: 6px;
 }
 
@@ -83,26 +91,31 @@
 }
 
 a.contact-info-detail:hover {
+  color: #2d5a27;
   text-decoration: underline;
 }
 
 .contact-info-sub {
   font-size: 13px;
-  color: #999;
+  color: #888;
 }
 
+/* FAQ */
 .contact-faq {
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #dde8db;
+  border-radius: 12px;
   padding: 24px 20px;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .contact-faq h3 {
   font-size: 14px;
   font-weight: 700;
-  color: #111;
+  color: #2d5a27;
   margin-bottom: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
 .contact-faq-list {
@@ -113,7 +126,7 @@ a.contact-info-detail:hover {
 
 .contact-faq-item {
   padding-bottom: 16px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid #edf5ec;
 }
 
 .contact-faq-item:last-child {
@@ -124,22 +137,23 @@ a.contact-info-detail:hover {
 .contact-faq-q {
   font-size: 13px;
   font-weight: 600;
-  color: #333;
+  color: #1a1a1a;
   margin-bottom: 4px;
 }
 
 .contact-faq-a {
   font-size: 13px;
-  color: #777;
+  color: #666;
   line-height: 1.6;
 }
 
 /* Form */
 .contact-form-wrap {
-  background: #fafafa;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #dde8db;
+  border-radius: 16px;
   padding: 40px;
+  box-shadow: 0 4px 24px rgba(45,90,39,0.07);
 }
 
 .contact-form-title {
@@ -182,8 +196,8 @@ a.contact-info-detail:hover {
 .contact-field textarea {
   padding: 10px 14px;
   font-size: 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 7px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
   outline: none;
   transition: border-color 0.15s;
   background: #fff;
@@ -194,7 +208,7 @@ a.contact-info-detail:hover {
 
 .contact-field input:focus,
 .contact-field textarea:focus {
-  border-color: #111;
+  border-color: #2d5a27;
 }
 
 .contact-error {
@@ -207,19 +221,20 @@ a.contact-info-detail:hover {
 }
 
 .contact-btn {
-  padding: 12px;
+  padding: 13px;
   font-size: 15px;
-  font-weight: 600;
-  background: #111;
+  font-weight: 700;
+  background: #2d5a27;
   color: #fff;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.15s;
+  letter-spacing: 0.01em;
 }
 
 .contact-btn:hover {
-  background: #333;
+  background: #1e3d1a;
 }
 
 /* Success */
@@ -229,16 +244,17 @@ a.contact-info-detail:hover {
 }
 
 .contact-success-icon {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: #111;
-  color: #fff;
-  font-size: 22px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 20px;
+  border: 2px solid #86efac;
 }
 
 .contact-success h3 {

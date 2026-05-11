@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { openRazorpayCheckout } from '../lib/razorpay';
 import { apiFetch } from '../lib/api';
+import CheckoutModal from '../components/CheckoutModal';
 import './TreeDetail.css';
 
 type Variety = 'chausa' | 'dasheri' | 'langra';
@@ -93,6 +94,7 @@ export default function TreeDetail() {
   const [paying, setPaying] = useState(false);
   const [successFor, setSuccessFor] = useState<string | null>(null);
   const [booked, setBooked] = useState<string[]>(getBooked);
+  const [showCheckout, setShowCheckout] = useState(false);
   const [balanceDate] = useState(() =>
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', {
       day: 'numeric', month: 'short', year: 'numeric',
@@ -116,32 +118,35 @@ export default function TreeDetail() {
   const sameVarietyTrees = TREES.filter(t => t.variety === tree.variety);
   const isBooked = booked.includes(tree.slug);
 
-  async function handlePrebook() {
+  function handlePrebook() {
     if (!user) { navigate('/login'); return; }
     if (!tree || isBooked) return;
+    setShowCheckout(true);
+  }
+
+  async function handleConfirm({ name, email, phone, deliveryAddress }: { name: string; email: string; phone: string; deliveryAddress: string; quantity: number }) {
+    if (!tree) return;
     setPaying(true);
     try {
       await openRazorpayCheckout({
         type: 'rental',
         plan: TIER_TO_PLAN[tree.tier],
         variety: tree.variety,
-        userName: user.name,
-        userEmail: user.email,
-        userPhone: '',
+        userName: name,
+        userEmail: email,
+        userPhone: phone,
         onSuccess: async (paymentId, orderId) => {
           await apiFetch('/api/rentals', {
             method: 'POST',
             body: JSON.stringify({
-              tree: tree.id,
+              plan: TIER_TO_PLAN[tree.tier],
               variety: tree.variety,
-              tier: tree.tier,
-              deliveryAddress: 'To be confirmed',
+              deliveryAddress,
               razorpayOrderId: orderId,
               paymentId,
-              tokenPaid: tree.tokenPrice,
-              balanceDue: balance,
             }),
           });
+          setShowCheckout(false);
           addBooked(tree.slug);
           setBooked(getBooked());
           setSuccessFor(tree.slug);
@@ -232,6 +237,18 @@ export default function TreeDetail() {
           })}
         </div>
       </section>
+
+      {showCheckout && (
+        <CheckoutModal
+          mode="rental"
+          treeName={`${tree.varietyLabel} ${tree.tier} Tree`}
+          variety={tree.variety}
+          price={tree.tokenPrice}
+          loading={paying}
+          onClose={() => setShowCheckout(false)}
+          onConfirm={handleConfirm}
+        />
+      )}
 
       <section className="td-description">
         <h2 className="td-description-title">Description</h2>

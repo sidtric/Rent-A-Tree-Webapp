@@ -119,6 +119,51 @@
   margin: 0;
 }
 
+/* ── Section top row (title + toggle) ───────────── */
+.dash-section-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.dash-view-toggle {
+  display: flex;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.dash-toggle-btn {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.dash-toggle-btn + .dash-toggle-btn {
+  border-left: 1px solid #e5e7eb;
+}
+
+.dash-toggle-btn.active {
+  background: #2d5a27;
+  color: #fff;
+}
+
+.dash-loading-inline {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
 /* ── Cards grid ──────────────────────────────────── */
 .dash-cards {
   display: grid;

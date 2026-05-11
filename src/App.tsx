@@ -19,6 +19,7 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Refund from './pages/Refund';
 import Shipping from './pages/Shipping';
+import Shop from './pages/Shop';
 
 function Home() {
   return (
@@ -51,6 +52,7 @@ export default function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/refund" element={<Refund />} />
         <Route path="/shipping" element={<Shipping />} />
+        <Route path="/shop" element={<Shop />} />
       </Routes>
       <Footer />
     </div>

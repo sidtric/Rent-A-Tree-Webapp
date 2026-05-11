@@ -34,7 +34,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (existing) return prev.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i);
       return [...prev, { ...item, qty: 1 }];
     });
-    setOpen(true);
   }
 
   function removeItem(id: string) {
