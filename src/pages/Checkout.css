@@ -33,6 +33,114 @@
 .chk-summary-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .chk-item-name { font-size: 0.9375rem; color: #1a1a1a; font-weight: 500; }
 .chk-item-price { font-size: 0.9375rem; color: #1a1a1a; font-weight: 600; }
+
+/* ── Cart items ── */
+.chk-cart-items { display: flex; flex-direction: column; gap: 14px; margin-bottom: 4px; }
+
+.chk-cart-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chk-cart-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: #edf5ec;
+  flex-shrink: 0;
+  border: 1px solid #dde8db;
+}
+
+.chk-cart-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.chk-cart-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chk-cart-sub {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+.chk-cart-price {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2d5a27;
+  margin-top: 4px;
+}
+
+.chk-cart-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.chk-qty {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1.5px solid #dde8db;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.chk-qty button {
+  width: 28px;
+  height: 28px;
+  background: #f6f9f5;
+  border: none;
+  font-size: 16px;
+  color: #2d5a27;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chk-qty button:hover { background: #edf5ec; }
+
+.chk-qty span {
+  width: 28px;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: #fff;
+  border-left: 1.5px solid #dde8db;
+  border-right: 1.5px solid #dde8db;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chk-remove {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #bbb;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.chk-remove:hover { color: #e53e3e; }
 .chk-summary-line { display: flex; justify-content: space-between; font-size: 0.9375rem; color: #444; padding: 2px 0; }
 .chk-free { color: #2d5a27; font-weight: 600; }
 .chk-summary-total { display: flex; justify-content: space-between; font-size: 1.125rem; font-weight: 800; color: #1a1a1a; padding: 4px 0; }
