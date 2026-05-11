@@ -58,8 +58,9 @@ export default function FarmLife() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch('/api/public-updates')
-      .then((data) => setUpdates(data as Update[]))
+    apiFetch<Update[]>('/api/public-updates')
+      .then(setUpdates)
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
