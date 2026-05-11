@@ -42,7 +42,7 @@ export default function CheckoutModal(props: CheckoutModalProps) {
     e.preventDefault();
     setErr('');
     if (!name.trim())                                return setErr('Please enter your full name.');
-    if (!email.trim() || !email.includes('@'))        return setErr('Please enter a valid email address.');
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErr('Please enter a valid email address.');
     if (!phone.trim() || !/^\d{10}$/.test(phone))    return setErr('Enter a valid 10-digit phone number.');
     if (!flat.trim())                                return setErr('Please enter your flat / house number.');
     if (!street.trim())                              return setErr('Please enter your street / area.');

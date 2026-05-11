@@ -341,6 +341,97 @@
   background: #333;
 }
 
+/* ── Your Tree This Week ─────────────────────────── */
+.dash-updates-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dash-update-featured {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  position: relative;
+  max-height: 480px;
+}
+
+.dash-update-media {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+.dash-update-caption {
+  padding: 16px 20px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.dash-update-caption p {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+}
+
+.dash-update-date {
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.dash-update-thumbs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dash-update-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  background: #e5e7eb;
+  transition: border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.dash-update-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dash-update-thumb.active {
+  border-color: #2d5a27;
+}
+
+.dash-thumb-video-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 20px;
+}
+
 /* ── Loading ─────────────────────────────────────── */
 .dash-loading {
   display: flex;

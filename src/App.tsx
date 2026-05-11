@@ -6,6 +6,7 @@ import HowItWorks from './components/HowItWorks';
 import BrowseTrees from './components/BrowseTrees';
 import MangoBoxes from './components/MangoBoxes';
 import TreeVideos from './components/TreeVideos';
+import Reviews from './components/Reviews';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import SignUp from './pages/SignUp';
@@ -20,6 +21,8 @@ import Privacy from './pages/Privacy';
 import Refund from './pages/Refund';
 import Shipping from './pages/Shipping';
 import Shop from './pages/Shop';
+import Checkout from './pages/Checkout';
+import NotFound from './pages/NotFound';
 
 function Home() {
   return (
@@ -29,6 +32,7 @@ function Home() {
       <BrowseTrees />
       <MangoBoxes />
       <TreeVideos />
+      <Reviews />
     </>
   );
 }
@@ -53,6 +57,8 @@ export default function App() {
         <Route path="/refund" element={<Refund />} />
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </div>

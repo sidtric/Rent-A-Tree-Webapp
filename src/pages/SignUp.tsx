@@ -23,8 +23,12 @@ export default function SignUp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!form.firstName || !form.lastName || !form.email || !form.phone || !form.password) {
+    if (!form.firstName.trim() || !form.lastName.trim() || !form.email || !form.phone || !form.password) {
       setError('Please fill in all fields.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError('Please enter a valid email address.');
       return;
     }
     if (!/^\d{10}$/.test(form.phone)) {

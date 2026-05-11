@@ -34,8 +34,12 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!form.name || !form.email || !form.message) {
+    if (!form.name.trim() || !form.email || !form.message.trim()) {
       setError('Please fill in all required fields.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError('Please enter a valid email address.');
       return;
     }
     try {

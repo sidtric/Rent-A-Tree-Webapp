@@ -22,7 +22,7 @@ const LINKS: NavLink[] = [
     label: 'Shop',
     href: '/shop',
     dropdown: [
-      { label: 'Rent a Tree', href: '/shop#rent-a-tree' },
+      { label: 'Rent a Tree', href: '/shop#browse-trees' },
       { label: 'Mango Box', href: '/shop#mango-boxes' },
       { label: 'Litchi', href: '/shop#litchi' },
     ],
@@ -109,7 +109,7 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <button className="btn-ghost" onClick={() => navigate('/login')}>Login</button>
+              <button className="btn-login" onClick={() => navigate('/login')}>Login</button>
               <button className="btn-solid" onClick={() => navigate('/signup')}>Sign Up</button>
             </>
           )}

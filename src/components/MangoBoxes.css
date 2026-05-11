@@ -200,6 +200,12 @@
   color: #111;
 }
 
+.mb-price-unit {
+  font-size: 13px;
+  color: #888;
+  margin-left: 4px;
+}
+
 .mb-price-note {
   font-size: 13px;
   color: #888;

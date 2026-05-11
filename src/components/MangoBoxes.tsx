@@ -1,10 +1,6 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { openRazorpayCheckout } from '../lib/razorpay';
-import { apiFetch } from '../lib/api';
 import { useCart } from '../context/CartContext';
-import CheckoutModal from './CheckoutModal';
 import './MangoBoxes.css';
 
 const BOXES = [
@@ -43,53 +39,12 @@ const BOXES = [
 export default function MangoBoxes() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { addItem } = useCart();
-  const [checkoutBox, setCheckoutBox] = useState<typeof BOXES[0] | null>(null);
-  const [paying, setPaying] = useState(false);
-  const [success, setSuccess] = useState('');
+  const { addItem, setOpen: openCart } = useCart();
 
   function handlePrebook(box: typeof BOXES[0]) {
     if (!user) { navigate('/login', { state: { from: '/' } }); return; }
-    setCheckoutBox(box);
-    setSuccess('');
-  }
-
-  async function handleConfirm({ name, email, phone, deliveryAddress, quantity }: { name: string; email: string; phone: string; deliveryAddress: string; quantity: number }) {
-    if (!checkoutBox || !user) return;
-    setPaying(true);
-    try {
-      await openRazorpayCheckout({
-        type: 'box',
-        variety: checkoutBox.id,
-        quantity,
-        userName: name,
-        userEmail: email,
-        userPhone: phone,
-        onSuccess: async (paymentId, orderId) => {
-          await apiFetch('/api/orders', {
-            method: 'POST',
-            body: JSON.stringify({
-              variety: checkoutBox.id,
-              quantity,
-              name,
-              email,
-              phone,
-              deliveryAddress,
-              razorpayOrderId: orderId,
-              paymentId,
-            }),
-          });
-          setCheckoutBox(null);
-          setSuccess(checkoutBox.name);
-          setTimeout(() => setSuccess(''), 5000);
-        },
-        onDismiss: () => setPaying(false),
-      });
-    } catch (err: any) {
-      alert(err.message || 'Payment failed. Please try again.');
-    } finally {
-      setPaying(false);
-    }
+    addItem({ id: `box-${box.id}`, name: `${box.name} Mango Box`, variety: box.id, type: 'box', price: box.price, img: box.img });
+    navigate('/checkout');
   }
 
   return (
@@ -101,12 +56,6 @@ export default function MangoBoxes() {
           <p className="mb-sub">No tree rental needed. Pick your variety and get a fresh 10 kg box delivered from Ramnagar.</p>
           <div className="mb-harvest-note">Harvest starts May 15 — prebook now to reserve yours</div>
         </div>
-
-        {success && (
-          <div className="mb-success">
-            {success} box prebooked! We will dispatch it as soon as the harvest starts.
-          </div>
-        )}
 
         <div className="mb-cards">
           {BOXES.map(box => (
@@ -124,30 +73,22 @@ export default function MangoBoxes() {
                 </div>
                 <p className="mb-card-desc">{box.desc}</p>
                 <div className="mb-card-footer">
-                  <div className="mb-card-price">
-                    <span className="mb-coming-soon">Coming Soon</span>
-                  </div>
-                  <div className="mb-actions">
-                    <button className="mb-btn-outline" onClick={() => addItem({ id: `box-${box.id}`, name: box.name, variety: box.id, type: 'box', price: box.price, img: box.img })}>Add to Cart</button>
-                    <button className="mb-btn-solid" onClick={() => handlePrebook(box)}>Prebook</button>
-                  </div>
+                  <button
+                    className="mb-btn-outline"
+                    onClick={() => {
+                      addItem({ id: `box-${box.id}`, name: `${box.name} Mango Box`, variety: box.id, type: 'box', price: box.price, img: box.img });
+                      openCart(true);
+                    }}
+                  >
+                    Add to Cart
+                  </button>
+                  <button className="mb-btn-solid" onClick={() => handlePrebook(box)}>Prebook</button>
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-
-      {checkoutBox && (
-        <CheckoutModal
-          mode="box"
-          variety={checkoutBox.id}
-          pricePerBox={checkoutBox.price}
-          loading={paying}
-          onClose={() => setCheckoutBox(null)}
-          onConfirm={handleConfirm}
-        />
-      )}
     </section>
   );
 }

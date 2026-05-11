@@ -4,6 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../lib/api';
 import './Dashboard.css';
 
+interface TreeUpdate {
+  _id: string;
+  caption: string;
+  media: { url: string; type: 'image' | 'video' }[];
+  variety?: string;
+  createdAt: string;
+}
+
 interface Rental {
   _id: string;
   plan: 'sapling' | 'adult' | 'grand';
@@ -58,7 +66,7 @@ function formatDate(iso: string) {
 }
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [orders, setOrders] = useState<BoxOrder[]>([]);
@@ -67,8 +75,12 @@ export default function Dashboard() {
   const [rentalView, setRentalView] = useState<'mine' | 'all'>('mine');
   const [allRentals, setAllRentals] = useState<Rental[]>([]);
   const [allLoading, setAllLoading] = useState(false);
+  const [treeUpdates, setTreeUpdates] = useState<TreeUpdate[]>([]);
+  const [updatesLoading, setUpdatesLoading] = useState(false);
+  const [activeUpdateIdx, setActiveUpdateIdx] = useState(0);
 
   useEffect(() => {
+    if (authLoading) return;
     if (!user) { navigate('/login', { state: { from: '/dashboard' } }); return; }
     Promise.all([
       apiFetch<Rental[]>('/api/rentals/my'),
@@ -76,8 +88,16 @@ export default function Dashboard() {
     ]).then(([r, o]) => {
       setRentals(r);
       setOrders(o);
+      const activeVariety = r.find(x => x.status === 'active')?.variety;
+      if (activeVariety) {
+        setUpdatesLoading(true);
+        apiFetch<TreeUpdate[]>(`/api/public-updates?variety=${activeVariety}`)
+          .then(setTreeUpdates)
+          .catch(() => {})
+          .finally(() => setUpdatesLoading(false));
+      }
     }).finally(() => setLoading(false));
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   async function handleViewAll() {
     setRentalView('all');
@@ -147,6 +167,65 @@ export default function Dashboard() {
       </div>
 
       <div className="dash-body">
+
+        {/* Your Tree This Week */}
+        {(updatesLoading || treeUpdates.length > 0) && (
+          <section className="dash-section">
+            <div className="dash-section-header">
+              <span className="dash-section-label">Live from the Farm</span>
+              <h2 className="dash-section-title">Your Tree This Week</h2>
+              <p className="dash-section-sub">Latest updates from our orchardists in Ramnagar.</p>
+            </div>
+
+            {updatesLoading ? (
+              <div className="dash-loading-inline"><div className="dash-spinner" /></div>
+            ) : (
+              <div className="dash-updates-wrap">
+                {/* Featured */}
+                <div className="dash-update-featured">
+                  {treeUpdates[activeUpdateIdx]?.media[0]?.type === 'video' ? (
+                    <video
+                      src={treeUpdates[activeUpdateIdx].media[0].url}
+                      controls
+                      className="dash-update-media"
+                    />
+                  ) : (
+                    <img
+                      src={treeUpdates[activeUpdateIdx]?.media[0]?.url}
+                      alt={treeUpdates[activeUpdateIdx]?.caption}
+                      className="dash-update-media"
+                    />
+                  )}
+                  <div className="dash-update-caption">
+                    <p>{treeUpdates[activeUpdateIdx]?.caption}</p>
+                    <span className="dash-update-date">
+                      {new Date(treeUpdates[activeUpdateIdx]?.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Thumbnails */}
+                {treeUpdates.length > 1 && (
+                  <div className="dash-update-thumbs">
+                    {treeUpdates.map((u, i) => (
+                      <button
+                        key={u._id}
+                        className={`dash-update-thumb ${i === activeUpdateIdx ? 'active' : ''}`}
+                        onClick={() => setActiveUpdateIdx(i)}
+                      >
+                        {u.media[0]?.type === 'video' ? (
+                          <div className="dash-thumb-video-icon">▶</div>
+                        ) : (
+                          <img src={u.media[0]?.url} alt={u.caption} />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Rentals */}
         <section className="dash-section">
