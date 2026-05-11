@@ -247,6 +247,31 @@
   to { transform: rotate(360deg); }
 }
 
+/* ── Skeleton ── */
+.rv-skeleton {
+  pointer-events: none;
+}
+
+@keyframes rv-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.rv-sk-stars,
+.rv-sk-line,
+.rv-sk-footer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: rv-shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+.rv-sk-stars  { height: 16px; width: 80px; margin-bottom: 14px; }
+.rv-sk-long   { height: 13px; width: 100%; margin-bottom: 8px; }
+.rv-sk-med    { height: 13px; width: 75%; margin-bottom: 8px; }
+.rv-sk-short  { height: 13px; width: 50%; margin-bottom: 20px; }
+.rv-sk-footer { height: 36px; width: 140px; border-radius: 999px; }
+
 /* ── Write modal ── */
 .rv-modal-overlay {
   position: fixed;

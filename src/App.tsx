@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
@@ -37,7 +38,13 @@ function Home() {
   );
 }
 
+const BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:5000';
+
 export default function App() {
+  useEffect(() => {
+    fetch(`${BASE}/health`).catch(() => {});
+  }, []);
+
   return (
     <div id="root-top">
       <ScrollToTop />

@@ -205,7 +205,17 @@ export default function Reviews() {
         )}
 
         {loading ? (
-          <div className="rv-loading"><div className="rv-spinner" /></div>
+          <div className="rv-grid">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="rv-card rv-skeleton">
+                <div className="rv-sk-stars" />
+                <div className="rv-sk-line rv-sk-long" />
+                <div className="rv-sk-line rv-sk-med" />
+                <div className="rv-sk-line rv-sk-short" />
+                <div className="rv-sk-footer" />
+              </div>
+            ))}
+          </div>
         ) : reviews.length === 0 ? (
           <div className="rv-empty">
             <p className="rv-empty-text">No reviews yet. Be the first to share your experience.</p>
