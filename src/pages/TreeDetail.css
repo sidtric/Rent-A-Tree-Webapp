@@ -446,12 +446,12 @@
   cursor: pointer;
   margin-top: auto;
 }
-.td-plan-btn-base { background: #16a34a; color: #fff; }
-.td-plan-btn-base:hover { background: #15803d; }
-.td-plan-btn-mid  { background: #2563eb; color: #fff; }
-.td-plan-btn-mid:hover  { background: #1d4ed8; }
-.td-plan-btn-big  { background: #d97706; color: #fff; }
-.td-plan-btn-big:hover  { background: #b45309; }
+.td-plan-btn-base { background: #2d5a27; color: #fff; }
+.td-plan-btn-base:hover { background: #1e3d1a; }
+.td-plan-btn-mid  { background: #2d5a27; color: #fff; }
+.td-plan-btn-mid:hover  { background: #1e3d1a; }
+.td-plan-btn-big  { background: #2d5a27; color: #fff; }
+.td-plan-btn-big:hover  { background: #1e3d1a; }
 .td-plan-btn-corp { background: #111; color: #fff; }
 .td-plan-btn-corp:hover { background: #333; }
 

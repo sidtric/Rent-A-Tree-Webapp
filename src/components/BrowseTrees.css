@@ -210,7 +210,7 @@
   padding: 9px 20px;
   font-size: 14px;
   font-weight: 600;
-  background: #111;
+  background: #2d5a27;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -219,7 +219,7 @@
 }
 
 .bt-btn:hover {
-  background: #333;
+  background: #1e3d1a;
 }
 
 .bt-single-card {
