@@ -248,20 +248,22 @@ export default function Dashboard() {
                     : 'Every active tree rented this season across all orchard members.'}
                 </p>
               </div>
-              <div className="dash-view-toggle">
-                <button
-                  className={`dash-toggle-btn ${rentalView === 'mine' ? 'active' : ''}`}
-                  onClick={() => setRentalView('mine')}
-                >
-                  My Trees
-                </button>
-                <button
-                  className={`dash-toggle-btn ${rentalView === 'all' ? 'active' : ''}`}
-                  onClick={handleViewAll}
-                >
-                  All Orchard Trees
-                </button>
-              </div>
+              {user?.role === 'admin' && (
+                <div className="dash-view-toggle">
+                  <button
+                    className={`dash-toggle-btn ${rentalView === 'mine' ? 'active' : ''}`}
+                    onClick={() => setRentalView('mine')}
+                  >
+                    My Trees
+                  </button>
+                  <button
+                    className={`dash-toggle-btn ${rentalView === 'all' ? 'active' : ''}`}
+                    onClick={handleViewAll}
+                  >
+                    All Orchard Trees
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

@@ -20,7 +20,7 @@ function NotifyModal({ onClose }: { onClose: () => void }) {
     try {
       await apiFetch('/api/contact', {
         method: 'POST',
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), message: 'Please notify me when Litchi is available.' }),
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), message: 'Please notify me when Litchi is available.', type: 'notify' }),
       });
       setDone(true);
     } catch (e: any) {
