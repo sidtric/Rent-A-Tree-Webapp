@@ -31,8 +31,16 @@ export default function SignUp() {
       setError('Please enter a valid email address.');
       return;
     }
-    if (!/^\d{10}$/.test(form.phone)) {
-      setError('Enter a valid 10-digit phone number.');
+    if (!/^[6-9]\d{9}$/.test(form.phone)) {
+      setError('Enter a valid 10-digit Indian mobile number (must start with 6, 7, 8, or 9).');
+      return;
+    }
+    if (!/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(form.firstName.trim()) || !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(form.lastName.trim())) {
+      setError('First and last name must contain only letters.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError('Please enter a valid email address.');
       return;
     }
     if (form.password.length < 6) {
@@ -70,7 +78,7 @@ export default function SignUp() {
                 type="text"
                
                 value={form.firstName}
-                onChange={e => set('firstName', e.target.value)}
+                onChange={e => set('firstName', e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))}
               />
             </div>
             <div className="signup-field">
@@ -79,7 +87,7 @@ export default function SignUp() {
                 type="text"
                
                 value={form.lastName}
-                onChange={e => set('lastName', e.target.value)}
+                onChange={e => set('lastName', e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))}
               />
             </div>
           </div>

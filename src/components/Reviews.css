@@ -183,6 +183,15 @@
   transform: translateY(-2px);
 }
 
+.rv-card-video {
+  width: 100%;
+  border-radius: 10px;
+  max-height: 200px;
+  object-fit: cover;
+  background: #000;
+  display: block;
+}
+
 .rv-comment {
   font-size: 14.5px;
   color: #374151;
