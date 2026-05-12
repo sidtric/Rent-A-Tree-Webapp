@@ -156,7 +156,7 @@
 .chk-success button { padding: 13px 28px; background: #2d5a27; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; }
 
 @media (max-width: 900px) {
-  .chk-overlay { overflow-y: auto; }
+  .chk-overlay { position: relative; z-index: 1; overflow: visible; }
   .chk-fullscreen { flex-direction: column; height: auto; min-height: 100vh; }
   .chk-left { overflow-y: visible; padding: 28px 24px; }
   .chk-right { flex: none; border-left: none; border-top: 1px solid #e8ede7; }
