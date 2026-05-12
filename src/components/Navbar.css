@@ -193,13 +193,19 @@
     display: none;
   }
 
+  .navbar-inner {
+    padding: 0 16px 0 12px;
+    gap: 0;
+  }
+
   .navbar-cart {
     margin-left: auto;
+    margin-right: 4px;
   }
 
   .navbar-hamburger {
     display: block;
-    margin-left: 8px;
+    margin-left: 4px;
   }
 }
 
