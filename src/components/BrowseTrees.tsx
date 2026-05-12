@@ -33,7 +33,7 @@ export default function BrowseTrees() {
         <div className="bt-header">
           <span className="bt-label">Seasonal Plans</span>
           <h2 className="bt-title">Rent Your Tree</h2>
-          <p className="bt-sub">Choose a variety and pre-book your tree for the 2026 season.</p>
+          <p className="bt-sub">Choose a variety and book your tree for the 2026 season.</p>
         </div>
 
         <div className="bt-variety-row">
@@ -57,7 +57,7 @@ export default function BrowseTrees() {
               <span>📍 Ramnagar, Uttarakhand</span>
               <span>3 sizes available</span>
             </div>
-            <button className="bt-btn bt-btn-full">View Trees &amp; Pre-book →</button>
+            <button className="bt-btn bt-btn-full">View Trees &amp; Book Now →</button>
           </div>
         </div>
 

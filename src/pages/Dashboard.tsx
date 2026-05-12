@@ -325,6 +325,7 @@ export default function Dashboard() {
                 const amounts = PLAN_AMOUNTS[r.plan];
                 const balance = amounts.full - amounts.token;
                 const showBalance = r.status !== 'completed' && r.status !== 'cancelled';
+                const balanceDue = new Date(new Date(r.createdAt).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
                 return (
                   <div key={r._id} className="dash-card">
                     <div className="dash-card-img" style={{ backgroundImage: `url(${plan.img})` }}>
@@ -341,7 +342,7 @@ export default function Dashboard() {
                       {showBalance && (
                         <div className="dash-balance-row">
                           <span className="dash-balance-paid">Token paid: ₹{amounts.token.toLocaleString('en-IN')}</span>
-                          <span className="dash-balance-due">Balance due: ₹{balance.toLocaleString('en-IN')}</span>
+                          <span className="dash-balance-due">Balance due: ₹{balance.toLocaleString('en-IN')} by {balanceDue}</span>
                         </div>
                       )}
                       <div className="dash-card-footer">

@@ -8,15 +8,12 @@ interface RazorpayOrder {
 }
 
 interface OpenCheckoutOpts {
-  type: 'rental' | 'box' | 'cart';
-  plan?: string;
-  treeId?: string;
-  variety?: string;
-  quantity?: number;
-  items?: { variety: string; quantity: number }[];
+  type: 'cart';
+  items: { variety?: string; plan?: string; quantity: number }[];
   userName: string;
   userEmail: string;
   userPhone?: string;
+  description?: string;
   onSuccess: (paymentId: string, orderId: string, signature: string) => void;
   onDismiss?: () => void;
 }
@@ -24,7 +21,7 @@ interface OpenCheckoutOpts {
 export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
   const order = await apiFetch<RazorpayOrder>('/api/payments/create-order', {
     method: 'POST',
-    body: JSON.stringify({ type: opts.type, plan: opts.plan, treeId: opts.treeId, variety: opts.variety, quantity: opts.quantity, items: opts.items }),
+    body: JSON.stringify({ type: 'cart', items: opts.items }),
   });
 
   const rzp = new (window as any).Razorpay({
@@ -33,7 +30,7 @@ export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
     currency: order.currency,
     order_id: order.orderId,
     name: 'YourOrchard',
-    description: opts.type === 'rental' ? 'Tree Rental — Mango Season 2026' : 'Mango Box Prebook',
+    description: opts.description || 'YourOrchard — Mango Season 2026',
     prefill: { name: opts.userName, email: opts.userEmail, contact: opts.userPhone },
     theme: { color: '#2d5a27' },
     modal: { ondismiss: opts.onDismiss },

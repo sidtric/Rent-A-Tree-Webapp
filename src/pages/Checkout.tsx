@@ -49,18 +49,48 @@ export default function Checkout() {
   }
 
   async function handlePay(deliveryAddress: string) {
+    const treeItems = items.filter(i => i.type === 'tree');
+    const boxItems  = items.filter(i => i.type === 'box');
+    const addr = { flat, street, city, state, pincode };
+
+    const cartItems = [
+      ...treeItems.map(i => ({ plan: i.plan!, quantity: i.qty })),
+      ...boxItems.map(i => ({ variety: i.variety, quantity: i.qty })),
+    ];
+
+    const hasTree = treeItems.length > 0;
+    const hasBox  = boxItems.length > 0;
+    const desc = hasTree && hasBox
+      ? 'YourOrchard — Trees & Mango Boxes'
+      : hasTree ? 'Tree Booking — Mango Season 2026'
+      : 'Mango Box Order';
+
     setPaying(true);
     try {
       await openRazorpayCheckout({
         type: 'cart',
-        items: items.map(i => ({ variety: i.variety, quantity: i.qty })),
+        items: cartItems,
         userName: name,
         userEmail: email,
         userPhone: phone,
+        description: desc,
         onSuccess: async (paymentId, orderId) => {
-          const addr = { flat, street, city, state, pincode };
           await Promise.all([
-            ...items.map(item =>
+            ...treeItems.flatMap(item =>
+              Array.from({ length: item.qty }, () =>
+                apiFetch('/api/rentals', {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    plan: item.plan,
+                    variety: item.variety,
+                    deliveryAddress,
+                    razorpayOrderId: orderId,
+                    paymentId,
+                  }),
+                })
+              )
+            ),
+            ...boxItems.map(item =>
               apiFetch('/api/orders', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -185,7 +215,9 @@ export default function Checkout() {
                   <div className="chk-cart-img" style={{ backgroundImage: `url(${item.img})` }} />
                   <div className="chk-cart-info">
                     <div className="chk-cart-name">{item.name}</div>
-                    <div className="chk-cart-sub">{item.variety} · 10 kg box</div>
+                    <div className="chk-cart-sub">
+                      {item.type === 'tree' ? `${item.variety} · Token booking` : `${item.variety} · 10 kg box`}
+                    </div>
                     <div className="chk-cart-price">₹{(item.price * item.qty).toLocaleString('en-IN')}</div>
                   </div>
                   <div className="chk-cart-controls">

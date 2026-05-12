@@ -41,10 +41,10 @@ export default function MangoBoxes() {
   const { user } = useAuth();
   const { addItem, setOpen: openCart } = useCart();
 
-  function handlePrebook(box: typeof BOXES[0]) {
+  function handleAddToCart(box: typeof BOXES[0]) {
     if (!user) { navigate('/login', { state: { from: '/' } }); return; }
     addItem({ id: `box-${box.id}`, name: `${box.name} Mango Box`, variety: box.id, type: 'box', price: box.price, img: box.img });
-    navigate('/checkout');
+    openCart(true);
   }
 
   return (
@@ -54,7 +54,7 @@ export default function MangoBoxes() {
           <span className="mb-label">Just Want Mangoes?</span>
           <h2 className="mb-title">Order a Box</h2>
           <p className="mb-sub">No tree rental needed. Pick your variety and get a fresh 10 kg box delivered from Ramnagar.</p>
-          <div className="mb-harvest-note">Harvest starts May 15 — prebook now to reserve yours</div>
+          <div className="mb-harvest-note">Harvest starts May 15 — book now to reserve yours</div>
         </div>
 
         <div className="mb-cards">
@@ -73,16 +73,9 @@ export default function MangoBoxes() {
                 </div>
                 <p className="mb-card-desc">{box.desc}</p>
                 <div className="mb-card-footer">
-                  <button
-                    className="mb-btn-outline"
-                    onClick={() => {
-                      addItem({ id: `box-${box.id}`, name: `${box.name} Mango Box`, variety: box.id, type: 'box', price: box.price, img: box.img });
-                      openCart(true);
-                    }}
-                  >
+                  <button className="mb-btn-solid" onClick={() => handleAddToCart(box)}>
                     Add to Cart
                   </button>
-                  <button className="mb-btn-solid" onClick={() => handlePrebook(box)}>Prebook</button>
                 </div>
               </div>
             </div>

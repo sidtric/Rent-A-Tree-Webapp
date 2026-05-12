@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { openRazorpayCheckout } from '../lib/razorpay';
-import { apiFetch } from '../lib/api';
-import CheckoutModal from '../components/CheckoutModal';
+import { useCart } from '../context/CartContext';
 import './TreeDetail.css';
+import { useState } from 'react';
 
 type Variety = 'chausa' | 'dasheri' | 'langra';
 type Tier = 'Base' | 'Mid' | 'Big';
@@ -34,9 +32,9 @@ const VARIETY_LABEL: Record<Variety, string> = {
 };
 
 const TIER_DATA: Record<Tier, { fullPrice: number; tokenPrice: number; yield: string }> = {
-  Base: { fullPrice: 4499, tokenPrice: 799, yield: '15–20 kg' },
+  Base: { fullPrice: 4499, tokenPrice: 799, yield: '15–25 kg' },
   Mid:  { fullPrice: 6999, tokenPrice: 1499, yield: '30–45 kg' },
-  Big:  { fullPrice: 9999, tokenPrice: 2499, yield: '60–80 kg' },
+  Big:  { fullPrice: 9999, tokenPrice: 2499, yield: '50–70 kg' },
 };
 
 const VARIETY_CODE: Record<Variety, string> = {
@@ -90,19 +88,11 @@ function addBooked(slug: string) {
 export default function TreeDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, updateUser } = useAuth();
-  const [paying, setPaying] = useState(false);
-  const [successFor, setSuccessFor] = useState<string | null>(null);
-  const [booked, setBooked] = useState<string[]>(getBooked);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [balanceDate] = useState(() =>
-    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', {
-      day: 'numeric', month: 'short', year: 'numeric',
-    }),
-  );
+  const { user } = useAuth();
+  const { items, addItem, setOpen } = useCart();
+  const [booked] = useState<string[]>(getBooked);
 
   const slug = id ? (LEGACY_MAP[id] || id) : '';
-  const success = successFor === slug;
   const tree = TREE_BY_SLUG[slug];
 
   if (!tree) {
@@ -117,53 +107,20 @@ export default function TreeDetail() {
   const balance = tree.fullPrice - tree.tokenPrice;
   const sameVarietyTrees = TREES.filter(t => t.variety === tree.variety);
   const isBooked = booked.includes(tree.slug);
+  const inCart = items.some(i => i.id === tree.slug);
 
-  function handlePrebook() {
+  function handleBook() {
     if (!user) { navigate('/login'); return; }
-    if (!tree || isBooked) return;
-    setShowCheckout(true);
-  }
-
-  async function handleConfirm({ name, email, phone, deliveryAddress, addressParts }: { name: string; email: string; phone: string; deliveryAddress: string; addressParts: { flat: string; street: string; city: string; state: string; pincode: string }; quantity: number }) {
-    if (!tree) return;
-    setPaying(true);
-    try {
-      await openRazorpayCheckout({
-        type: 'rental',
-        plan: TIER_TO_PLAN[tree.tier],
-        variety: tree.variety,
-        userName: name,
-        userEmail: email,
-        userPhone: phone,
-        onSuccess: async (paymentId, orderId) => {
-          await Promise.all([
-            apiFetch('/api/rentals', {
-              method: 'POST',
-              body: JSON.stringify({
-                plan: TIER_TO_PLAN[tree.tier],
-                variety: tree.variety,
-                deliveryAddress,
-                razorpayOrderId: orderId,
-                paymentId,
-              }),
-            }),
-            apiFetch('/api/auth/profile', {
-              method: 'PUT',
-              body: JSON.stringify({ phone, deliveryAddress: addressParts }),
-            }).then(() => updateUser({ phone, deliveryAddress: addressParts })).catch(() => {}),
-          ]);
-          setShowCheckout(false);
-          addBooked(tree.slug);
-          setBooked(getBooked());
-          setSuccessFor(tree.slug);
-        },
-        onDismiss: () => setPaying(false),
-      });
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Payment failed.');
-    } finally {
-      setPaying(false);
-    }
+    addItem({
+      id: tree.slug,
+      name: `${tree.varietyLabel} ${tree.tier} Tree`,
+      variety: tree.variety,
+      type: 'tree',
+      plan: TIER_TO_PLAN[tree.tier],
+      price: tree.tokenPrice,
+      img: tree.img,
+    });
+    setOpen(true);
   }
 
   return (
@@ -189,19 +146,19 @@ export default function TreeDetail() {
           <p className="td-price-caption">pre booking token</p>
 
           <p className="td-balance-note">
-            Pay the balance of <strong>₹{balance.toLocaleString('en-IN')}</strong> within 7 days (by <strong>{balanceDate}</strong>).
-            Token is non-refundable if balance is not paid in time.
+            Pay the balance of <strong>₹{balance.toLocaleString('en-IN')}</strong> within 7 days of booking.
+            Token is non-refundable.
           </p>
 
           {isBooked ? (
             <div className="td-booked">🔒 This tree is booked</div>
-          ) : success ? (
-            <div className="td-success">
-              ✓ Pre-booking confirmed! Pay balance ₹{balance.toLocaleString('en-IN')} by {balanceDate}.
-            </div>
+          ) : inCart ? (
+            <button className="td-prebook-btn td-prebook-btn--added" onClick={() => setOpen(true)}>
+              Added to Cart — View Cart →
+            </button>
           ) : (
-            <button className="td-prebook-btn" onClick={handlePrebook} disabled={paying}>
-              {paying ? 'Processing…' : 'Pre-book Now'}
+            <button className="td-prebook-btn" onClick={handleBook}>
+              Book Now
             </button>
           )}
 
@@ -224,9 +181,9 @@ export default function TreeDetail() {
                     <span className="td-plan-name">{t.tier} Tree</span>
                     <span className={`td-plan-badge td-plan-badge-${t.tier.toLowerCase()}`}>{t.tier}</span>
                   </div>
-                  <p className="td-plan-prebook">Pre-book available</p>
+                  <p className="td-plan-prebook">Booking available</p>
                   <ul className="td-plan-features">
-                    <li className={`td-plan-highlight td-plan-hl-${t.tier.toLowerCase()}`}>{t.yield} minimum guaranteed</li>
+                    <li>{t.yield} minimum yield</li>
                     <li>Fresh delivery included</li>
                     <li>Weekly video updates</li>
                     <li>Personal nameplate on tree</li>
@@ -235,7 +192,7 @@ export default function TreeDetail() {
                   {tBooked ? (
                     <button className="td-related-btn td-related-btn-disabled" disabled>Tree is booked</button>
                   ) : (
-                    <Link className={`td-plan-btn td-plan-btn-${t.tier.toLowerCase()}`} to={`/trees/${t.slug}`}>Pre-book</Link>
+                    <Link className={`td-plan-btn td-plan-btn-${t.tier.toLowerCase()}`} to={`/trees/${t.slug}`}>Book Now</Link>
                   )}
                 </div>
               </div>
@@ -243,18 +200,6 @@ export default function TreeDetail() {
           })}
         </div>
       </section>
-
-      {showCheckout && (
-        <CheckoutModal
-          mode="rental"
-          treeName={`${tree.varietyLabel} ${tree.tier} Tree`}
-          variety={tree.variety}
-          price={tree.tokenPrice}
-          loading={paying}
-          onClose={() => setShowCheckout(false)}
-          onConfirm={handleConfirm}
-        />
-      )}
 
       <section className="td-description">
         <h2 className="td-description-title">Description</h2>

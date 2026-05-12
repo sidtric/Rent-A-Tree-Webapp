@@ -5,6 +5,7 @@ export interface CartItem {
   name: string;
   variety: string;
   type: 'box' | 'tree';
+  plan?: string;
   price: number;
   qty: number;
   img: string;
