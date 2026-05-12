@@ -123,7 +123,7 @@ function WriteModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: (r: 
           </div>
           <textarea
             className="rv-modal-textarea"
-            placeholder="Tell others about your tree, the mangoes, the delivery..."
+           
             value={comment}
             onChange={e => setComment(e.target.value)}
             rows={4}

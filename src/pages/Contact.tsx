@@ -85,7 +85,7 @@ export default function Contact() {
               <div className="contact-faq-list">
                 <div className="contact-faq-item">
                   <div className="contact-faq-q">When does the harvest season start?</div>
-                  <div className="contact-faq-a">Harvest begins around May 15 for Chausa, and extends through July for Dasheri and Langra.</div>
+                  <div className="contact-faq-a">Dasheri harvest begins around May 20, Chausa from June 10, and Langra from June 15.</div>
                 </div>
                 <div className="contact-faq-item">
                   <div className="contact-faq-q">Can I visit my tree?</div>
@@ -93,7 +93,7 @@ export default function Contact() {
                 </div>
                 <div className="contact-faq-item">
                   <div className="contact-faq-q">How are weekly updates sent?</div>
-                  <div className="contact-faq-a">Photos and videos of your specific tree are posted to your dashboard every week during the season.</div>
+                  <div className="contact-faq-a">Photos and videos of your specific tree are shared to your dashboard every week during the season.</div>
                 </div>
               </div>
             </div>
@@ -115,7 +115,7 @@ export default function Contact() {
                     <label>Your name <span>*</span></label>
                     <input
                       type="text"
-                      placeholder="Arjun Sharma"
+                     
                       value={form.name}
                       onChange={e => set('name', e.target.value)}
                     />
@@ -124,7 +124,7 @@ export default function Contact() {
                     <label>Email address <span>*</span></label>
                     <input
                       type="email"
-                      placeholder="arjun@example.com"
+                     
                       value={form.email}
                       onChange={e => set('email', e.target.value)}
                     />
@@ -135,7 +135,7 @@ export default function Contact() {
                   <label>Message <span>*</span></label>
                   <textarea
                     rows={6}
-                    placeholder="Tell us what you need…"
+                   
                     value={form.message}
                     onChange={e => set('message', e.target.value)}
                   />

@@ -50,7 +50,7 @@ export default function Login() {
             <label>Email address</label>
             <input
               type="email"
-              placeholder="arjun@example.com"
+             
               value={form.email}
               onChange={e => set('email', e.target.value)}
             />
@@ -60,7 +60,7 @@ export default function Login() {
             <label>Password</label>
             <input
               type="password"
-              placeholder="Your password"
+             
               value={form.password}
               onChange={e => set('password', e.target.value)}
             />

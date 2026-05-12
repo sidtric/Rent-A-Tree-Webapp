@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { TIER_DATA } from '../constants/prices';
 import './TreeDetail.css';
 import { useState } from 'react';
 
@@ -31,11 +32,6 @@ const VARIETY_LABEL: Record<Variety, string> = {
   langra: 'Langra',
 };
 
-const TIER_DATA: Record<Tier, { fullPrice: number; tokenPrice: number; yield: string }> = {
-  Base: { fullPrice: 4499, tokenPrice: 799, yield: '15–25 kg' },
-  Mid:  { fullPrice: 6999, tokenPrice: 1499, yield: '30–45 kg' },
-  Big:  { fullPrice: 9999, tokenPrice: 2499, yield: '50–70 kg' },
-};
 
 const VARIETY_CODE: Record<Variety, string> = {
   chausa: 'CH',
@@ -48,7 +44,7 @@ const TIER_TO_PLAN: Record<Tier, string> = { Base: 'sapling', Mid: 'adult', Big:
 
 function buildTrees(): Tree[] {
   const list: Tree[] = [];
-  (['chausa', 'dasheri', 'langra'] as Variety[]).forEach((variety, vi) => {
+  (['dasheri', 'chausa', 'langra'] as Variety[]).forEach((variety, vi) => {
     (['Base', 'Mid', 'Big'] as Tier[]).forEach((tier) => {
       const num = String(vi + 1).padStart(2, '0');
       list.push({

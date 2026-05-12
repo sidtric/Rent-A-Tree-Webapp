@@ -68,7 +68,7 @@ export default function SignUp() {
               <label>First name</label>
               <input
                 type="text"
-                placeholder="Arjun"
+               
                 value={form.firstName}
                 onChange={e => set('firstName', e.target.value)}
               />
@@ -77,7 +77,7 @@ export default function SignUp() {
               <label>Last name</label>
               <input
                 type="text"
-                placeholder="Sharma"
+               
                 value={form.lastName}
                 onChange={e => set('lastName', e.target.value)}
               />
@@ -88,7 +88,7 @@ export default function SignUp() {
             <label>Email address</label>
             <input
               type="email"
-              placeholder="arjun@example.com"
+             
               value={form.email}
               onChange={e => set('email', e.target.value)}
             />
@@ -100,7 +100,7 @@ export default function SignUp() {
               <span className="phone-prefix">+91</span>
               <input
                 type="tel"
-                placeholder="9876543210"
+               
                 maxLength={10}
                 value={form.phone}
                 onChange={e => set('phone', e.target.value.replace(/\D/g, ''))}
@@ -112,7 +112,7 @@ export default function SignUp() {
             <label>Password</label>
             <input
               type="password"
-              placeholder="Min. 6 characters"
+             
               value={form.password}
               onChange={e => set('password', e.target.value)}
             />
@@ -122,7 +122,7 @@ export default function SignUp() {
             <label>Confirm password</label>
             <input
               type="password"
-              placeholder="Repeat your password"
+             
               value={form.confirm}
               onChange={e => set('confirm', e.target.value)}
             />

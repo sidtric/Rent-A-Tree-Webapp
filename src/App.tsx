@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
 import Hero from './components/Hero';
@@ -40,7 +40,25 @@ function Home() {
 
 const BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:5000';
 
+const AUTH_ROUTES = ['/login', '/signup'];
+
+function AuthNav() {
+  const navigate = useNavigate();
+  return (
+    <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', borderBottom: '1px solid #e5e7eb', background: '#fff' }}>
+      <img src="/logo.jpeg" alt="YourOrchard" style={{ height: 44, cursor: 'pointer', borderRadius: 6 }} onClick={() => navigate('/')} />
+      <div style={{ display: 'flex', gap: 10 }}>
+        <button className="btn-login" onClick={() => navigate('/login')}>Login</button>
+        <button className="btn-solid" onClick={() => navigate('/signup')}>Sign Up</button>
+      </div>
+    </header>
+  );
+}
+
 export default function App() {
+  const location = useLocation();
+  const isAuthPage = AUTH_ROUTES.includes(location.pathname);
+
   useEffect(() => {
     fetch(`${BASE}/health`).catch(() => {});
   }, []);
@@ -48,7 +66,7 @@ export default function App() {
   return (
     <div id="root-top">
       <ScrollToTop />
-      <Navbar />
+      {isAuthPage ? <AuthNav /> : <Navbar />}
       <CartDrawer />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -67,7 +85,7 @@ export default function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer />
+      {!isAuthPage && <Footer />}
     </div>
   );
 }

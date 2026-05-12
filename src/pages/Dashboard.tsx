@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../lib/api';
+import { PLAN_AMOUNTS } from '../constants/prices';
 import './Dashboard.css';
 
 interface TreeUpdate {
@@ -40,11 +41,6 @@ const PLAN_META = {
   grand:   { label: 'Grand Tree',   size: 'Big Tree',   yield: '60–80 kg', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
 };
 
-const PLAN_AMOUNTS = {
-  sapling: { token: 799,  full: 4499 },
-  adult:   { token: 1499, full: 6999 },
-  grand:   { token: 2499, full: 9999 },
-};
 
 const VARIETY_META = {
   chausa:  { label: 'Chausa Aam',  img: '/chausa-box.jpg' },

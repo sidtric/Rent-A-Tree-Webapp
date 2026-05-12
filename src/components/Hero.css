@@ -1,8 +1,7 @@
 .hero {
   position: relative;
-  height: 70vh;
-  min-height: 520px;
-  max-height: 680px;
+  height: 100vh;
+  min-height: 600px;
   display: flex;
   align-items: center;
   background: #111;
@@ -13,15 +12,9 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  overflow: hidden;
-}
-
-.hero-bg-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 60%;
-  display: block;
+  background-image: url('/frontskyy.jpeg');
+  background-size: cover;
+  background-position: center;
   filter: saturate(1.1) contrast(1.05);
   animation: heroZoom 14s ease-out forwards;
 }

@@ -7,10 +7,7 @@ function scrollTo(id: string) {
 export default function Hero() {
   return (
     <section className="hero">
-      <picture className="hero-bg-picture">
-        <source srcSet="/hero-bg-mobile.jpg?v=3" media="(max-width: 768px)" />
-        <img src="/hero-bg.jpg?v=3" alt="" className="hero-bg-img" />
-      </picture>
+      <div className="hero-bg-picture" />
       <div className="hero-overlay" />
       <div className="hero-content">
         <p className="hero-label">Ramnagar, Uttarakhand</p>

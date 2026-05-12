@@ -7,6 +7,7 @@ import './Shop.css';
 function NotifyModal({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [err, setErr] = useState('');
@@ -15,12 +16,13 @@ function NotifyModal({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     if (!name.trim()) return setErr('Please enter your name.');
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErr('Please enter a valid email.');
+    if (phone && !/^\d{10}$/.test(phone)) return setErr('Enter a valid 10-digit phone number.');
     setErr('');
     setSubmitting(true);
     try {
       await apiFetch('/api/contact', {
         method: 'POST',
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), message: 'Please notify me when Litchi is available.', type: 'notify' }),
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), phone: phone.trim() || undefined, message: 'Please notify me when Litchi is available.', type: 'notify' }),
       });
       setDone(true);
     } catch (e: any) {
@@ -52,7 +54,6 @@ function NotifyModal({ onClose }: { onClose: () => void }) {
                 <label>Your name</label>
                 <input
                   type="text"
-                  placeholder="Ravi Kumar"
                   value={name}
                   onChange={e => setName(e.target.value)}
                 />
@@ -61,9 +62,17 @@ function NotifyModal({ onClose }: { onClose: () => void }) {
                 <label>Email address</label>
                 <input
                   type="email"
-                  placeholder="ravi@example.com"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="notify-field">
+                <label>Phone <span style={{ fontWeight: 400, color: '#9ca3af' }}>(optional)</span></label>
+                <input
+                  type="tel"
+                  maxLength={10}
+                  value={phone}
+                  onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
                 />
               </div>
               {err && <p className="notify-err">{err}</p>}

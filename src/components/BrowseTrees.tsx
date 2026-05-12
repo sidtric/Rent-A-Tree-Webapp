@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './BrowseTrees.css';
 
-const VARIETIES = ['chausa', 'dasheri', 'langra'] as const;
+const VARIETIES = ['dasheri', 'chausa', 'langra'] as const;
 type Variety = typeof VARIETIES[number];
 
 const VARIETY_LABELS: Record<Variety, string> = {

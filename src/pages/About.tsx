@@ -44,7 +44,7 @@ export default function About() {
       <section className="about-hero">
         <div className="about-hero-inner">
           <span className="about-label">Our Story</span>
-          <h1 className="about-hero-title">We are techies.<br />We are also farmers' kids.</h1>
+          <h1 className="about-hero-title">We are techies. We are also farmers' kids.</h1>
           <p className="about-hero-sub">
             YourOrchard started in Ramnagar, Uttarakhand — where the soil is rich, the air smells of mango blossoms in spring, and some of us grew up watching fruit get picked and sold for almost nothing at the local mandi.
           </p>

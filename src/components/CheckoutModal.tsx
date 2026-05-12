@@ -83,13 +83,13 @@ export default function CheckoutModal(props: CheckoutModalProps) {
 
             <div className="cm-field">
               <label>Full name</label>
-              <input type="text" placeholder="Ravi Kumar" value={name} onChange={e => setName(e.target.value)} />
+              <input type="text" value={name} onChange={e => setName(e.target.value)} />
             </div>
 
             <div className="cm-row">
               <div className="cm-field">
                 <label>Email</label>
-                <input type="email" placeholder="ravi@example.com" value={email} onChange={e => setEmail(e.target.value)} />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
               </div>
               <div className="cm-field">
                 <label>Phone</label>
@@ -97,7 +97,7 @@ export default function CheckoutModal(props: CheckoutModalProps) {
                   <span>+91</span>
                   <input
                     type="tel"
-                    placeholder="9876543210"
+                   
                     maxLength={10}
                     value={phone}
                     onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
@@ -111,28 +111,28 @@ export default function CheckoutModal(props: CheckoutModalProps) {
             <div className="cm-row">
               <div className="cm-field">
                 <label>Flat / House no.</label>
-                <input type="text" placeholder="Flat 4B, Green Tower" value={flat} onChange={e => setFlat(e.target.value)} />
+                <input type="text" value={flat} onChange={e => setFlat(e.target.value)} />
               </div>
               <div className="cm-field">
                 <label>Street / Area</label>
-                <input type="text" placeholder="MG Road, Sector 12" value={street} onChange={e => setStreet(e.target.value)} />
+                <input type="text" value={street} onChange={e => setStreet(e.target.value)} />
               </div>
             </div>
 
             <div className="cm-row cm-row-3">
               <div className="cm-field">
                 <label>City</label>
-                <input type="text" placeholder="Delhi" value={city} onChange={e => setCity(e.target.value)} />
+                <input type="text" value={city} onChange={e => setCity(e.target.value)} />
               </div>
               <div className="cm-field">
                 <label>State</label>
-                <input type="text" placeholder="Delhi" value={state} onChange={e => setState(e.target.value)} />
+                <input type="text" value={state} onChange={e => setState(e.target.value)} />
               </div>
               <div className="cm-field">
                 <label>Pincode</label>
                 <input
                   type="text"
-                  placeholder="110001"
+                 
                   maxLength={6}
                   value={pincode}
                   onChange={e => setPincode(e.target.value.replace(/\D/g, ''))}
