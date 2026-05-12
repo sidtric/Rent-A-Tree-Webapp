@@ -74,6 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('yo_cart');
+    sessionStorage.removeItem('yo_cart_open');
     setUser(null);
   }
 

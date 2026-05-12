@@ -45,8 +45,8 @@ const AUTH_ROUTES = ['/login', '/signup'];
 function AuthNav() {
   const navigate = useNavigate();
   return (
-    <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', borderBottom: '1px solid #e5e7eb', background: '#fff' }}>
-      <img src="/logo.jpeg" alt="YourOrchard" style={{ height: 44, cursor: 'pointer', borderRadius: 6 }} onClick={() => navigate('/')} />
+    <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', height: 68, borderBottom: '1px solid #e5e7eb', background: '#fff' }}>
+      <img src="/logo.jpeg" alt="YourOrchard" style={{ height: 64, cursor: 'pointer', borderRadius: 6 }} onClick={() => navigate('/')} />
       <div style={{ display: 'flex', gap: 10 }}>
         <button className="btn-login" onClick={() => navigate('/login')}>Login</button>
         <button className="btn-solid" onClick={() => navigate('/signup')}>Sign Up</button>

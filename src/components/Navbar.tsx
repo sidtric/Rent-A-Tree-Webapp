@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -36,11 +36,23 @@ function scrollTo(id: string) {
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const shopRef = useRef<HTMLLIElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
   const { count, setOpen: openCart } = useCart();
+
+  useEffect(() => {
+    function handleOutside(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, []);
 
   const handleClick = (link: NavLink) => {
     setMenuOpen(false);
@@ -57,6 +69,7 @@ export default function Navbar() {
     logout();
     navigate('/');
     setMenuOpen(false);
+    setProfileOpen(false);
   };
 
   return (
@@ -102,11 +115,23 @@ export default function Navbar() {
 
         <div className="navbar-auth">
           {user ? (
-            <>
-              <span className="navbar-username">Hi, {user.name.split(' ')[0]}</span>
-              <button className="btn-login" onClick={() => { setMenuOpen(false); navigate('/dashboard'); }}>Dashboard</button>
-              <button className="btn-solid" onClick={handleLogout}>Logout</button>
-            </>
+            <div className="navbar-profile" ref={profileRef}>
+              <button className="navbar-profile-btn" onClick={() => setProfileOpen(o => !o)}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                </svg>
+                <span className="navbar-profile-name">{user.name}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+              {profileOpen && (
+                <div className="navbar-profile-dropdown">
+                  <button onClick={() => { setProfileOpen(false); navigate('/dashboard'); }}>Dashboard</button>
+                  <button onClick={handleLogout}>Logout</button>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               <button className="btn-login" onClick={() => navigate('/login')}>Login</button>

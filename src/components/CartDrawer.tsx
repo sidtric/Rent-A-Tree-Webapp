@@ -21,7 +21,7 @@ export default function CartDrawer() {
           <div className="cd-empty">
             <span className="cd-empty-icon">🛒</span>
             <p>Your cart is empty.</p>
-            <button className="cd-shop-btn" onClick={() => { setOpen(false); navigate('/'); }}>Shop Now</button>
+            <button className="cd-shop-btn" onClick={() => { setOpen(false); navigate('/shop'); }}>Shop Now</button>
           </div>
         ) : (
           <>

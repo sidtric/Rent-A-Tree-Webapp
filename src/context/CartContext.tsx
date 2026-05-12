@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
 export interface CartItem {
   id: string;
@@ -23,11 +23,32 @@ interface CartContextType {
   setOpen: (v: boolean) => void;
 }
 
+const CART_KEY = 'yo_cart';
+const CART_OPEN_KEY = 'yo_cart_open';
+
+function loadCart(): CartItem[] {
+  try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function loadOpen(): boolean {
+  return sessionStorage.getItem(CART_OPEN_KEY) === 'true';
+}
+
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
-  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState<CartItem[]>(loadCart);
+  const [open, setOpenState] = useState<boolean>(loadOpen);
+
+  useEffect(() => {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+  }, [items]);
+
+  function setOpen(v: boolean) {
+    setOpenState(v);
+    sessionStorage.setItem(CART_OPEN_KEY, String(v));
+  }
 
   function addItem(item: Omit<CartItem, 'qty'>) {
     setItems(prev => {
@@ -46,7 +67,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
   }
 
-  function clearCart() { setItems([]); }
+  function clearCart() {
+    setItems([]);
+    localStorage.removeItem(CART_KEY);
+    sessionStorage.removeItem(CART_OPEN_KEY);
+  }
 
   const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
   const count = items.reduce((sum, i) => sum + i.qty, 0);

@@ -20,9 +20,11 @@ export default function Checkout() {
   const [city,    setCity]    = useState(saved?.city    || '');
   const [state,   setState]   = useState(saved?.state   || '');
   const [pincode, setPincode] = useState(saved?.pincode || '');
-  const [paying,  setPaying]  = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [err,     setErr]     = useState('');
+  const [paying,   setPaying]   = useState(false);
+  const [success,  setSuccess]  = useState(false);
+  const [hadTree,  setHadTree]  = useState(false);
+  const [hadBox,   setHadBox]   = useState(false);
+  const [err,      setErr]      = useState('');
 
   if (!user) {
     navigate('/login', { state: { from: '/checkout' } });
@@ -60,6 +62,8 @@ export default function Checkout() {
 
     const hasTree = treeItems.length > 0;
     const hasBox  = boxItems.length > 0;
+    setHadTree(hasTree);
+    setHadBox(hasBox);
     const desc = hasTree && hasBox
       ? 'YourOrchard — Trees & Mango Boxes'
       : hasTree ? 'Tree Booking — Mango Season 2026'
@@ -75,41 +79,46 @@ export default function Checkout() {
         userPhone: phone,
         description: desc,
         onSuccess: async (paymentId, orderId) => {
-          await Promise.all([
-            ...treeItems.flatMap(item =>
-              Array.from({ length: item.qty }, () =>
-                apiFetch('/api/rentals', {
+          try {
+            await Promise.all([
+              ...treeItems.flatMap(item =>
+                Array.from({ length: item.qty }, () =>
+                  apiFetch('/api/rentals', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      plan: item.plan,
+                      variety: item.variety,
+                      deliveryAddress,
+                      razorpayOrderId: orderId,
+                      paymentId,
+                    }),
+                  })
+                )
+              ),
+              ...boxItems.map(item =>
+                apiFetch('/api/orders', {
                   method: 'POST',
                   body: JSON.stringify({
-                    plan: item.plan,
                     variety: item.variety,
+                    quantity: item.qty,
                     deliveryAddress,
+                    phone,
                     razorpayOrderId: orderId,
                     paymentId,
                   }),
                 })
-              )
-            ),
-            ...boxItems.map(item =>
-              apiFetch('/api/orders', {
-                method: 'POST',
-                body: JSON.stringify({
-                  variety: item.variety,
-                  quantity: item.qty,
-                  deliveryAddress,
-                  phone,
-                  razorpayOrderId: orderId,
-                  paymentId,
-                }),
-              })
-            ),
-            apiFetch('/api/auth/profile', {
-              method: 'PUT',
-              body: JSON.stringify({ phone, deliveryAddress: addr }),
-            }).then(() => updateUser({ phone, deliveryAddress: addr })).catch(() => {}),
-          ]);
-          clearCart();
-          setSuccess(true);
+              ),
+              apiFetch('/api/auth/profile', {
+                method: 'PUT',
+                body: JSON.stringify({ phone, deliveryAddress: addr }),
+              }).then(() => updateUser({ phone, deliveryAddress: addr })).catch(() => {}),
+            ]);
+            clearCart();
+            setSuccess(true);
+          } catch {
+            setErr('Payment was received but we could not save your order. Please contact support with your payment ID: ' + paymentId);
+            setPaying(false);
+          }
         },
         onDismiss: () => setPaying(false),
       });
@@ -125,7 +134,13 @@ export default function Checkout() {
       <div className="chk-success">
         <div className="chk-success-icon">✓</div>
         <h2>Order Confirmed!</h2>
-        <p>Your mango boxes are prebooked. We'll dispatch them as soon as the harvest starts.</p>
+        <p>
+          {hadTree && hadBox
+            ? "Your tree rental and mango boxes are booked. We'll be in touch with harvest updates."
+            : hadTree
+            ? "Your tree is booked for the season. Pay the balance within 7 days to confirm your slot."
+            : "Your mango boxes are booked. We'll dispatch them as soon as the harvest starts."}
+        </p>
         <button onClick={() => navigate('/dashboard')}>View My Orders →</button>
       </div>
     );
@@ -157,7 +172,7 @@ export default function Checkout() {
               <div className="chk-field">
                 <label>Phone</label>
                 <div className="chk-phone-wrap">
-                  <span>+91</span>
+                  {phone && <span>+91</span>}
                   <input type="tel" maxLength={10} value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, ''))} />
                 </div>
               </div>

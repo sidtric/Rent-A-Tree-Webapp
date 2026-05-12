@@ -70,7 +70,7 @@ export default function About() {
             </p>
           </div>
           <div className="about-story-img">
-            <img src="https://images.unsplash.com/photo-1560493676-04071c5f467b?w=700&q=80" alt="Mango orchard in Ramnagar" />
+            <img src="/aboutimg.jpeg" alt="Mango orchard in Ramnagar" />
           </div>
         </div>
       </section>

@@ -2,8 +2,9 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { TIER_DATA } from '../constants/prices';
+import { apiFetch } from '../lib/api';
 import './TreeDetail.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type Variety = 'chausa' | 'dasheri' | 'langra';
 type Tier = 'Base' | 'Mid' | 'Big';
@@ -69,24 +70,26 @@ const LEGACY_MAP: Record<string, string> = { sapling: 'chausa-base', adult: 'das
 
 const TIER_COLOR: Record<Tier, string> = { Base: '#4b5563', Mid: '#2563eb', Big: '#d97706' };
 
-const BOOKED_KEY = 'yo_booked_trees';
-function getBooked(): string[] {
-  try { return JSON.parse(localStorage.getItem(BOOKED_KEY) || '[]'); } catch { return []; }
-}
-function addBooked(slug: string) {
-  const list = getBooked();
-  if (!list.includes(slug)) {
-    list.push(slug);
-    localStorage.setItem(BOOKED_KEY, JSON.stringify(list));
-  }
-}
+const PLAN_TO_TIER: Record<string, string> = { sapling: 'base', adult: 'mid', grand: 'big' };
 
 export default function TreeDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { items, addItem, setOpen } = useCart();
-  const [booked] = useState<string[]>(getBooked);
+  const [bookedSlugs, setBookedSlugs] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    apiFetch<{ plan: string; variety: string }[]>('/api/rentals')
+      .then(rentals => {
+        const slugs = rentals
+          .filter(r => PLAN_TO_TIER[r.plan])
+          .map(r => `${r.variety}-${PLAN_TO_TIER[r.plan]}`);
+        setBookedSlugs(slugs);
+      })
+      .catch(() => {});
+  }, [user]);
 
   const slug = id ? (LEGACY_MAP[id] || id) : '';
   const tree = TREE_BY_SLUG[slug];
@@ -102,11 +105,11 @@ export default function TreeDetail() {
 
   const balance = tree.fullPrice - tree.tokenPrice;
   const sameVarietyTrees = TREES.filter(t => t.variety === tree.variety);
-  const isBooked = booked.includes(tree.slug);
+  const isBooked = bookedSlugs.includes(tree.slug);
   const inCart = items.some(i => i.id === tree.slug);
 
   function handleBook() {
-    if (!user) { navigate('/login'); return; }
+    if (!user) { navigate('/login', { state: { from: `/trees/${tree.slug}` } }); return; }
     addItem({
       id: tree.slug,
       name: `${tree.varietyLabel} ${tree.tier} Tree`,
@@ -166,7 +169,7 @@ export default function TreeDetail() {
         <p className="td-related-sub">Pick a size that fits your family. All sizes are {tree.varietyLabel} mangoes from our Ramnagar orchard.</p>
         <div className="td-related-grid">
           {sameVarietyTrees.map(t => {
-            const tBooked = booked.includes(t.slug);
+            const tBooked = bookedSlugs.includes(t.slug);
             return (
               <div key={t.slug} className={`td-related-card ${tBooked ? 'is-booked' : ''} ${t.slug === tree.slug ? 'is-current' : ''}`}>
                 <div className="td-related-img" style={{ backgroundImage: `url(${t.img})` }}>
