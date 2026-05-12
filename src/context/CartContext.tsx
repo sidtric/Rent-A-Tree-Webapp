@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { useAuth } from './AuthContext';
 
 export interface CartItem {
   id: string;
@@ -23,11 +24,14 @@ interface CartContextType {
   setOpen: (v: boolean) => void;
 }
 
-const CART_KEY = 'yo_cart';
 const CART_OPEN_KEY = 'yo_cart_open';
 
-function loadCart(): CartItem[] {
-  try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
+function cartKey(userId: string) {
+  return `yo_cart_${userId}`;
+}
+
+function loadCart(key: string): CartItem[] {
+  try { return JSON.parse(localStorage.getItem(key) || '[]'); }
   catch { return []; }
 }
 
@@ -38,12 +42,21 @@ function loadOpen(): boolean {
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(loadCart);
+  const { user } = useAuth();
+  const userId = user?.id || 'guest';
+  const key = cartKey(userId);
+
+  const [items, setItems] = useState<CartItem[]>(() => loadCart(key));
   const [open, setOpenState] = useState<boolean>(loadOpen);
 
+  // Reload the correct cart whenever the logged-in user changes
   useEffect(() => {
-    localStorage.setItem(CART_KEY, JSON.stringify(items));
-  }, [items]);
+    setItems(loadCart(cartKey(userId)));
+  }, [userId]);
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(items));
+  }, [items, key]);
 
   function setOpen(v: boolean) {
     setOpenState(v);
@@ -69,7 +82,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function clearCart() {
     setItems([]);
-    localStorage.removeItem(CART_KEY);
+    localStorage.removeItem(key);
     sessionStorage.removeItem(CART_OPEN_KEY);
   }
 

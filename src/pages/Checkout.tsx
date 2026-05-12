@@ -78,7 +78,7 @@ export default function Checkout() {
         userEmail: email,
         userPhone: phone,
         description: desc,
-        onSuccess: async (paymentId, orderId) => {
+        onSuccess: async (paymentId, orderId, razorpaySignature) => {
           try {
             await Promise.all([
               ...treeItems.flatMap(item =>
@@ -91,6 +91,7 @@ export default function Checkout() {
                       deliveryAddress,
                       razorpayOrderId: orderId,
                       paymentId,
+                      razorpaySignature,
                     }),
                   })
                 )
@@ -105,6 +106,7 @@ export default function Checkout() {
                     phone,
                     razorpayOrderId: orderId,
                     paymentId,
+                    razorpaySignature,
                   }),
                 })
               ),
