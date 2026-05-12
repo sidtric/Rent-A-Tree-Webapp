@@ -83,12 +83,52 @@ function ReviewCard({ review }: { review: Review }) {
   );
 }
 
+function FileChip({ file, preview, onRemove }: { file: File; preview: string; onRemove: () => void }) {
+  const isVideo = file.type.startsWith('video/');
+  return (
+    <div className="rv-file-chip">
+      {isVideo
+        ? <span className="rv-file-chip-icon">▶</span>
+        : <img src={preview} className="rv-file-chip-thumb" alt="" />
+      }
+      <span className="rv-file-chip-name">
+        {file.name.length > 18 ? file.name.slice(0, 15) + '…' : file.name}
+      </span>
+      <button type="button" className="rv-file-chip-remove" onClick={onRemove}>✕</button>
+    </div>
+  );
+}
+
 function WriteModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: (r: Review) => void }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  function addFiles(selected: File[]) {
+    setError('');
+    const tooLarge = selected.find(f =>
+      (f.type.startsWith('video/') && f.size > 100 * 1024 * 1024) ||
+      (f.type.startsWith('image/') && f.size > 10 * 1024 * 1024)
+    );
+    if (tooLarge) {
+      setError(`"${tooLarge.name}" is too large. Images max 10 MB, videos max 100 MB.`);
+      return;
+    }
+    const next = [...files, ...selected].slice(0, 3);
+    const urls = next.map(f => f.type.startsWith('image/') ? URL.createObjectURL(f) : '');
+    previews.forEach(u => u && URL.revokeObjectURL(u));
+    setFiles(next);
+    setPreviews(urls);
+  }
+
+  function removeFile(i: number) {
+    if (previews[i]) URL.revokeObjectURL(previews[i]);
+    setFiles(prev => prev.filter((_, j) => j !== i));
+    setPreviews(prev => prev.filter((_, j) => j !== i));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -133,25 +173,38 @@ function WriteModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: (r: 
           </div>
           <textarea
             className="rv-modal-textarea"
-           
             value={comment}
             onChange={e => setComment(e.target.value)}
             rows={4}
             maxLength={800}
           />
           <div className="rv-modal-charcount">{comment.length}/800</div>
-          <label className="rv-modal-upload">
-            <input
-              type="file"
-              accept="image/*,video/*"
-              multiple
-              style={{ display: 'none' }}
-              onChange={e => setFiles(Array.from(e.target.files || []).slice(0, 3))}
-            />
-            <span className="rv-upload-btn">
-              {files.length > 0 ? `${files.length} file${files.length > 1 ? 's' : ''} selected` : '+ Add photo or video (optional)'}
-            </span>
-          </label>
+
+          {files.length > 0 && (
+            <div className="rv-file-chips">
+              {files.map((f, i) => (
+                <FileChip key={i} file={f} preview={previews[i]} onRemove={() => removeFile(i)} />
+              ))}
+            </div>
+          )}
+
+          {files.length < 3 && (
+            <label className="rv-modal-upload">
+              <input
+                type="file"
+                accept="image/*,video/*"
+                multiple
+                style={{ display: 'none' }}
+                onChange={e => addFiles(Array.from(e.target.files || []))}
+              />
+              <span className="rv-upload-btn">
+                + Add photo / video{files.length > 0 ? ` (${3 - files.length} more)` : ' (up to 3, optional)'}
+              </span>
+            </label>
+          )}
+          {submitting && files.some(f => f.type.startsWith('video/')) && (
+            <p className="rv-upload-note">Uploading video… this may take a moment.</p>
+          )}
           {error && <p className="rv-modal-error">{error}</p>}
           <button type="submit" className="rv-modal-submit" disabled={submitting}>
             {submitting ? 'Posting…' : 'Post Review'}
@@ -263,8 +316,7 @@ export default function Reviews() {
               <div className="rv-slider-controls">
                 <button
                   className="rv-slider-arrow"
-                  onClick={() => setPage(p => Math.max(0, p - 1))}
-                  disabled={page === 0}
+                  onClick={() => setPage(p => (p - 1 + totalPages) % totalPages)}
                   aria-label="Previous"
                 >‹</button>
                 <div className="rv-slider-dots">
@@ -279,8 +331,7 @@ export default function Reviews() {
                 </div>
                 <button
                   className="rv-slider-arrow"
-                  onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-                  disabled={page === totalPages - 1}
+                  onClick={() => setPage(p => (p + 1) % totalPages)}
                   aria-label="Next"
                 >›</button>
               </div>
