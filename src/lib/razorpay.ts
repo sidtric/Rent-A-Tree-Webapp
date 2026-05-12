@@ -22,12 +22,22 @@ interface RazorpayOrder {
   key: string;
 }
 
+interface RichItem {
+  type: 'tree' | 'box';
+  plan?: string;
+  variety: string;
+  qty: number;
+}
+
 interface OpenCheckoutOpts {
   type: 'cart';
   items: { variety?: string; plan?: string; quantity: number }[];
+  richItems: RichItem[];
   userName: string;
   userEmail: string;
   userPhone?: string;
+  deliveryAddress: string;
+  phone: string;
   description?: string;
   onSuccess: (paymentId: string, orderId: string, signature: string) => void;
   onDismiss?: () => void;
@@ -37,7 +47,17 @@ export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
   const [order] = await Promise.all([
     apiFetch<RazorpayOrder>('/api/payments/create-order', {
       method: 'POST',
-      body: JSON.stringify({ type: 'cart', items: opts.items }),
+      body: JSON.stringify({
+        type: 'cart',
+        items: opts.items,
+        meta: {
+          userName:        opts.userName,
+          userEmail:       opts.userEmail,
+          userPhone:       opts.userPhone || '',
+          deliveryAddress: opts.deliveryAddress,
+          richItems:       opts.richItems,
+        },
+      }),
     }),
     loadRazorpay(),
   ]);

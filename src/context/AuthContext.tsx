@@ -51,6 +51,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    function handleExpired() { setUser(null); }
+    window.addEventListener('auth:expired', handleExpired);
+    return () => window.removeEventListener('auth:expired', handleExpired);
+  }, []);
+
   async function login(email: string, password: string) {
     const data = await apiFetch<{ token: string; user: AuthUser }>('/api/auth/login', {
       method: 'POST',

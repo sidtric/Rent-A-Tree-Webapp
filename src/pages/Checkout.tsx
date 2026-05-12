@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -50,6 +50,19 @@ export default function Checkout() {
     return validators[field as keyof typeof validators](value);
   }
 
+  useEffect(() => {
+    if (!/^[1-9]\d{5}$/.test(pincode)) return;
+    fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+      .then(r => r.json())
+      .then((data: any) => {
+        const po = data?.[0]?.PostOffice?.[0];
+        if (!po) return;
+        if (!city.trim())  { setCity(po.District || po.Name);  setTouched(t => ({ ...t, city: true })); }
+        if (!state.trim()) { setState(po.State);               setTouched(t => ({ ...t, state: true })); }
+      })
+      .catch(() => {});
+  }, [pincode]);
+
   if (!user) {
     navigate('/login', { state: { from: '/checkout' } });
     return null;
@@ -81,6 +94,11 @@ export default function Checkout() {
       ...boxItems.map(i => ({ variety: i.variety, quantity: i.qty })),
     ];
 
+    const richItems = [
+      ...treeItems.map(i => ({ type: 'tree' as const, plan: i.plan!, variety: i.variety, qty: i.qty })),
+      ...boxItems.map(i => ({ type: 'box' as const, variety: i.variety, qty: i.qty })),
+    ];
+
     const hasTree = treeItems.length > 0;
     const hasBox  = boxItems.length > 0;
     setHadTree(hasTree);
@@ -95,9 +113,12 @@ export default function Checkout() {
       await openRazorpayCheckout({
         type: 'cart',
         items: cartItems,
+        richItems,
         userName: name,
         userEmail: email,
         userPhone: phone,
+        deliveryAddress,
+        phone,
         description: desc,
         onSuccess: async (paymentId, orderId, razorpaySignature) => {
           try {

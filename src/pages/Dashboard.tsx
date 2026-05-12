@@ -67,6 +67,24 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+const BOX_STEPS:    BoxOrder['status'][]  = ['confirmed', 'dispatched', 'delivered'];
+const RENTAL_STEPS: Rental['status'][]    = ['active', 'completed'];
+
+function StatusStepper({ steps, current }: { steps: string[]; current: string }) {
+  const idx = steps.indexOf(current);
+  if (idx === -1) return null;
+  return (
+    <div className="dash-stepper">
+      {steps.map((s, i) => (
+        <div key={s} className={`dash-step ${i < idx ? 'done' : i === idx ? 'active' : ''}`}>
+          <div className="dash-step-dot" />
+          <span>{s.charAt(0).toUpperCase() + s.slice(1)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -341,6 +359,9 @@ export default function Dashboard() {
                           <span className="dash-balance-due">Balance due: ₹{balance.toLocaleString('en-IN')} by {balanceDue}</span>
                         </div>
                       )}
+                      {(r.status === 'active' || r.status === 'completed') && (
+                        <StatusStepper steps={RENTAL_STEPS} current={r.status} />
+                      )}
                       <div className="dash-card-footer">
                         <span className="dash-card-date">Rented {formatDate(r.createdAt)}</span>
                         {r.status === 'active' && (
@@ -401,6 +422,9 @@ export default function Dashboard() {
                       <h3 className="dash-card-name">{variety.label}</h3>
                       <p className="dash-card-variety">₹{o.totalAmount.toLocaleString('en-IN')} total · ₹{o.pricePerBox.toLocaleString('en-IN')} per box</p>
                       <p className="dash-card-addr">{o.deliveryAddress}</p>
+                      {BOX_STEPS.includes(o.status) && (
+                        <StatusStepper steps={BOX_STEPS} current={o.status} />
+                      )}
                       <div className="dash-card-footer">
                         <span className="dash-card-date">Ordered {formatDate(o.createdAt)}</span>
                       </div>

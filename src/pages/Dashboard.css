@@ -311,6 +311,73 @@
 .badge-gray      { background: #f3f4f6; color: #6b7280; }
 .badge-blue      { background: #eff6ff; color: #1d4ed8; }
 
+/* ── Status stepper ─────────────────────────────── */
+.dash-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 12px 0 4px;
+}
+
+.dash-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  gap: 4px;
+}
+
+.dash-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
+.dash-step.done::after,
+.dash-step.active::after {
+  background: #2d5a27;
+}
+
+.dash-step-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  border: 2px solid #e5e7eb;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.dash-step.done .dash-step-dot {
+  background: #2d5a27;
+  border-color: #2d5a27;
+}
+
+.dash-step.active .dash-step-dot {
+  background: #fff;
+  border-color: #2d5a27;
+  box-shadow: 0 0 0 3px #dcfce7;
+}
+
+.dash-step span {
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.dash-step.done span,
+.dash-step.active span {
+  color: #2d5a27;
+  font-weight: 600;
+}
+
 /* ── Empty state ─────────────────────────────────── */
 .dash-empty {
   border: 1px dashed #d1d5db;
