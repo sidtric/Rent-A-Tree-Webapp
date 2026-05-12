@@ -15,10 +15,15 @@
 .chk-field label { font-size: 0.8125rem; font-weight: 600; color: #444; }
 .chk-field input { border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 10px 14px; font-size: 0.9375rem; font-family: inherit; color: #1a1a1a; width: 100%; box-sizing: border-box; transition: border-color 0.15s; }
 .chk-field input:focus { outline: none; border-color: #2d5a27; }
+.chk-field input.input-error { border-color: #e53e3e; background: #fff8f8; }
+.chk-field input.input-valid { border-color: #2d5a27; }
+.chk-field-err { font-size: 0.75rem; color: #e53e3e; margin: 0; line-height: 1.4; }
 .chk-phone-wrap { display: flex; align-items: center; border: 1.5px solid #e0e0e0; border-radius: 8px; overflow: hidden; transition: border-color 0.15s; }
 .chk-phone-wrap:focus-within { border-color: #2d5a27; }
-.chk-phone-wrap span { padding: 10px 12px; background: #f6f9f5; font-size: 0.9375rem; color: #444; font-weight: 500; border-right: 1.5px solid #e0e0e0; }
-.chk-phone-wrap input { border: none; border-radius: 0; flex: 1; min-width: 0; }
+.chk-phone-wrap.phone-error { border-color: #e53e3e; background: #fff8f8; }
+.chk-phone-wrap.phone-valid { border-color: #2d5a27; }
+.chk-phone-wrap span { padding: 10px 12px; background: #f6f9f5; font-size: 0.9375rem; color: #444; font-weight: 500; border-right: 1.5px solid #e0e0e0; flex-shrink: 0; }
+.chk-phone-wrap input { border: none; border-radius: 0; flex: 1; min-width: 0; background: transparent; }
 .chk-phone-wrap input:focus { outline: none; border: none; }
 .chk-err { color: #c0392b; font-size: 0.8125rem; margin: 0; }
 

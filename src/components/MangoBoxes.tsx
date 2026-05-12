@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { apiFetch } from '../lib/api';
 import './MangoBoxes.css';
 import '../pages/Shop.css';
+import NotifyModal from './NotifyModal';
 
 const BOXES = [
   {
@@ -32,75 +32,6 @@ const BOXES = [
     img: '/langra-box.jpg',
   },
 ];
-
-function NotifyModal({ variety, onClose }: { variety: string; onClose: () => void }) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
-  const [err, setErr] = useState('');
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim()) return setErr('Please enter your name.');
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setErr('Please enter a valid email.');
-    if (phone && !/^\d{10}$/.test(phone)) return setErr('Enter a valid 10-digit phone number.');
-    setErr('');
-    setSubmitting(true);
-    try {
-      await apiFetch('/api/contact', {
-        method: 'POST',
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), phone: phone.trim() || undefined, message: `Notify me when ${variety} mango boxes are available.`, type: 'notify' }),
-      });
-      setDone(true);
-    } catch (e: any) {
-      setErr(e.message || 'Something went wrong. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  return (
-    <div className="notify-overlay" onClick={onClose}>
-      <div className="notify-modal" onClick={e => e.stopPropagation()}>
-        <button className="notify-close" onClick={onClose}>✕</button>
-        {done ? (
-          <div className="notify-success">
-            <div className="notify-success-icon">✓</div>
-            <h3>You're on the list!</h3>
-            <p>We'll email you as soon as the {variety} boxes are ready to order.</p>
-            <button className="notify-done-btn" onClick={onClose}>Done</button>
-          </div>
-        ) : (
-          <>
-            <div className="notify-litchi-icon">🥭</div>
-            <h3 className="notify-title">Notify Me — {variety} Box</h3>
-            <p className="notify-sub">Harvest starts soon. Drop your details and we'll let you know the moment it's ready to order.</p>
-            <form onSubmit={handleSubmit} className="notify-form">
-              <div className="notify-field">
-                <label>Your name</label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)} />
-              </div>
-              <div className="notify-field">
-                <label>Email address</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
-              </div>
-              <div className="notify-field">
-                <label>Phone <span style={{ fontWeight: 400, color: '#9ca3af' }}>(optional)</span></label>
-                <input type="tel" maxLength={10} value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, ''))} />
-              </div>
-              {err && <p className="notify-err">{err}</p>}
-              <button type="submit" className="notify-submit" disabled={submitting}>
-                {submitting ? 'Saving…' : 'Notify Me →'}
-              </button>
-            </form>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
 
 export default function MangoBoxes() {
   const [notifyBox, setNotifyBox] = useState<string | null>(null);
@@ -142,7 +73,16 @@ export default function MangoBoxes() {
         </div>
       </div>
 
-      {notifyBox && <NotifyModal variety={notifyBox} onClose={() => setNotifyBox(null)} />}
+      {notifyBox && (
+        <NotifyModal
+          icon="🥭"
+          title={`Notify Me — ${notifyBox} Box`}
+          subtitle="Harvest starts soon. Drop your details and we'll let you know the moment it's ready to order."
+          successMsg={`We'll email you as soon as the ${notifyBox} boxes are ready to order.`}
+          backendMessage={`Notify me when ${notifyBox} mango boxes are available.`}
+          onClose={() => setNotifyBox(null)}
+        />
+      )}
     </section>
   );
 }

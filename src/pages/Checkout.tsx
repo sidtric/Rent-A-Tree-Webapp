@@ -6,6 +6,17 @@ import { openRazorpayCheckout } from '../lib/razorpay';
 import { apiFetch } from '../lib/api';
 import './Checkout.css';
 
+const validators = {
+  name:    (v: string) => !v.trim() ? 'Full name is required.' : !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(v.trim()) ? 'Letters only (min 2 characters).' : '',
+  email:   (v: string) => !v.trim() ? 'Email is required.' : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'Enter a valid email address.' : '',
+  phone:   (v: string) => !v.trim() ? 'Phone number is required.' : !/^[6-9]\d{9}$/.test(v) ? 'Must start with 6–9 and be 10 digits.' : '',
+  flat:    (v: string) => !v.trim() ? 'Flat / house number is required.' : '',
+  street:  (v: string) => !v.trim() ? 'Street / area is required.' : v.trim().length < 3 ? 'At least 3 characters.' : '',
+  city:    (v: string) => !v.trim() ? 'City is required.' : !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(v.trim()) ? 'Letters only.' : '',
+  state:   (v: string) => !v.trim() ? 'State is required.' : !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(v.trim()) ? 'Letters only.' : '',
+  pincode: (v: string) => !v.trim() ? 'Pincode is required.' : !/^[1-9]\d{5}$/.test(v) ? 'Must be 6 digits, cannot start with 0.' : '',
+};
+
 export default function Checkout() {
   const { user, updateUser } = useAuth();
   const { items, total, updateQty, removeItem, clearCart } = useCart();
@@ -25,6 +36,19 @@ export default function Checkout() {
   const [hadTree,  setHadTree]  = useState(false);
   const [hadBox,   setHadBox]   = useState(false);
   const [err,      setErr]      = useState('');
+  const [touched,  setTouched]  = useState<Record<string, boolean>>({});
+
+  function touch(field: string) { setTouched(prev => ({ ...prev, [field]: true })); }
+
+  function inputClass(field: string, value: string) {
+    if (!touched[field]) return '';
+    return validators[field as keyof typeof validators](value) ? 'input-error' : 'input-valid';
+  }
+
+  function fieldErr(field: string, value: string) {
+    if (!touched[field]) return '';
+    return validators[field as keyof typeof validators](value);
+  }
 
   if (!user) {
     navigate('/login', { state: { from: '/checkout' } });
@@ -39,14 +63,11 @@ export default function Checkout() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErr('');
-    if (!name.trim() || !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(name.trim()))     return setErr('Please enter a valid full name (letters only).');
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))          return setErr('Please enter a valid email.');
-    if (!phone.trim() || !/^[6-9]\d{9}$/.test(phone))                         return setErr('Enter a valid 10-digit Indian mobile number (must start with 6, 7, 8, or 9).');
-    if (!flat.trim())                                                          return setErr('Please enter your flat / house number.');
-    if (!street.trim() || street.trim().length < 3)                            return setErr('Please enter a valid street / area (at least 3 characters).');
-    if (!city.trim() || !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(city.trim()))     return setErr('Please enter a valid city (letters only).');
-    if (!state.trim() || !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(state.trim()))   return setErr('Please enter a valid state (letters only).');
-    if (!pincode.trim() || !/^[1-9]\d{5}$/.test(pincode))                     return setErr('Enter a valid 6-digit Indian pincode (cannot start with 0).');
+    const all = { name: true, email: true, phone: true, flat: true, street: true, city: true, state: true, pincode: true };
+    setTouched(all);
+    const values = { name, email, phone, flat, street, city, state, pincode };
+    const firstErr = (Object.keys(all) as (keyof typeof validators)[]).map(f => validators[f](values[f])).find(e => e);
+    if (firstErr) { setErr(firstErr); return; }
     handlePay(`${flat}, ${street}, ${city}, ${state} – ${pincode}`);
   }
 
@@ -163,20 +184,44 @@ export default function Checkout() {
 
             <div className="chk-field">
               <label>Full name</label>
-              <input type="text" value={name} onChange={e => setName(e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))} />
+              <input
+                type="text"
+                placeholder="Rahul Sharma"
+                value={name}
+                className={inputClass('name', name)}
+                onChange={e => setName(e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))}
+                onBlur={() => touch('name')}
+              />
+              {fieldErr('name', name) && <span className="chk-field-err">{fieldErr('name', name)}</span>}
             </div>
 
             <div className="chk-row">
               <div className="chk-field">
                 <label>Email</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  className={inputClass('email', email)}
+                  onChange={e => setEmail(e.target.value)}
+                  onBlur={() => touch('email')}
+                />
+                {fieldErr('email', email) && <span className="chk-field-err">{fieldErr('email', email)}</span>}
               </div>
               <div className="chk-field">
                 <label>Phone</label>
-                <div className="chk-phone-wrap">
-                  {phone && <span>+91</span>}
-                  <input type="tel" maxLength={10} value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, ''))} />
+                <div className={`chk-phone-wrap ${touched.phone ? (validators.phone(phone) ? 'phone-error' : 'phone-valid') : ''}`}>
+                  <span>+91</span>
+                  <input
+                    type="tel"
+                    maxLength={10}
+                    placeholder="9876543210"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
+                    onBlur={() => touch('phone')}
+                  />
                 </div>
+                {fieldErr('phone', phone) && <span className="chk-field-err">{fieldErr('phone', phone)}</span>}
               </div>
             </div>
 
@@ -185,26 +230,67 @@ export default function Checkout() {
             <div className="chk-row">
               <div className="chk-field">
                 <label>Flat / House no.</label>
-                <input type="text" value={flat} onChange={e => setFlat(e.target.value)} />
+                <input
+                  type="text"
+                  placeholder="B-204, Green Valley Apts"
+                  value={flat}
+                  className={inputClass('flat', flat)}
+                  onChange={e => setFlat(e.target.value)}
+                  onBlur={() => touch('flat')}
+                />
+                {fieldErr('flat', flat) && <span className="chk-field-err">{fieldErr('flat', flat)}</span>}
               </div>
               <div className="chk-field">
                 <label>Street / Area</label>
-                <input type="text" value={street} onChange={e => setStreet(e.target.value)} />
+                <input
+                  type="text"
+                  placeholder="MG Road, Koramangala"
+                  value={street}
+                  className={inputClass('street', street)}
+                  onChange={e => setStreet(e.target.value)}
+                  onBlur={() => touch('street')}
+                />
+                {fieldErr('street', street) && <span className="chk-field-err">{fieldErr('street', street)}</span>}
               </div>
             </div>
 
             <div className="chk-row chk-row-3">
               <div className="chk-field">
                 <label>City</label>
-                <input type="text" value={city} onChange={e => setCity(e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))} />
+                <input
+                  type="text"
+                  placeholder="Bengaluru"
+                  value={city}
+                  className={inputClass('city', city)}
+                  onChange={e => setCity(e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))}
+                  onBlur={() => touch('city')}
+                />
+                {fieldErr('city', city) && <span className="chk-field-err">{fieldErr('city', city)}</span>}
               </div>
               <div className="chk-field">
                 <label>State</label>
-                <input type="text" value={state} onChange={e => setState(e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))} />
+                <input
+                  type="text"
+                  placeholder="Karnataka"
+                  value={state}
+                  className={inputClass('state', state)}
+                  onChange={e => setState(e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))}
+                  onBlur={() => touch('state')}
+                />
+                {fieldErr('state', state) && <span className="chk-field-err">{fieldErr('state', state)}</span>}
               </div>
               <div className="chk-field">
                 <label>Pincode</label>
-                <input type="text" maxLength={6} value={pincode} onChange={e => setPincode(e.target.value.replace(/\D/g, ''))} />
+                <input
+                  type="text"
+                  maxLength={6}
+                  placeholder="560001"
+                  value={pincode}
+                  className={inputClass('pincode', pincode)}
+                  onChange={e => setPincode(e.target.value.replace(/\D/g, ''))}
+                  onBlur={() => touch('pincode')}
+                />
+                {fieldErr('pincode', pincode) && <span className="chk-field-err">{fieldErr('pincode', pincode)}</span>}
               </div>
             </div>
 
