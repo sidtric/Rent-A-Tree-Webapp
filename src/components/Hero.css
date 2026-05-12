@@ -1,0 +1,124 @@
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  background: #111;
+  overflow: hidden;
+}
+
+.hero-bg-picture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('/frontskyy.jpeg');
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.1) contrast(1.05);
+  animation: heroZoom 14s ease-out forwards;
+}
+
+@keyframes heroZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.08); }
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0) 30%, rgba(0,0,0,0.45) 100%),
+    linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 60%, rgba(20,10,0,0.3) 100%),
+    linear-gradient(180deg, rgba(217,119,6,0.08), rgba(0,0,0,0.15));
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hero-label {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 16px;
+}
+
+.hero-heading {
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.0;
+  letter-spacing: -2px;
+  margin-bottom: 20px;
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: rgba(255,255,255,0.8);
+  max-width: 440px;
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-btn-primary {
+  padding: 13px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  background: #fff;
+  color: #111;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.hero-btn-primary:hover {
+  background: #e5e7eb;
+}
+
+.hero-btn-ghost {
+  padding: 13px 28px;
+  font-size: 15px;
+  font-weight: 500;
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.5);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.hero-btn-ghost:hover {
+  border-color: #fff;
+  background: rgba(255,255,255,0.08);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: auto;
+    min-height: 520px;
+    padding: 60px 0;
+  }
+
+  .hero-heading {
+    letter-spacing: -1px;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+  }
+}

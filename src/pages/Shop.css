@@ -1,0 +1,228 @@
+.shop-litchi {
+  padding: 96px 24px;
+  background: #fdf8f0;
+  border-top: 1px solid #f0e8d8;
+  text-align: center;
+}
+
+.shop-litchi-inner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.shop-litchi-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+
+.shop-litchi-title {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.8px;
+  margin-bottom: 16px;
+}
+
+.shop-litchi-sub {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.shop-litchi-btn {
+  padding: 13px 32px;
+  font-size: 15px;
+  font-weight: 700;
+  background: #92400e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.shop-litchi-btn:hover {
+  background: #78350f;
+}
+
+/* ── Notify Me modal ── */
+.notify-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.notify-modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  text-align: center;
+}
+
+.notify-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.notify-close:hover {
+  color: #374151;
+}
+
+.notify-litchi-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.notify-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.notify-sub {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.notify-form {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.notify-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notify-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.notify-field input {
+  padding: 11px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+
+.notify-field input:focus {
+  border-color: #92400e;
+}
+
+.notify-err {
+  font-size: 13px;
+  color: #dc2626;
+  margin: 0;
+}
+
+.notify-submit {
+  width: 100%;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 700;
+  background: #92400e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.notify-submit:hover:not(:disabled) {
+  background: #78350f;
+}
+
+.notify-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Success state ── */
+.notify-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.notify-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 24px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notify-success h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+}
+
+.notify-success p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.notify-done-btn {
+  padding: 11px 32px;
+  font-size: 14px;
+  font-weight: 700;
+  background: #92400e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.15s;
+}
+
+.notify-done-btn:hover {
+  background: #78350f;
+}

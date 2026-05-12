@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
+.mb {
+  padding: 96px 24px;
+  background: #fafafa;
+}
+
+.mb-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mb-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.mb-label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.mb-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -1px;
+  margin-bottom: 12px;
+}
+
+.mb-sub {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.mb-harvest-note {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #444;
+}
+
+.mb-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.mb-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.mb-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+
+.mb-card-img {
+  height: 220px;
+  position: relative;
+  background: linear-gradient(135deg, #fef9ee 0%, #fdf0d0 100%);
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+}
+
+/* ── Box scene ── */
+.mb-box-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.mb-crate-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* ── YourOrchard badge ── */
+.mb-photo-badge {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 999px;
+  padding: 6px 16px 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.25);
+  white-space: nowrap;
+}
+
+.mb-badge-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mb-badge-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mb-badge-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #2d5a27;
+  line-height: 1.1;
+  letter-spacing: -0.2px;
+}
+
+.mb-badge-variety {
+  font-size: 10px;
+  color: #888;
+  font-style: italic;
+}
+
+.mb-card-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+}
+
+.mb-ribbon {
+  position: absolute;
+  top: 32px;
+  right: -28px;
+  width: 140px;
+  background: #d97706;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-align: center;
+  padding: 6px 0;
+  transform: rotate(45deg);
+  text-transform: uppercase;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.mb-card-body {
+  padding: 24px;
+}
+
+.mb-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.mb-card-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.3px;
+}
+
+.mb-card-weight {
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.mb-card-desc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.mb-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mb-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.mb-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+}
+
+.mb-price-unit {
+  font-size: 13px;
+  color: #888;
+  margin-left: 4px;
+}
+
+.mb-price-note {
+  font-size: 13px;
+  color: #888;
+}
+
+.mb-coming-soon {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b45309;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 999px;
+  padding: 4px 12px;
+  letter-spacing: 0.3px;
+}
+
+.mb-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mb-btn-ghost {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  background: transparent;
+  color: #111;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mb-btn-ghost:hover {
+  background: #f3f4f6;
+}
+
+.mb-btn-outline {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #fff;
+  color: #111;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.mb-btn-outline:hover { border-color: #2d5a27; color: #2d5a27; }
+
+.mb-btn-solid {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #2d5a27;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mb-btn-solid:hover {
+  background: #1e3d1a;
+}
+
+@media (max-width: 900px) {
+  .mb-cards {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+.mb-success {
+  background: #edf7ec;
+  border: 1px solid #a8d5a2;
+  color: #2d5a27;
+  border-radius: 10px;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}

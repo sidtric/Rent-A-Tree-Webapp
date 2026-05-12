@@ -1,0 +1,295 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.navbar-inner {
+  width: 100%;
+  padding: 0 48px 0 40px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.navbar-logo {
+  height: 64px;
+  width: auto;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: block;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+  flex: 1;
+  padding-left: 16px;
+  align-items: center;
+}
+
+.navbar-links a {
+  font-size: 17px;
+  color: #555;
+  text-decoration: none;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+
+.navbar-links a:hover {
+  color: #111;
+}
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-ghost {
+  padding: 7px 16px;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: transparent;
+  color: #111;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-ghost:hover {
+  background: #f3f4f6;
+}
+
+.btn-login {
+  padding: 7px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  background: #2d5a27;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.btn-login:hover {
+  background: #1e3d1a;
+}
+
+.btn-solid {
+  padding: 7px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-solid:hover {
+  background: #333;
+}
+
+.navbar-username {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2d5a27;
+}
+
+.navbar-profile {
+  position: relative;
+}
+
+.navbar-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.navbar-profile-btn:hover { background: #f3f4f6; }
+
+.navbar-profile-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.navbar-profile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  min-width: 180px;
+  padding: 8px 0;
+  z-index: 200;
+}
+
+.navbar-profile-dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  font-size: 15px;
+  color: #111;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.navbar-profile-dropdown button:hover { background: #f3f4f6; }
+
+.navbar-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none;
+    position: absolute;
+    top: 68px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    flex-direction: column;
+    gap: 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
+  .navbar-links li a {
+    display: block;
+    padding: 14px 24px;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .navbar-auth {
+    display: none;
+  }
+
+  .navbar-inner {
+    padding: 0 16px 0 12px;
+    gap: 0;
+  }
+
+  .navbar-cart {
+    margin-left: auto;
+    margin-right: 4px;
+  }
+
+  .navbar-hamburger {
+    display: block;
+    margin-left: 4px;
+  }
+}
+
+/* ── Shop dropdown ── */
+.navbar-dropdown-parent {
+  position: relative;
+}
+
+.navbar-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navbar-dropdown-arrow {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 1px;
+}
+
+.navbar-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  min-width: 160px;
+  list-style: none;
+  padding: 6px 0;
+  z-index: 200;
+}
+
+.navbar-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.navbar-dropdown li a {
+  display: block;
+  padding: 10px 18px;
+  font-size: 15px;
+  color: #333;
+  white-space: nowrap;
+  transition: background 0.1s, color 0.1s;
+}
+
+.navbar-dropdown li a:hover {
+  background: #f6f9f5;
+  color: #2d5a27;
+}
+
+.navbar-cart {
+  position: relative;
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #333;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.15s;
+}
+.navbar-cart:hover { border-color: #2d5a27; color: #2d5a27; }
+
+.navbar-cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #2d5a27;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}

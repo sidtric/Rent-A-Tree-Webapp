@@ -1,0 +1,156 @@
+.signup-page {
+  min-height: calc(100vh - 56px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: #fafafa;
+}
+
+.signup-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 40px 40px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.signup-header {
+  margin-bottom: 32px;
+}
+
+.signup-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+
+.signup-sub {
+  font-size: 14px;
+  color: #888;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.signup-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.signup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.signup-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+}
+
+.signup-field input,
+.phone-wrap input {
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  color: #111;
+}
+
+.signup-field input:focus,
+.phone-wrap input:focus {
+  border-color: #111;
+}
+
+.phone-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.phone-wrap:focus-within {
+  border-color: #111;
+}
+
+.phone-prefix {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #555;
+  background: #f9fafb;
+  border-right: 1px solid #d1d5db;
+  flex-shrink: 0;
+}
+
+.phone-wrap input {
+  border: none;
+  border-radius: 0;
+}
+
+.phone-wrap input:focus {
+  border-color: transparent;
+}
+
+.signup-error {
+  font-size: 13px;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 9px 12px;
+}
+
+.signup-btn {
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.signup-btn:hover {
+  background: #333;
+}
+
+.signup-login {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #888;
+}
+
+.signup-login span {
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .signup-card {
+    padding: 28px 20px;
+  }
+
+  .signup-row {
+    grid-template-columns: 1fr;
+  }
+}
