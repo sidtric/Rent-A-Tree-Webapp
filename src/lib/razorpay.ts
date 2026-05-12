@@ -1,5 +1,20 @@
 import { apiFetch } from './api';
 
+let razorpayPromise: Promise<void> | null = null;
+function loadRazorpay(): Promise<void> {
+  if ((window as unknown as { Razorpay?: unknown }).Razorpay) return Promise.resolve();
+  if (razorpayPromise) return razorpayPromise;
+  razorpayPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    s.async = true;
+    s.onload = () => resolve();
+    s.onerror = () => { razorpayPromise = null; reject(new Error('Failed to load Razorpay')); };
+    document.body.appendChild(s);
+  });
+  return razorpayPromise;
+}
+
 interface RazorpayOrder {
   orderId: string;
   amount: number;
@@ -19,10 +34,13 @@ interface OpenCheckoutOpts {
 }
 
 export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
-  const order = await apiFetch<RazorpayOrder>('/api/payments/create-order', {
-    method: 'POST',
-    body: JSON.stringify({ type: 'cart', items: opts.items }),
-  });
+  const [order] = await Promise.all([
+    apiFetch<RazorpayOrder>('/api/payments/create-order', {
+      method: 'POST',
+      body: JSON.stringify({ type: 'cart', items: opts.items }),
+    }),
+    loadRazorpay(),
+  ]);
 
   const rzp = new (window as any).Razorpay({
     key: order.key,
