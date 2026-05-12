@@ -9,8 +9,8 @@ const PLAN_LABEL:  Record<string, string> = { sapling: 'Small Tree Pack', adult:
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '').split(',').map((e: string) => e.trim().toLowerCase()).filter(Boolean);
 
-const isAdmin = (user: { email?: string } | null) =>
-  !!user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+const isAdmin = (user: { email?: string; role?: string } | null) =>
+  !!user && (user.role === 'admin' || (!!user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())));
 
 const STEPS = [
   { n: 1, icon: '🌳', h: 'Choose Your Tree',   p: 'Pick a plan — Sapling, Adult, or Grand — from our Ramnagar orchard.' },

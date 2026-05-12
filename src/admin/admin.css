@@ -1104,3 +1104,74 @@
 @media (max-width: 560px) {
   .adm-pay-kpis { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── Standalone input ─────────────────────── */
+.adm-input {
+  padding: 10px 14px;
+  border: 1.5px solid rgba(0, 0, 0, 0.14);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--dark, #0e2015);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.adm-input:focus { border-color: var(--green, #2d6a4f); }
+
+/* ── Secondary button ─────────────────────── */
+.adm-btn-secondary {
+  padding: 11px 22px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.adm-btn-secondary:hover { background: #e5e7eb; }
+
+/* ── Status select in table ───────────────── */
+.adm-status-select {
+  padding: 5px 10px;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--dark, #0e2015);
+  background: #f9fafb;
+  cursor: pointer;
+  outline: none;
+}
+.adm-status-select:focus { border-color: var(--green, #2d6a4f); }
+
+/* ── Action row in table ──────────────────── */
+.adm-action-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* ── Section wrapper (user roles) ─────────── */
+.adm-section { padding: 36px 40px; max-width: 900px; }
+.adm-section-hdr { margin-bottom: 24px; }
+.adm-section-hdr h2 { font-size: 1.4rem; font-weight: 800; color: var(--dark, #0e2015); margin-bottom: 6px; }
+.adm-section-sub   { color: var(--gray, #5d6b62); font-size: 0.88rem; margin: 0; }
+
+/* ── Table wrapper ────────────────────────── */
+.adm-table-wrap {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.07);
+  padding: 6px;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .adm-section { padding: 24px 20px; }
+}
