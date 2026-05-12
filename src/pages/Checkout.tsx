@@ -39,14 +39,14 @@ export default function Checkout() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErr('');
-    if (!name.trim())                                                          return setErr('Please enter your full name.');
+    if (!name.trim() || !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(name.trim()))     return setErr('Please enter a valid full name (letters only).');
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))          return setErr('Please enter a valid email.');
-    if (!phone.trim() || !/^\d{10}$/.test(phone))                             return setErr('Enter a valid 10-digit phone number.');
+    if (!phone.trim() || !/^[6-9]\d{9}$/.test(phone))                         return setErr('Enter a valid 10-digit Indian mobile number (must start with 6, 7, 8, or 9).');
     if (!flat.trim())                                                          return setErr('Please enter your flat / house number.');
-    if (!street.trim())                                                        return setErr('Please enter your street / area.');
-    if (!city.trim())                                                          return setErr('Please enter your city.');
-    if (!state.trim())                                                         return setErr('Please enter your state.');
-    if (!pincode.trim() || !/^\d{6}$/.test(pincode))                          return setErr('Enter a valid 6-digit pincode.');
+    if (!street.trim() || street.trim().length < 3)                            return setErr('Please enter a valid street / area (at least 3 characters).');
+    if (!city.trim() || !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(city.trim()))     return setErr('Please enter a valid city (letters only).');
+    if (!state.trim() || !/^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(state.trim()))   return setErr('Please enter a valid state (letters only).');
+    if (!pincode.trim() || !/^[1-9]\d{5}$/.test(pincode))                     return setErr('Enter a valid 6-digit Indian pincode (cannot start with 0).');
     handlePay(`${flat}, ${street}, ${city}, ${state} – ${pincode}`);
   }
 
@@ -163,7 +163,7 @@ export default function Checkout() {
 
             <div className="chk-field">
               <label>Full name</label>
-              <input type="text" value={name} onChange={e => setName(e.target.value)} />
+              <input type="text" value={name} onChange={e => setName(e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))} />
             </div>
 
             <div className="chk-row">
@@ -196,11 +196,11 @@ export default function Checkout() {
             <div className="chk-row chk-row-3">
               <div className="chk-field">
                 <label>City</label>
-                <input type="text" value={city} onChange={e => setCity(e.target.value)} />
+                <input type="text" value={city} onChange={e => setCity(e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))} />
               </div>
               <div className="chk-field">
                 <label>State</label>
-                <input type="text" value={state} onChange={e => setState(e.target.value)} />
+                <input type="text" value={state} onChange={e => setState(e.target.value.replace(/[^A-Za-z\s.'-]/g, ''))} />
               </div>
               <div className="chk-field">
                 <label>Pincode</label>
