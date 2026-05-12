@@ -91,6 +91,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-bottom: 48px;
+  overflow: hidden;
 }
 
 .rv-card {
@@ -102,6 +103,7 @@
   flex-direction: column;
   gap: 14px;
   transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  min-width: 0;
 }
 
 .rv-card:hover {
@@ -116,6 +118,8 @@
   line-height: 1.75;
   flex: 1;
   margin: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .rv-read-more {

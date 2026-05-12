@@ -161,7 +161,7 @@
   display: none;
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 26px;
   cursor: pointer;
   margin-left: auto;
 }
@@ -194,7 +194,7 @@
   }
 
   .navbar-inner {
-    padding: 0 16px 0 12px;
+    padding: 0 12px 0 4px;
     gap: 0;
   }
 
