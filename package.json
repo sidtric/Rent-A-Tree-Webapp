@@ -1,8 +1,9 @@
 {
-  "name": "frontend",
+  "name": "yourorchard-admin",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "YourOrchard Admin Dashboard — staff-only deployment",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -10,10 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "node": "^24.15.0",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "react-router-dom": "^7.14.2"
+    "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
