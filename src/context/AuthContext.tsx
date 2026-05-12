@@ -1,11 +1,21 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { apiFetch } from '../lib/api';
 
+export interface DeliveryAddress {
+  flat: string;
+  street: string;
+  city: string;
+  state: string;
+  pincode: string;
+}
+
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
   role: 'user' | 'admin';
+  phone?: string;
+  deliveryAddress?: DeliveryAddress;
 }
 
 interface AuthContextType {
@@ -14,6 +24,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<void>;
   logout: () => void;
+  updateUser: (patch: Partial<AuthUser>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -66,8 +77,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }
 
+  function updateUser(patch: Partial<AuthUser>) {
+    setUser(prev => {
+      if (!prev) return prev;
+      const next = { ...prev, ...patch };
+      localStorage.setItem('user', JSON.stringify(next));
+      return next;
+    });
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

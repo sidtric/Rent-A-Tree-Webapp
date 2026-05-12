@@ -90,7 +90,7 @@ function addBooked(slug: string) {
 export default function TreeDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [paying, setPaying] = useState(false);
   const [successFor, setSuccessFor] = useState<string | null>(null);
   const [booked, setBooked] = useState<string[]>(getBooked);
@@ -124,7 +124,7 @@ export default function TreeDetail() {
     setShowCheckout(true);
   }
 
-  async function handleConfirm({ name, email, phone, deliveryAddress }: { name: string; email: string; phone: string; deliveryAddress: string; quantity: number }) {
+  async function handleConfirm({ name, email, phone, deliveryAddress, addressParts }: { name: string; email: string; phone: string; deliveryAddress: string; addressParts: { flat: string; street: string; city: string; state: string; pincode: string }; quantity: number }) {
     if (!tree) return;
     setPaying(true);
     try {
@@ -136,16 +136,22 @@ export default function TreeDetail() {
         userEmail: email,
         userPhone: phone,
         onSuccess: async (paymentId, orderId) => {
-          await apiFetch('/api/rentals', {
-            method: 'POST',
-            body: JSON.stringify({
-              plan: TIER_TO_PLAN[tree.tier],
-              variety: tree.variety,
-              deliveryAddress,
-              razorpayOrderId: orderId,
-              paymentId,
+          await Promise.all([
+            apiFetch('/api/rentals', {
+              method: 'POST',
+              body: JSON.stringify({
+                plan: TIER_TO_PLAN[tree.tier],
+                variety: tree.variety,
+                deliveryAddress,
+                razorpayOrderId: orderId,
+                paymentId,
+              }),
             }),
-          });
+            apiFetch('/api/auth/profile', {
+              method: 'PUT',
+              body: JSON.stringify({ phone, deliveryAddress: addressParts }),
+            }).then(() => updateUser({ phone, deliveryAddress: addressParts })).catch(() => {}),
+          ]);
           setShowCheckout(false);
           addBooked(tree.slug);
           setBooked(getBooked());

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import './CheckoutModal.css';
 
 interface RentalMode {
@@ -14,23 +15,34 @@ interface BoxMode {
   pricePerBox: number;
 }
 
+export interface ConfirmData {
+  name: string;
+  email: string;
+  phone: string;
+  deliveryAddress: string;
+  addressParts: { flat: string; street: string; city: string; state: string; pincode: string };
+  quantity: number;
+}
+
 type CheckoutModalProps = (RentalMode | BoxMode) & {
   loading: boolean;
   onClose: () => void;
-  onConfirm: (data: { name: string; email: string; phone: string; deliveryAddress: string; quantity: number }) => void;
+  onConfirm: (data: ConfirmData) => void;
 };
 
 export default function CheckoutModal(props: CheckoutModalProps) {
   const { mode, variety, loading, onClose, onConfirm } = props;
+  const { user } = useAuth();
+  const saved = user?.deliveryAddress;
 
-  const [name,    setName]    = useState('');
-  const [email,   setEmail]   = useState('');
-  const [phone,   setPhone]   = useState('');
-  const [flat,    setFlat]    = useState('');
-  const [street,  setStreet]  = useState('');
-  const [city,    setCity]    = useState('');
-  const [state,   setState]   = useState('');
-  const [pincode, setPincode] = useState('');
+  const [name,    setName]    = useState(user?.name  || '');
+  const [email,   setEmail]   = useState(user?.email || '');
+  const [phone,   setPhone]   = useState(user?.phone || '');
+  const [flat,    setFlat]    = useState(saved?.flat    || '');
+  const [street,  setStreet]  = useState(saved?.street  || '');
+  const [city,    setCity]    = useState(saved?.city    || '');
+  const [state,   setState]   = useState(saved?.state   || '');
+  const [pincode, setPincode] = useState(saved?.pincode || '');
   const [quantity, setQuantity] = useState(1);
   const [err,     setErr]     = useState('');
 
@@ -51,7 +63,8 @@ export default function CheckoutModal(props: CheckoutModalProps) {
     if (!pincode.trim() || !/^\d{6}$/.test(pincode)) return setErr('Enter a valid 6-digit pincode.');
 
     const deliveryAddress = `${flat}, ${street}, ${city}, ${state} – ${pincode}`;
-    onConfirm({ name, email, phone, deliveryAddress, quantity });
+    const addressParts = { flat, street, city, state, pincode };
+    onConfirm({ name, email, phone, deliveryAddress, addressParts, quantity });
   }
 
   return (

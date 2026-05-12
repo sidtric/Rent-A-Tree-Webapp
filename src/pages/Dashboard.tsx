@@ -40,6 +40,12 @@ const PLAN_META = {
   grand:   { label: 'Grand Tree',   size: 'Big Tree',   yield: '60–80 kg', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
 };
 
+const PLAN_AMOUNTS = {
+  sapling: { token: 799,  full: 4499 },
+  adult:   { token: 1499, full: 6999 },
+  grand:   { token: 2499, full: 9999 },
+};
+
 const VARIETY_META = {
   chausa:  { label: 'Chausa Aam',  img: '/chausa-box.jpg' },
   dasheri: { label: 'Dasheri Aam', img: '/dasheri-box.jpg' },
@@ -314,6 +320,9 @@ export default function Dashboard() {
                 const plan = PLAN_META[r.plan];
                 const variety = VARIETY_META[r.variety];
                 const status = RENTAL_STATUS[r.status];
+                const amounts = PLAN_AMOUNTS[r.plan];
+                const balance = amounts.full - amounts.token;
+                const showBalance = r.status !== 'completed' && r.status !== 'cancelled';
                 return (
                   <div key={r._id} className="dash-card">
                     <div className="dash-card-img" style={{ backgroundImage: `url(${plan.img})` }}>
@@ -327,6 +336,12 @@ export default function Dashboard() {
                       <h3 className="dash-card-name">{plan.label}</h3>
                       <p className="dash-card-variety">{variety.label} · Season {r.season}</p>
                       <p className="dash-card-addr">{r.deliveryAddress}</p>
+                      {showBalance && (
+                        <div className="dash-balance-row">
+                          <span className="dash-balance-paid">Token paid: ₹{amounts.token.toLocaleString('en-IN')}</span>
+                          <span className="dash-balance-due">Balance due: ₹{balance.toLocaleString('en-IN')}</span>
+                        </div>
+                      )}
                       <div className="dash-card-footer">
                         <span className="dash-card-date">Rented {formatDate(r.createdAt)}</span>
                         {r.status === 'active' && (

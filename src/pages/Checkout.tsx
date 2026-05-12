@@ -7,18 +7,19 @@ import { apiFetch } from '../lib/api';
 import './Checkout.css';
 
 export default function Checkout() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { items, total, updateQty, removeItem, clearCart } = useCart();
   const navigate = useNavigate();
 
+  const saved = user?.deliveryAddress;
   const [name,    setName]    = useState(user?.name || '');
   const [email,   setEmail]   = useState(user?.email || '');
-  const [phone,   setPhone]   = useState('');
-  const [flat,    setFlat]    = useState('');
-  const [street,  setStreet]  = useState('');
-  const [city,    setCity]    = useState('');
-  const [state,   setState]   = useState('');
-  const [pincode, setPincode] = useState('');
+  const [phone,   setPhone]   = useState(user?.phone || '');
+  const [flat,    setFlat]    = useState(saved?.flat    || '');
+  const [street,  setStreet]  = useState(saved?.street  || '');
+  const [city,    setCity]    = useState(saved?.city    || '');
+  const [state,   setState]   = useState(saved?.state   || '');
+  const [pincode, setPincode] = useState(saved?.pincode || '');
   const [paying,  setPaying]  = useState(false);
   const [success, setSuccess] = useState(false);
   const [err,     setErr]     = useState('');
@@ -57,19 +58,26 @@ export default function Checkout() {
         userEmail: email,
         userPhone: phone,
         onSuccess: async (paymentId, orderId) => {
-          await Promise.all(items.map(item =>
-            apiFetch('/api/orders', {
-              method: 'POST',
-              body: JSON.stringify({
-                variety: item.variety,
-                quantity: item.qty,
-                deliveryAddress,
-                phone,
-                razorpayOrderId: orderId,
-                paymentId,
-              }),
-            })
-          ));
+          const addr = { flat, street, city, state, pincode };
+          await Promise.all([
+            ...items.map(item =>
+              apiFetch('/api/orders', {
+                method: 'POST',
+                body: JSON.stringify({
+                  variety: item.variety,
+                  quantity: item.qty,
+                  deliveryAddress,
+                  phone,
+                  razorpayOrderId: orderId,
+                  paymentId,
+                }),
+              })
+            ),
+            apiFetch('/api/auth/profile', {
+              method: 'PUT',
+              body: JSON.stringify({ phone, deliveryAddress: addr }),
+            }).then(() => updateUser({ phone, deliveryAddress: addr })).catch(() => {}),
+          ]);
           clearCart();
           setSuccess(true);
         },
