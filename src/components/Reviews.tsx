@@ -42,8 +42,20 @@ function ReviewCard({ review }: { review: Review }) {
   const long = review.comment.length > 160;
   const text = long && !expanded ? review.comment.slice(0, 160) + '…' : review.comment;
 
+  const featuredVideo = review.media?.find(m => m.type === 'video');
+  const images = review.media?.filter(m => m.type === 'image') || [];
+
   return (
     <div className="rv-card">
+      {featuredVideo && (
+        <video
+          src={featuredVideo.url}
+          className="rv-card-video"
+          controls
+          preload="metadata"
+          playsInline
+        />
+      )}
       <Stars rating={review.rating} />
       <p className="rv-comment">
         {text}
@@ -59,13 +71,11 @@ function ReviewCard({ review }: { review: Review }) {
           <span className="rv-name">{review.name}</span>
           <span className="rv-date">{formatDate(review.createdAt)}</span>
         </div>
-        {review.media && review.media.length > 0 && (
+        {images.length > 0 && (
           <div className="rv-media-row">
-            {review.media.slice(0, 2).map((m, i) =>
-              m.type === 'image'
-                ? <img key={i} src={m.url} alt="" className="rv-media-thumb" />
-                : <video key={i} src={m.url} className="rv-media-thumb" muted />
-            )}
+            {images.slice(0, 2).map((m, i) => (
+              <img key={i} src={m.url} alt="" className="rv-media-thumb" />
+            ))}
           </div>
         )}
       </div>
@@ -139,7 +149,7 @@ function WriteModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: (r: 
               onChange={e => setFiles(Array.from(e.target.files || []).slice(0, 3))}
             />
             <span className="rv-upload-btn">
-              {files.length > 0 ? `${files.length} file${files.length > 1 ? 's' : ''} selected` : '+ Add photos (optional)'}
+              {files.length > 0 ? `${files.length} file${files.length > 1 ? 's' : ''} selected` : '+ Add photo or video (optional)'}
             </span>
           </label>
           {error && <p className="rv-modal-error">{error}</p>}
@@ -162,6 +172,7 @@ export default function Reviews() {
   const [showModal, setShowModal] = useState(false);
   const [success, setSuccess] = useState(false);
   const [page, setPage] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     fetch(`${BASE}/api/reviews`)
@@ -186,6 +197,12 @@ export default function Reviews() {
 
   const displayed = reviews.slice(0, 30);
   const totalPages = Math.ceil(displayed.length / PER_PAGE);
+
+  useEffect(() => {
+    if (totalPages <= 1 || paused) return;
+    const timer = setInterval(() => setPage(p => (p + 1) % totalPages), 4500);
+    return () => clearInterval(timer);
+  }, [totalPages, paused]);
 
   const avg = reviews.length
     ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
@@ -228,7 +245,7 @@ export default function Reviews() {
             <p className="rv-empty-text">No reviews yet. Be the first to share your experience.</p>
           </div>
         ) : (
-          <div className="rv-slider">
+          <div className="rv-slider" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
             <div className="rv-slider-viewport">
               <div className="rv-slider-track" style={{ transform: `translateX(-${page * 100}%)` }}>
                 {Array.from({ length: totalPages }).map((_, i) => (
