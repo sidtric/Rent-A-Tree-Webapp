@@ -152,6 +152,8 @@ function WriteModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: (r: 
   );
 }
 
+const PER_PAGE = 3;
+
 export default function Reviews() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -159,6 +161,7 @@ export default function Reviews() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     fetch(`${BASE}/api/reviews`)
@@ -177,8 +180,12 @@ export default function Reviews() {
     setReviews(prev => [r, ...prev]);
     setShowModal(false);
     setSuccess(true);
+    setPage(0);
     setTimeout(() => setSuccess(false), 5000);
   }
+
+  const displayed = reviews.slice(0, 30);
+  const totalPages = Math.ceil(displayed.length / PER_PAGE);
 
   const avg = reviews.length
     ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
@@ -205,7 +212,7 @@ export default function Reviews() {
         )}
 
         {loading ? (
-          <div className="rv-grid">
+          <div className="rv-slider-page">
             {[1, 2, 3].map(i => (
               <div key={i} className="rv-card rv-skeleton">
                 <div className="rv-sk-stars" />
@@ -216,13 +223,50 @@ export default function Reviews() {
               </div>
             ))}
           </div>
-        ) : reviews.length === 0 ? (
+        ) : displayed.length === 0 ? (
           <div className="rv-empty">
             <p className="rv-empty-text">No reviews yet. Be the first to share your experience.</p>
           </div>
         ) : (
-          <div className="rv-grid">
-            {reviews.map(r => <ReviewCard key={r._id} review={r} />)}
+          <div className="rv-slider">
+            <div className="rv-slider-viewport">
+              <div className="rv-slider-track" style={{ transform: `translateX(-${page * 100}%)` }}>
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <div key={i} className="rv-slider-page">
+                    {displayed.slice(i * PER_PAGE, (i + 1) * PER_PAGE).map(r => (
+                      <ReviewCard key={r._id} review={r} />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="rv-slider-controls">
+                <button
+                  className="rv-slider-arrow"
+                  onClick={() => setPage(p => Math.max(0, p - 1))}
+                  disabled={page === 0}
+                  aria-label="Previous"
+                >‹</button>
+                <div className="rv-slider-dots">
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      className={`rv-dot ${i === page ? 'active' : ''}`}
+                      onClick={() => setPage(i)}
+                      aria-label={`Page ${i + 1}`}
+                    />
+                  ))}
+                </div>
+                <button
+                  className="rv-slider-arrow"
+                  onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                  disabled={page === totalPages - 1}
+                  aria-label="Next"
+                >›</button>
+              </div>
+            )}
           </div>
         )}
 
