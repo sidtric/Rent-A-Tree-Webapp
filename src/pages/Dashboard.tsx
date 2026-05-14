@@ -125,7 +125,6 @@ export default function Dashboard() {
       setOrders(o);
       const activeVarieties = [...new Set(r.filter(x => x.status === 'active').map(x => x.variety))];
       if (activeVarieties.length > 0) {
-        setUpdatesLoading(true);
         Promise.all(
           activeVarieties.map(v =>
             apiFetch<TreeUpdate[]>(`/api/public-updates?variety=${v}`)
