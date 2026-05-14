@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { API_BASE } from '../../lib/api';
+import DropZone from '../components/DropZone';
 
 function authHeaders() {
   return { Authorization: `Bearer ${localStorage.getItem('token') || ''}` };
@@ -29,11 +30,9 @@ function MediaSection({
 }) {
   const [uploading, setUploading]     = useState(false);
   const [deletingIdx, setDeletingIdx] = useState<number | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const resKey   = RESPONSE_KEY[endpoint];
+  const resKey = RESPONSE_KEY[endpoint];
 
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files;
+  async function handleUpload(files: FileList) {
     if (!files || files.length === 0) return;
     setUploading(true);
     try {
@@ -45,7 +44,7 @@ function MediaSection({
       if (res[resKey]) { onUpdate(res[resKey]); flash(`${files.length} item(s) added!`); }
       else flash(res.message || 'Upload failed.');
     } catch { flash('Upload failed.'); }
-    finally { setUploading(false); if (inputRef.current) inputRef.current.value = ''; }
+    finally { setUploading(false); }
   }
 
   async function handleDelete(index: number) {
@@ -65,28 +64,25 @@ function MediaSection({
 
   return (
     <div className="adm-card" style={{ marginBottom: 28 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, marginBottom: 8 }}>
-        <div>
-          <h2 className="adm-card-title" style={{ marginBottom: 4 }}>{title}</h2>
-          <p style={{ fontSize: '0.8rem', color: '#9ca3af', margin: 0 }}>{subtitle}</p>
-        </div>
-        <label className="adm-btn-primary" style={{ cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1, flexShrink: 0 }}>
-          {uploading ? 'Uploading…' : '+ Add Photos / Videos'}
-          <input ref={inputRef} type="file" multiple accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm" style={{ display: 'none' }} onChange={handleUpload} disabled={uploading} />
-        </label>
+      <div style={{ marginBottom: 12 }}>
+        <h2 className="adm-card-title" style={{ marginBottom: 4 }}>{title}</h2>
+        <p style={{ fontSize: '0.8rem', color: '#9ca3af', margin: '0 0 12px' }}>{subtitle}</p>
+        {media.length > 0 && (
+          <p style={{ fontSize: '0.78rem', color: '#9ca3af', margin: '0 0 12px' }}>
+            {`${media.length} item${media.length > 1 ? 's' : ''} · ${videoCount} video${videoCount !== 1 ? 's' : ''} · ${imageCount} photo${imageCount !== 1 ? 's' : ''} · First item shown on site`}
+          </p>
+        )}
+        <DropZone
+          onFiles={handleUpload}
+          accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm"
+          multiple
+          disabled={uploading}
+          compact={media.length > 0}
+        />
+        {uploading && <p style={{ fontSize: '0.8rem', color: '#2d5a27', margin: '8px 0 0', fontWeight: 600 }}>Uploading…</p>}
       </div>
 
-      <p style={{ fontSize: '0.78rem', color: '#9ca3af', marginBottom: 16 }}>
-        {media.length === 0
-          ? 'No media — default image used.'
-          : `${media.length} item${media.length > 1 ? 's' : ''} · ${videoCount} video${videoCount !== 1 ? 's' : ''} · ${imageCount} photo${imageCount !== 1 ? 's' : ''} · First item shown on site`}
-      </p>
-
-      {media.length === 0 ? (
-        <div style={{ background: '#f9fafb', border: '1px dashed #d1d5db', borderRadius: 10, padding: '32px 24px', textAlign: 'center' }}>
-          <p style={{ color: '#9ca3af', margin: 0, fontSize: '0.875rem' }}>Upload a photo or video to replace the default.</p>
-        </div>
-      ) : (
+      {media.length > 0 && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
           {media.map((item, i) => (
             <div key={i} style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid #e5e7eb', background: '#fff' }}>
@@ -144,7 +140,6 @@ function YourTreeSection({ flash }: { flash: (m: string) => void }) {
   const [files, setFiles]       = useState<FileList | null>(null);
   const [posting, setPosting]   = useState(false);
   const [deletingId, setDel]    = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (fetched[variety]) return;
@@ -177,7 +172,6 @@ function YourTreeSection({ flash }: { flash: (m: string) => void }) {
       if (res._id) {
         setUpdates(prev => ({ ...prev, [variety]: [res, ...prev[variety]] }));
         setCaption(''); setFiles(null);
-        if (fileRef.current) fileRef.current.value = '';
         flash(`Posted to ${variety} tree dashboard!`);
       } else {
         flash(res.message || 'Upload failed');
@@ -234,20 +228,22 @@ function YourTreeSection({ flash }: { flash: (m: string) => void }) {
           onChange={e => setCaption(e.target.value)}
           style={{ width: '100%', resize: 'vertical', padding: '8px 10px', borderRadius: 6, border: '1px solid #d1d5db', fontSize: '0.875rem', marginBottom: 10, boxSizing: 'border-box' }}
         />
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: '#fff', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, color: '#374151' }}>
-            📸 {files && files.length > 0 ? `${files.length} file(s) selected` : 'Add Photos / Videos'}
-            <input ref={fileRef} type="file" multiple accept="image/*,video/*" style={{ display: 'none' }} onChange={e => setFiles(e.target.files)} />
-          </label>
-          <button
-            className="adm-btn-primary"
-            onClick={handlePost}
-            disabled={posting}
-            style={{ flexShrink: 0 }}
-          >
-            {posting ? 'Posting…' : `Post to ${variety.charAt(0).toUpperCase() + variety.slice(1)} Dashboard`}
-          </button>
-        </div>
+        <DropZone
+          onFiles={f => setFiles(f)}
+          accept="image/*,video/*"
+          multiple
+          disabled={posting}
+          staged={files}
+          compact
+        />
+        <button
+          className="adm-btn-primary"
+          onClick={handlePost}
+          disabled={posting}
+          style={{ flexShrink: 0, marginTop: 10 }}
+        >
+          {posting ? 'Posting…' : `Post to ${variety.charAt(0).toUpperCase() + variety.slice(1)} Dashboard`}
+        </button>
       </div>
 
       {/* Existing updates */}

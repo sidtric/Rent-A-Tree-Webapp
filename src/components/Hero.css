@@ -12,21 +12,12 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: url('/frontskyy.jpeg');
-  background-size: cover;
-  background-position: center;
-  filter: saturate(1.1) contrast(1.05);
-  animation: heroZoom 14s ease-out forwards;
+  background: #111;
   transition: opacity 1.2s ease-in-out;
 }
 
 .hero--has-media .hero-bg-picture {
   opacity: 0;
-}
-
-@keyframes heroZoom {
-  from { transform: scale(1); }
-  to   { transform: scale(1.08); }
 }
 
 .hero-bg-slides {

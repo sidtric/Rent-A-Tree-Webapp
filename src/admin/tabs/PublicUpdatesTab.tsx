@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { AdminPublicUpdate } from '../types';
 import { API_BASE } from '../../lib/api';
+import DropZone from '../components/DropZone';
 
 interface Props {
   publicUpdates: AdminPublicUpdate[];
@@ -51,13 +52,13 @@ function PostForm({ onPosted, flash }: { onPosted: (u: AdminPublicUpdate) => voi
           />
         </div>
         <div className="adm-field adm-field--wide">
-          <div className="adm-upload-zone">
-            <label>
-              <span className="adm-upload-icon">📸</span>
-              <span>{files && files.length > 0 ? `${files.length} file(s) selected` : 'Select Photos & Videos (multiple allowed)'}</span>
-              <input type="file" multiple accept="image/*,video/*" onChange={e => setFiles(e.target.files)} />
-            </label>
-          </div>
+          <DropZone
+            onFiles={f => setFiles(f)}
+            accept="image/*,video/*"
+            multiple
+            disabled={posting}
+            staged={files}
+          />
         </div>
       </div>
       <button className="adm-btn-primary" onClick={handlePost} disabled={posting}>
