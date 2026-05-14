@@ -88,8 +88,8 @@ export default function Navbar() {
               key={link.label}
               ref={link.dropdown ? shopRef : undefined}
               className={link.dropdown ? 'navbar-dropdown-parent' : undefined}
-              onMouseEnter={link.dropdown ? () => setShopOpen(true) : undefined}
-              onMouseLeave={link.dropdown ? () => setShopOpen(false) : undefined}
+              onMouseEnter={link.dropdown ? () => { if (!menuOpen) setShopOpen(true); } : undefined}
+              onMouseLeave={link.dropdown ? () => { if (!menuOpen) setShopOpen(false); } : undefined}
             >
               <a
                 href={link.scrollTo ? undefined : link.href}
@@ -148,7 +148,7 @@ export default function Navbar() {
           {count > 0 && <span className="navbar-cart-badge">{count}</span>}
         </button>
 
-        <button className="navbar-hamburger" onClick={() => setMenuOpen(o => !o)}>
+        <button className="navbar-hamburger" onClick={() => setMenuOpen(o => !o)} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
           {menuOpen ? '✕' : '☰'}
         </button>
       </div>

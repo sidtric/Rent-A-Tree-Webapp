@@ -58,7 +58,7 @@ export default function AdminDashboard({ onExit, user }: Props) {
         </nav>
         <div className="adm-sidebar-footer">
           <div className="adm-user-row">
-            <div className="adm-avatar adm-avatar--lg">{user.name[0].toUpperCase()}</div>
+            <div className="adm-avatar adm-avatar--lg">{(user.name?.[0] || 'A').toUpperCase()}</div>
             <div className="adm-user-info">
               <div className="adm-user-name">{user.name}</div>
               <div className="adm-user-email">{user.email}</div>

@@ -57,6 +57,7 @@ function FarmHero() {
   }, []);
 
   const next = useCallback(() => {
+    if (media.length < 2) return;
     setIdx(i => (i + 1) % media.length);
   }, [media.length]);
 
