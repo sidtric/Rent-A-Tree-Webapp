@@ -301,6 +301,12 @@
   }
 }
 
+@media (max-width: 768px) {
+  .mb {
+    padding: 32px 24px 48px;
+  }
+}
+
 .mb-success {
   background: #edf7ec;
   border: 1px solid #a8d5a2;

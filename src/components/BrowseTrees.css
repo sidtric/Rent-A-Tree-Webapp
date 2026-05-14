@@ -285,3 +285,9 @@
     margin: 0 auto;
   }
 }
+
+@media (max-width: 768px) {
+  .bt {
+    padding: 48px 24px 32px;
+  }
+}

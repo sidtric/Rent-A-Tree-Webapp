@@ -5,6 +5,12 @@
   text-align: center;
 }
 
+@media (max-width: 768px) {
+  .shop-litchi {
+    padding: 40px 24px;
+  }
+}
+
 .shop-litchi-inner {
   max-width: 600px;
   margin: 0 auto;
