@@ -39,7 +39,7 @@ function Home() {
   );
 }
 
-const BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:5000';
+import { API_BASE } from './lib/api';
 
 const AUTH_ROUTES = ['/login', '/signup'];
 const NO_SHELL_ROUTES = ['/admin'];
@@ -63,7 +63,7 @@ export default function App() {
   const isAdminPage  = NO_SHELL_ROUTES.some(r => location.pathname.startsWith(r));
 
   useEffect(() => {
-    fetch(`${BASE}/health`).catch(() => {});
+    fetch(`${API_BASE}/health`).catch(() => {});
   }, []);
 
   return (

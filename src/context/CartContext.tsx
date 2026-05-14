@@ -24,8 +24,6 @@ interface CartContextType {
   setOpen: (v: boolean) => void;
 }
 
-const CART_OPEN_KEY = 'yo_cart_open';
-
 function cartKey(userId: string) {
   return `yo_cart_${userId}`;
 }
@@ -33,10 +31,6 @@ function cartKey(userId: string) {
 function loadCart(key: string): CartItem[] {
   try { return JSON.parse(localStorage.getItem(key) || '[]'); }
   catch { return []; }
-}
-
-function loadOpen(): boolean {
-  return sessionStorage.getItem(CART_OPEN_KEY) === 'true';
 }
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -47,7 +41,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const key = cartKey(userId);
 
   const [items, setItems] = useState<CartItem[]>(() => loadCart(key));
-  const [open, setOpenState] = useState<boolean>(loadOpen);
+  const [open, setOpenState] = useState(false);
 
   // Reload the correct cart whenever the logged-in user changes
   useEffect(() => {
@@ -60,7 +54,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function setOpen(v: boolean) {
     setOpenState(v);
-    sessionStorage.setItem(CART_OPEN_KEY, String(v));
   }
 
   function addItem(item: Omit<CartItem, 'qty'>) {
@@ -83,7 +76,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   function clearCart() {
     setItems([]);
     localStorage.removeItem(key);
-    sessionStorage.removeItem(CART_OPEN_KEY);
   }
 
   const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);

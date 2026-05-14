@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { AdminRental } from '../types';
 
 const RENTAL_STATUSES = ['pending_payment', 'active', 'completed', 'cancelled'];
@@ -7,7 +8,15 @@ interface Props {
   updateRentalStatus: (id: string, status: string) => Promise<unknown>;
 }
 
-function RentalRow({ rental, onStatusChange }: { rental: AdminRental; onStatusChange: (s: string) => void }) {
+function RentalRow({ rental, onStatusChange }: { rental: AdminRental; onStatusChange: (s: string) => Promise<unknown> }) {
+  const [saving, setSaving] = useState(false);
+
+  async function handleChange(s: string) {
+    setSaving(true);
+    await onStatusChange(s).catch(() => {});
+    setSaving(false);
+  }
+
   return (
     <tr>
       <td>
@@ -32,7 +41,8 @@ function RentalRow({ rental, onStatusChange }: { rental: AdminRental; onStatusCh
         <select
           className="adm-status-select"
           value={rental.status}
-          onChange={e => onStatusChange(e.target.value)}
+          disabled={saving}
+          onChange={e => handleChange(e.target.value)}
         >
           {RENTAL_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
         </select>

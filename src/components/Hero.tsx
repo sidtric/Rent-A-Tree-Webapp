@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { API_BASE } from '../lib/api';
 import './Hero.css';
 
-const API_BASE    = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:5000';
-const PHOTO_MS    = 5000;
+const PHOTO_MS = 5000;
 
 interface HeroMedia { url: string; type: 'image' | 'video' }
 

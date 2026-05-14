@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { AdminOrder } from '../types';
 
 const ORDER_STATUSES = ['pending_payment', 'confirmed', 'dispatched', 'delivered', 'cancelled'];
@@ -7,7 +8,15 @@ interface Props {
   updateOrderStatus: (id: string, status: string) => Promise<unknown>;
 }
 
-function OrderRow({ order, onStatusChange }: { order: AdminOrder; onStatusChange: (s: string) => void }) {
+function OrderRow({ order, onStatusChange }: { order: AdminOrder; onStatusChange: (s: string) => Promise<unknown> }) {
+  const [saving, setSaving] = useState(false);
+
+  async function handleChange(s: string) {
+    setSaving(true);
+    await onStatusChange(s).catch(() => {});
+    setSaving(false);
+  }
+
   return (
     <tr>
       <td>
@@ -32,7 +41,8 @@ function OrderRow({ order, onStatusChange }: { order: AdminOrder; onStatusChange
         <select
           className="adm-status-select"
           value={order.status}
-          onChange={e => onStatusChange(e.target.value)}
+          disabled={saving}
+          onChange={e => handleChange(e.target.value)}
         >
           {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
         </select>

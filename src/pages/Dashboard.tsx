@@ -38,7 +38,7 @@ interface BoxOrder {
 const PLAN_META = {
   sapling: { label: 'Sapling Tree', size: 'Small Tree', yield: '15–20 kg', img: 'https://images.unsplash.com/photo-1542223616-9de9adb5e3e8?w=600&q=80' },
   adult:   { label: 'Adult Tree',   size: 'Mid Tree',   yield: '30–45 kg', img: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80' },
-  grand:   { label: 'Grand Tree',   size: 'Big Tree',   yield: '60–80 kg', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
+  grand:   { label: 'Grand Tree',   size: 'Big Tree',   yield: '50–70 kg', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
 };
 
 
@@ -92,6 +92,7 @@ export default function Dashboard() {
   const [orders, setOrders] = useState<BoxOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [allErr, setAllErr] = useState('');
   const [rentalView, setRentalView] = useState<'mine' | 'all'>('mine');
   const [allRentals, setAllRentals] = useState<Rental[]>([]);
   const [allLoading, setAllLoading] = useState(false);
@@ -127,7 +128,8 @@ export default function Dashboard() {
       const data = await apiFetch<Rental[]>('/api/rentals/all');
       setAllRentals(data);
     } catch {
-      // silently fail
+      setAllErr('Could not load orchard trees. Please try again.');
+      setTimeout(() => setAllErr(''), 4000);
     } finally {
       setAllLoading(false);
     }
@@ -158,6 +160,7 @@ export default function Dashboard() {
 
   return (
     <div className="dash">
+      {allErr && <div className="toast dash-err-toast">{allErr}</div>}
 
       {/* Banner */}
       <div className="dash-banner">
@@ -179,7 +182,7 @@ export default function Dashboard() {
             </div>
             <div className="dash-stat-divider" />
             <div className="dash-stat">
-              <span className="dash-stat-num">2026</span>
+              <span className="dash-stat-num">{new Date().getFullYear()}</span>
               <span className="dash-stat-label">Season</span>
             </div>
           </div>

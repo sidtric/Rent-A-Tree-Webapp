@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE as BASE } from '../lib/api';
 import './Reviews.css';
-
-const BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:5000';
 
 interface Review {
   _id: string;

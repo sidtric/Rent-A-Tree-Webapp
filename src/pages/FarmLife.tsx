@@ -1,9 +1,8 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { apiFetch } from '../lib/api';
+import { apiFetch, API_BASE } from '../lib/api';
 import './FarmLife.css';
 
-const API_BASE  = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:5000';
-const PHOTO_MS  = 5000;
+const PHOTO_MS = 5000;
 
 interface MediaItem  { url: string; type: 'image' | 'video' }
 interface Update     { _id: string; caption: string; media: MediaItem[]; createdAt: string }
