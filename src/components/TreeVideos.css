@@ -62,6 +62,18 @@
   transform: translateY(-3px);
 }
 
+.tv-card--no-photo {
+  background: linear-gradient(145deg, #2d5a27 0%, #3a7332 50%, #1e3d1a 100%);
+}
+
+.tv-card--no-photo .tv-card-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 60%);
+}
+
+.tv-card--no-photo:hover .tv-card-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.05) 60%);
+}
+
 .tv-card-overlay {
   position: absolute;
   inset: 0;

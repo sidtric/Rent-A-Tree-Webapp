@@ -56,8 +56,7 @@ export default function TreeVideos() {
             return (
               <div
                 key={r._id}
-                className="tv-card"
-                style={{ backgroundImage: `url(${plan.img})` }}
+                className="tv-card tv-card--no-photo"
               >
                 <div className="tv-card-overlay" />
                 <div className="tv-date">{VARIETY_LABEL[r.variety]}</div>
