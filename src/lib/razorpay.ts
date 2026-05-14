@@ -27,6 +27,7 @@ interface RichItem {
   plan?: string;
   variety: string;
   qty: number;
+  price?: number;
 }
 
 interface OpenCheckoutOpts {
@@ -37,6 +38,8 @@ interface OpenCheckoutOpts {
   userEmail: string;
   userPhone?: string;
   deliveryAddress: string;
+  deliveryAddressStructured?: { flat: string; street: string; city: string; state: string; pincode: string };
+  notes?: string;
   phone: string;
   description?: string;
   onSuccess: (paymentId: string, orderId: string, signature: string) => void;
@@ -101,11 +104,13 @@ export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
         type: 'cart',
         items: opts.items,
         meta: {
-          userName:        opts.userName,
-          userEmail:       opts.userEmail,
-          userPhone:       opts.userPhone || '',
-          deliveryAddress: opts.deliveryAddress,
-          richItems:       opts.richItems,
+          userName:                   opts.userName,
+          userEmail:                  opts.userEmail,
+          userPhone:                  opts.userPhone || '',
+          deliveryAddress:            opts.deliveryAddress,
+          deliveryAddressStructured:  opts.deliveryAddressStructured,
+          richItems:                  opts.richItems,
+          notes:                      opts.notes || '',
         },
       }),
     }),

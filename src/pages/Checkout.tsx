@@ -93,8 +93,8 @@ export default function Checkout() {
     ];
 
     const richItems = [
-      ...treeItems.map(i => ({ type: 'tree' as const, plan: i.plan!, variety: i.variety, qty: i.qty })),
-      ...boxItems.map(i => ({ type: 'box' as const, variety: i.variety, qty: i.qty })),
+      ...treeItems.map(i => ({ type: 'tree' as const, plan: i.plan!, variety: i.variety, qty: i.qty, price: i.price })),
+      ...boxItems.map(i => ({ type: 'box' as const, variety: i.variety, qty: i.qty, price: i.price })),
     ];
 
     const hasTree = treeItems.length > 0;
@@ -114,6 +114,8 @@ export default function Checkout() {
         userEmail: email,
         userPhone: phone,
         deliveryAddress,
+        deliveryAddressStructured: { flat, street, city, state, pincode },
+        notes,
         phone,
         description: desc,
         onError: (msg) => { setErr(msg); setPaying(false); },
