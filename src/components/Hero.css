@@ -43,7 +43,6 @@
   inset: 0;
   background-size: cover;
   background-position: center;
-  animation: heroZoom 6s ease-out forwards;
 }
 
 .hero-slide-video {
