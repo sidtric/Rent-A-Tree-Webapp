@@ -1,4 +1,4 @@
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { TIER_DATA } from '../constants/prices';
@@ -191,7 +191,13 @@ export default function TreeDetail() {
                   {tBooked ? (
                     <button className="td-related-btn td-related-btn-disabled" disabled>Tree is booked</button>
                   ) : (
-                    <Link className={`td-plan-btn td-plan-btn-${t.tier.toLowerCase()}`} to={`/trees/${t.slug}`}>Book Now</Link>
+                    <button
+                      className={`td-plan-btn td-plan-btn-${t.tier.toLowerCase()}`}
+                      onClick={() => {
+                        navigate(`/trees/${t.slug}`);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >Book Now</button>
                   )}
                 </div>
               </div>
