@@ -44,6 +44,55 @@ interface OpenCheckoutOpts {
   onDismiss?: () => void;
 }
 
+interface BalancePaymentOpts {
+  rentalId: string;
+  userName: string;
+  userEmail: string;
+  userPhone?: string;
+  onSuccess: (paymentId: string, orderId: string, signature: string) => void;
+  onError?: (message: string) => void;
+  onDismiss?: () => void;
+}
+
+export async function openBalancePayment(opts: BalancePaymentOpts) {
+  const [order] = await Promise.all([
+    apiFetch<RazorpayOrder>('/api/payments/create-order', {
+      method: 'POST',
+      body: JSON.stringify({ type: 'balance', rentalId: opts.rentalId }),
+    }),
+    loadRazorpay(),
+  ]);
+
+  const rzp = new (window as any).Razorpay({
+    key: order.key,
+    amount: order.amount,
+    currency: order.currency,
+    order_id: order.orderId,
+    name: 'YourOrchard',
+    description: 'Tree Rental — Balance Payment',
+    prefill: { name: opts.userName, email: opts.userEmail, contact: opts.userPhone },
+    theme: { color: '#2d5a27' },
+    modal: { ondismiss: opts.onDismiss },
+    handler: async (response: any) => {
+      try {
+        await apiFetch('/api/payments/verify', {
+          method: 'POST',
+          body: JSON.stringify({
+            razorpayOrderId:   response.razorpay_order_id,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpaySignature: response.razorpay_signature,
+          }),
+        });
+        opts.onSuccess(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
+      } catch (err: any) {
+        opts.onError?.(err.message || 'Verification failed. Contact support with payment ID: ' + response.razorpay_payment_id);
+        opts.onDismiss?.();
+      }
+    },
+  });
+  rzp.open();
+}
+
 export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
   const [order] = await Promise.all([
     apiFetch<RazorpayOrder>('/api/payments/create-order', {

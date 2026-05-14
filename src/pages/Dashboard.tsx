@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../lib/api';
+import { openBalancePayment } from '../lib/razorpay';
 import { PLAN_AMOUNTS } from '../constants/prices';
 import './Dashboard.css';
 
@@ -21,6 +22,7 @@ interface Rental {
   deliveryAddress: string;
   status: 'pending_payment' | 'active' | 'completed' | 'cancelled';
   createdAt: string;
+  balancePaid?: boolean;
   user?: { name: string };
 }
 
@@ -92,6 +94,7 @@ export default function Dashboard() {
   const [orders, setOrders] = useState<BoxOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [payingBalance, setPayingBalance] = useState<string | null>(null);
   const [allErr, setAllErr] = useState('');
   const [rentalView, setRentalView] = useState<'mine' | 'all'>('mine');
   const [allRentals, setAllRentals] = useState<Rental[]>([]);
@@ -145,6 +148,35 @@ export default function Dashboard() {
       alert(err.message || 'Could not cancel rental.');
     } finally {
       setCancelling(null);
+    }
+  }
+
+  async function handlePayBalance(rental: Rental) {
+    setPayingBalance(rental._id);
+    try {
+      await openBalancePayment({
+        rentalId:  rental._id,
+        userName:  user!.name,
+        userEmail: user!.email,
+        userPhone: user!.phone,
+        onSuccess: async (paymentId, orderId, razorpaySignature) => {
+          try {
+            const updated = await apiFetch<Rental>(`/api/rentals/${rental._id}/pay-balance`, {
+              method: 'PATCH',
+              body: JSON.stringify({ razorpayOrderId: orderId, paymentId, razorpaySignature }),
+            });
+            setRentals(prev => prev.map(r => r._id === rental._id ? updated : r));
+          } catch (err: any) {
+            setAllErr('Payment received but failed to update. Contact support with payment ID: ' + paymentId);
+          }
+          setPayingBalance(null);
+        },
+        onError: (msg) => { setAllErr(msg); setPayingBalance(null); },
+        onDismiss: () => setPayingBalance(null),
+      });
+    } catch (e: any) {
+      setAllErr(e.message || 'Balance payment failed. Please try again.');
+      setPayingBalance(null);
     }
   }
 
@@ -359,7 +391,11 @@ export default function Dashboard() {
                       {showBalance && (
                         <div className="dash-balance-row">
                           <span className="dash-balance-paid">Token paid: ₹{amounts.token.toLocaleString('en-IN')}</span>
-                          <span className="dash-balance-due">Balance due: ₹{balance.toLocaleString('en-IN')} by {balanceDue}</span>
+                          {r.balancePaid ? (
+                            <span className="dash-balance-settled">Balance settled ✓</span>
+                          ) : (
+                            <span className="dash-balance-due">Balance due: ₹{balance.toLocaleString('en-IN')} by {balanceDue}</span>
+                          )}
                         </div>
                       )}
                       {(r.status === 'active' || r.status === 'completed') && (
@@ -367,13 +403,22 @@ export default function Dashboard() {
                       )}
                       <div className="dash-card-footer">
                         <span className="dash-card-date">Rented {formatDate(r.createdAt)}</span>
+                        {r.status === 'active' && !r.balancePaid && (
+                          <button
+                            className="dash-pay-balance-btn"
+                            onClick={() => handlePayBalance(r)}
+                            disabled={payingBalance === r._id}
+                          >
+                            {payingBalance === r._id ? 'Opening…' : `Pay Balance ₹${balance.toLocaleString('en-IN')}`}
+                          </button>
+                        )}
                         {r.status === 'active' && (
                           <button
                             className="dash-cancel-btn"
                             onClick={() => handleCancelRental(r._id)}
                             disabled={cancelling === r._id}
                           >
-                            {cancelling === r._id ? 'Cancelling…' : 'Cancel Rental'}
+                            {cancelling === r._id ? 'Cancelling…' : 'Cancel'}
                           </button>
                         )}
                       </div>

@@ -271,6 +271,11 @@
   color: #92400e;
 }
 
+.dash-balance-settled {
+  color: #15803d;
+  font-weight: 600;
+}
+
 .dash-card-footer {
   display: flex;
   justify-content: space-between;
@@ -280,6 +285,27 @@
 .dash-card-date {
   font-size: 12px;
   color: #9ca3af;
+}
+
+.dash-pay-balance-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #2d5a27;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dash-pay-balance-btn:hover:not(:disabled) {
+  background: #3a7234;
+}
+
+.dash-pay-balance-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .dash-cancel-btn {
