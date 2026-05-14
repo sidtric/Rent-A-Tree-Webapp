@@ -151,7 +151,12 @@ a.footer-contact-line:hover {
 
 @media (max-width: 540px) {
   .footer-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 24px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
   }
 
   .footer-bottom {
