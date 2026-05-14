@@ -105,7 +105,7 @@ export default function Checkout() {
     setHadBox(hasBox);
     const desc = hasTree && hasBox
       ? 'YourOrchard — Trees & Mango Boxes'
-      : hasTree ? 'Tree Booking — Mango Season 2026'
+      : hasTree ? `Tree Booking — Mango Season ${new Date().getFullYear()}`
       : 'Mango Box Order';
 
     setPaying(true);
@@ -120,6 +120,7 @@ export default function Checkout() {
         deliveryAddress,
         phone,
         description: desc,
+        onError: (msg) => { setErr(msg); setPaying(false); },
         onSuccess: async (paymentId, orderId, razorpaySignature) => {
           try {
             await Promise.all([

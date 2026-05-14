@@ -40,6 +40,7 @@ interface OpenCheckoutOpts {
   phone: string;
   description?: string;
   onSuccess: (paymentId: string, orderId: string, signature: string) => void;
+  onError?: (message: string) => void;
   onDismiss?: () => void;
 }
 
@@ -68,7 +69,7 @@ export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
     currency: order.currency,
     order_id: order.orderId,
     name: 'YourOrchard',
-    description: opts.description || 'YourOrchard — Mango Season 2026',
+    description: opts.description || `YourOrchard — Mango Season ${new Date().getFullYear()}`,
     prefill: { name: opts.userName, email: opts.userEmail, contact: opts.userPhone },
     theme: { color: '#2d5a27' },
     modal: { ondismiss: opts.onDismiss },
@@ -84,7 +85,7 @@ export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
         });
         opts.onSuccess(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
       } catch (err: any) {
-        alert('Payment verification failed: ' + (err.message || 'Please contact support.'));
+        opts.onError?.(err.message || 'Payment verification failed. Please contact support with your payment ID: ' + response.razorpay_payment_id);
         opts.onDismiss?.();
       }
     },
