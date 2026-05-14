@@ -24,6 +24,39 @@
   to   { transform: scale(1.08); }
 }
 
+.hero-bg-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  pointer-events: none;
+}
+
+.hero-slide--active {
+  opacity: 1;
+}
+
+.hero-slide-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  animation: heroZoom 6s ease-out forwards;
+}
+
+.hero-slide-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .hero-overlay {
   position: absolute;
   inset: 0;

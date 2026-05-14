@@ -23,6 +23,7 @@ import Refund from './pages/Refund';
 import Shipping from './pages/Shipping';
 import Shop from './pages/Shop';
 import Checkout from './pages/Checkout';
+import AdminPage from './pages/AdminPage';
 import NotFound from './pages/NotFound';
 
 function Home() {
@@ -41,6 +42,7 @@ function Home() {
 const BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:5000';
 
 const AUTH_ROUTES = ['/login', '/signup'];
+const NO_SHELL_ROUTES = ['/admin'];
 
 function AuthNav() {
   const navigate = useNavigate();
@@ -57,7 +59,8 @@ function AuthNav() {
 
 export default function App() {
   const location = useLocation();
-  const isAuthPage = AUTH_ROUTES.includes(location.pathname);
+  const isAuthPage   = AUTH_ROUTES.includes(location.pathname);
+  const isAdminPage  = NO_SHELL_ROUTES.some(r => location.pathname.startsWith(r));
 
   useEffect(() => {
     fetch(`${BASE}/health`).catch(() => {});
@@ -66,8 +69,8 @@ export default function App() {
   return (
     <div id="root-top">
       <ScrollToTop />
-      {isAuthPage ? <AuthNav /> : <Navbar />}
-      <CartDrawer />
+      {!isAdminPage && (isAuthPage ? <AuthNav /> : <Navbar />)}
+      {!isAdminPage && <CartDrawer />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
@@ -83,9 +86,10 @@ export default function App() {
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {!isAuthPage && <Footer />}
+      {!isAuthPage && !isAdminPage && <Footer />}
     </div>
   );
 }

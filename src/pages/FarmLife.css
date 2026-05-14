@@ -2,12 +2,50 @@
 .fl-hero {
   position: relative;
   min-height: 100vh;
-  background-image: url('/hero-bg.jpg');
-  background-size: cover;
-  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  background: #111;
+}
+
+.fl-hero-bg-static {
+  position: absolute;
+  inset: 0;
+  background-image: url('/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.fl-hero-slides {
+  position: absolute;
+  inset: 0;
+}
+
+.fl-hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  pointer-events: none;
+}
+
+.fl-hero-slide--active {
+  opacity: 1;
+}
+
+.fl-hero-slide-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.fl-hero-slide-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .fl-hero-overlay {
@@ -102,7 +140,41 @@
 /* ── Updates section ── */
 .fl-updates {
   background: #f9fafb;
-  padding: 64px 24px 80px;
+  padding: 0 24px 80px;
+}
+
+.fl-updates-header {
+  text-align: center;
+  padding: 64px 0 48px;
+}
+
+.fl-updates-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #2d5a27;
+  background: #dcfce7;
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.fl-updates-title {
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.8px;
+  margin: 0 0 12px;
+}
+
+.fl-updates-sub {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 440px;
+  margin: 0 auto;
 }
 
 .fl-updates-inner {
