@@ -154,6 +154,10 @@
 .chk-pay-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .chk-secure-note { text-align: center; font-size: 0.75rem; color: #888; margin: 12px 0 0; }
 
+.chk-notes { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; resize: vertical; font-family: inherit; box-sizing: border-box; transition: border-color 0.15s; }
+.chk-notes:focus { outline: none; border-color: #2d5a27; }
+.chk-delivery-est { font-size: 12px; color: #6b7280; text-align: center; margin-top: 8px; }
+
 .chk-success { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 68px); text-align: center; padding: 40px 24px; }
 .chk-success-icon { width: 64px; height: 64px; border-radius: 50%; background: #dcfce7; color: #15803d; font-size: 28px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; border: 2px solid #86efac; }
 .chk-success h2 { font-size: 1.75rem; font-weight: 800; color: #111; margin: 0 0 12px; }

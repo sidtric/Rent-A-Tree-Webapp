@@ -23,6 +23,7 @@ import Refund from './pages/Refund';
 import Shipping from './pages/Shipping';
 import Shop from './pages/Shop';
 import Checkout from './pages/Checkout';
+import OrderConfirmation from './pages/OrderConfirmation';
 import AdminPage from './pages/AdminPage';
 import NotFound from './pages/NotFound';
 
@@ -86,6 +87,7 @@ export default function App() {
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-confirmed" element={<OrderConfirmation />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

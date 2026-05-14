@@ -1,0 +1,242 @@
+.oc {
+  min-height: calc(100vh - 68px);
+  background: #f4f7f2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 16px 80px;
+}
+
+.oc-inner {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+  max-width: 640px;
+  width: 100%;
+  padding: 48px 48px 40px;
+  text-align: center;
+}
+
+/* Check circle */
+.oc-check {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 32px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  border: 2.5px solid #86efac;
+}
+
+.oc-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 8px;
+}
+
+.oc-number {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d5a27;
+  margin: 0 0 8px;
+}
+
+.oc-sub {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0 0 36px;
+}
+
+/* Sections */
+.oc-section {
+  text-align: left;
+  margin-bottom: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #e8ede7;
+}
+
+.oc-section:last-of-type {
+  border-bottom: none;
+}
+
+.oc-section h3 {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2d5a27;
+  margin: 0 0 14px;
+}
+
+.oc-section p {
+  font-size: 0.9375rem;
+  color: #374151;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Items table */
+.oc-items {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e5eddf;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 0.875rem;
+}
+
+.oc-items thead tr {
+  background: #f6f9f5;
+}
+
+.oc-items th {
+  padding: 9px 14px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  text-align: left;
+}
+
+.oc-items td {
+  padding: 10px 14px;
+  color: #374151;
+  border-top: 1px solid #f0f4ee;
+}
+
+.oc-center { text-align: center; }
+.oc-right  { text-align: right; font-weight: 600; }
+
+.oc-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 14px;
+  background: #f6f9f5;
+  border: 1px solid #e5eddf;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.oc-total-row span:last-child {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: #2d5a27;
+}
+
+/* Timeline */
+.oc-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.oc-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.oc-step-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.oc-step strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 3px;
+}
+
+.oc-step p {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Actions */
+.oc-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.oc-btn-outline {
+  padding: 12px 24px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  border-radius: 9px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.oc-btn-outline:hover {
+  border-color: #2d5a27;
+  color: #2d5a27;
+}
+
+.oc-btn-primary {
+  padding: 12px 24px;
+  background: #2d5a27;
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.oc-btn-primary:hover {
+  background: #1e3d1a;
+}
+
+/* Print */
+@media print {
+  .oc-actions { display: none; }
+  .oc {
+    background: #fff;
+    padding: 0;
+  }
+  .oc-inner {
+    box-shadow: none;
+    border-radius: 0;
+    padding: 24px;
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .oc-inner {
+    padding: 32px 20px 28px;
+  }
+  .oc-actions {
+    flex-direction: column;
+  }
+  .oc-btn-outline,
+  .oc-btn-primary {
+    width: 100%;
+  }
+  .oc-items th:nth-child(3),
+  .oc-items td:nth-child(3) {
+    display: none;
+  }
+}

@@ -31,10 +31,8 @@ export default function Checkout() {
   const [city,    setCity]    = useState(saved?.city    || '');
   const [state,   setState]   = useState(saved?.state   || '');
   const [pincode, setPincode] = useState(saved?.pincode || '');
+  const [notes,    setNotes]    = useState('');
   const [paying,   setPaying]   = useState(false);
-  const [success,  setSuccess]  = useState(false);
-  const [hadTree,  setHadTree]  = useState(false);
-  const [hadBox,   setHadBox]   = useState(false);
   const [err,      setErr]      = useState('');
   const [touched,  setTouched]  = useState<Record<string, boolean>>({});
 
@@ -68,7 +66,7 @@ export default function Checkout() {
     return null;
   }
 
-  if (items.length === 0 && !success) {
+  if (items.length === 0) {
     navigate('/');
     return null;
   }
@@ -101,8 +99,6 @@ export default function Checkout() {
 
     const hasTree = treeItems.length > 0;
     const hasBox  = boxItems.length > 0;
-    setHadTree(hasTree);
-    setHadBox(hasBox);
     const desc = hasTree && hasBox
       ? 'YourOrchard — Trees & Mango Boxes'
       : hasTree ? `Tree Booking — Mango Season ${new Date().getFullYear()}`
@@ -123,43 +119,42 @@ export default function Checkout() {
         onError: (msg) => { setErr(msg); setPaying(false); },
         onSuccess: async (paymentId, orderId, razorpaySignature) => {
           try {
-            await Promise.all([
-              ...treeItems.flatMap(item =>
-                Array.from({ length: item.qty }, () =>
-                  apiFetch('/api/rentals', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                      plan: item.plan,
-                      variety: item.variety,
-                      deliveryAddress,
-                      razorpayOrderId: orderId,
-                      paymentId,
-                      razorpaySignature,
-                    }),
-                  })
-                )
-              ),
-              ...boxItems.map(item =>
-                apiFetch('/api/orders', {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    variety: item.variety,
-                    quantity: item.qty,
-                    deliveryAddress,
-                    phone,
-                    razorpayOrderId: orderId,
-                    paymentId,
-                    razorpaySignature,
-                  }),
-                })
-              ),
-              apiFetch('/api/auth/profile', {
-                method: 'PUT',
-                body: JSON.stringify({ phone, deliveryAddress: addr }),
-              }).then(() => updateUser({ phone, deliveryAddress: addr })).catch(() => {}),
-            ]);
+            const result = await apiFetch<{ orderNumber: string }>('/api/checkout/confirm', {
+              method: 'POST',
+              body: JSON.stringify({
+                razorpayOrderId: orderId,
+                razorpayPaymentId: paymentId,
+                razorpaySignature,
+                buyer: { name, email, phone },
+                deliveryAddress: { flat, street, city, state, pincode },
+                items: [
+                  ...treeItems.map(i => ({ type: 'tree', plan: i.plan!, variety: i.variety, productId: i.id, quantity: i.qty, unitPrice: i.price })),
+                  ...boxItems.map(i => ({ type: 'box', variety: i.variety, productId: i.id, quantity: i.qty, unitPrice: i.price })),
+                ],
+                notes,
+              }),
+            });
+
+            // fire-and-forget profile update
+            apiFetch('/api/auth/profile', {
+              method: 'PUT',
+              body: JSON.stringify({ phone, deliveryAddress: addr }),
+            }).then(() => updateUser({ phone, deliveryAddress: addr })).catch(() => {});
+
             clearCart();
-            setSuccess(true);
+            navigate('/order-confirmed', {
+              state: {
+                orderNumber: result.orderNumber,
+                items: richItems,
+                buyer: { name, email, phone },
+                deliveryAddress,
+                total,
+                notes,
+                hasTree,
+                hasBox,
+              },
+              replace: true,
+            });
           } catch {
             setErr('Payment was received but we could not save your order. Please contact support with your payment ID: ' + paymentId);
             setPaying(false);
@@ -172,23 +167,6 @@ export default function Checkout() {
     } finally {
       setPaying(false);
     }
-  }
-
-  if (success) {
-    return (
-      <div className="chk-success">
-        <div className="chk-success-icon">✓</div>
-        <h2>Order Confirmed!</h2>
-        <p>
-          {hadTree && hadBox
-            ? "Your tree rental and mango boxes are booked. We'll be in touch with harvest updates."
-            : hadTree
-            ? "Your tree is booked for the season. Pay the balance within 7 days to confirm your slot."
-            : "Your mango boxes are booked. We'll dispatch them as soon as the harvest starts."}
-        </p>
-        <button onClick={() => navigate('/dashboard')}>View My Orders →</button>
-      </div>
-    );
   }
 
   return (
@@ -316,6 +294,17 @@ export default function Checkout() {
               </div>
             </div>
 
+            <div className="chk-field">
+              <label>Order notes <span style={{fontWeight:400,color:'#9ca3af'}}>(optional)</span></label>
+              <textarea
+                placeholder="Special instructions, landmark, or anything you'd like us to know..."
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                rows={3}
+                className="chk-notes"
+              />
+            </div>
+
             {err && <p className="chk-err">{err}</p>}
           </form>
         </div>
@@ -384,6 +373,7 @@ export default function Checkout() {
             </button>
 
             <p className="chk-secure-note">🔒 Secured by Razorpay · 256-bit encryption</p>
+            <p className="chk-delivery-est">🥭 Estimated delivery: June – July 2026, straight from our Ramnagar orchard.</p>
           </div>
         </div>
 
