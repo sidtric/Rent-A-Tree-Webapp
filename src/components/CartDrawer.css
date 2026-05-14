@@ -175,6 +175,11 @@
   text-align: center;
 }
 
+.cd-qty-fixed {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
 .cd-remove {
   background: none;
   border: none;

@@ -35,11 +35,15 @@ export default function CartDrawer() {
                     <div className="cd-item-price">₹{(item.price * item.qty).toLocaleString('en-IN')}</div>
                   </div>
                   <div className="cd-item-right">
-                    <div className="cd-qty">
-                      <button onClick={() => updateQty(item.id, item.qty - 1)}>−</button>
-                      <span>{item.qty}</span>
-                      <button onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
-                    </div>
+                    {item.type === 'box' ? (
+                      <div className="cd-qty">
+                        <button onClick={() => updateQty(item.id, item.qty - 1)}>−</button>
+                        <span>{item.qty}</span>
+                        <button onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
+                      </div>
+                    ) : (
+                      <span className="cd-qty-fixed">×1</span>
+                    )}
                     <button className="cd-remove" onClick={() => removeItem(item.id)}>✕</button>
                   </div>
                 </div>
