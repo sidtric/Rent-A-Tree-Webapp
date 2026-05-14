@@ -5,6 +5,7 @@ export type AdminTab =
   | 'orders'
   | 'reviews'
   | 'publicupdates'
+  | 'orchardboard'
   | 'messages'
   | 'userroles'
   | 'payments'
@@ -22,6 +23,7 @@ export const ADMIN_TABS: AdminTabMeta[] = [
   { id: 'rentals',       icon: '📋', label: 'Rentals'      },
   { id: 'orders',        icon: '📦', label: 'Box Orders'   },
   { id: 'publicupdates', icon: '🌿', label: 'Life on Farm' },
+  { id: 'orchardboard',  icon: '🏡', label: 'Orchard Board' },
   { id: 'reviews',       icon: '⭐', label: 'Reviews'      },
   { id: 'messages',      icon: '✉️', label: 'Messages'     },
   { id: 'userroles',     icon: '🔑', label: 'User Roles'   },

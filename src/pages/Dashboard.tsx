@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { apiFetch } from '../lib/api';
+import { apiFetch, API_BASE } from '../lib/api';
 import { openBalancePayment } from '../lib/razorpay';
 import { PLAN_AMOUNTS } from '../constants/prices';
 import './Dashboard.css';
@@ -37,10 +37,10 @@ interface BoxOrder {
   createdAt: string;
 }
 
-const PLAN_META = {
-  sapling: { label: 'Sapling Tree', size: 'Small Tree', yield: '15–20 kg', img: 'https://images.unsplash.com/photo-1542223616-9de9adb5e3e8?w=600&q=80' },
-  adult:   { label: 'Adult Tree',   size: 'Mid Tree',   yield: '30–45 kg', img: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80' },
-  grand:   { label: 'Grand Tree',   size: 'Big Tree',   yield: '50–70 kg', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
+const PLAN_META_BASE = {
+  sapling: { label: 'Sapling Tree', size: 'Small Tree', yield: '15–20 kg', fallbackImg: 'https://images.unsplash.com/photo-1542223616-9de9adb5e3e8?w=600&q=80' },
+  adult:   { label: 'Adult Tree',   size: 'Mid Tree',   yield: '30–45 kg', fallbackImg: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80' },
+  grand:   { label: 'Grand Tree',   size: 'Big Tree',   yield: '50–70 kg', fallbackImg: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
 };
 
 
@@ -66,7 +66,7 @@ const ORDER_STATUS: Record<BoxOrder['status'], { label: string; cls: string }> =
 };
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  return new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
 const BOX_STEPS:    BoxOrder['status'][]  = ['confirmed', 'dispatched', 'delivered'];
@@ -99,26 +99,44 @@ export default function Dashboard() {
   const [rentalView, setRentalView] = useState<'mine' | 'all'>('mine');
   const [allRentals, setAllRentals] = useState<Rental[]>([]);
   const [allLoading, setAllLoading] = useState(false);
-  const [treeUpdates, setTreeUpdates] = useState<TreeUpdate[]>([]);
-  const [updatesLoading, setUpdatesLoading] = useState(false);
-  const [activeUpdateIdx, setActiveUpdateIdx] = useState(0);
+  const [updatesByVariety, setUpdatesByVariety] = useState<Record<string, TreeUpdate[]>>({});
+  const [treePhotos, setTreePhotos] = useState<Partial<Record<string, string>>>({});
 
   useEffect(() => {
     if (authLoading) return;
     if (!user) { navigate('/login', { state: { from: '/dashboard' } }); return; }
+
+    fetch(`${API_BASE}/api/settings`)
+      .then(r => r.json())
+      .then(d => {
+        const photos: Partial<Record<string, string>> = {};
+        if (d.saplingMedia?.[0]?.url) photos.sapling = d.saplingMedia[0].url;
+        if (d.adultMedia?.[0]?.url)   photos.adult   = d.adultMedia[0].url;
+        if (d.grandMedia?.[0]?.url)   photos.grand   = d.grandMedia[0].url;
+        setTreePhotos(photos);
+      })
+      .catch(() => {});
+
     Promise.all([
       apiFetch<Rental[]>('/api/rentals/my'),
       apiFetch<BoxOrder[]>('/api/orders/my'),
     ]).then(([r, o]) => {
       setRentals(r);
       setOrders(o);
-      const activeVariety = r.find(x => x.status === 'active')?.variety;
-      if (activeVariety) {
+      const activeVarieties = [...new Set(r.filter(x => x.status === 'active').map(x => x.variety))];
+      if (activeVarieties.length > 0) {
         setUpdatesLoading(true);
-        apiFetch<TreeUpdate[]>(`/api/public-updates?variety=${activeVariety}`)
-          .then(setTreeUpdates)
-          .catch(() => {})
-          .finally(() => setUpdatesLoading(false));
+        Promise.all(
+          activeVarieties.map(v =>
+            apiFetch<TreeUpdate[]>(`/api/public-updates?variety=${v}`)
+              .then(data => ({ variety: v, updates: data.filter((u: any) => u.variety === v) }))
+              .catch(() => ({ variety: v, updates: [] }))
+          )
+        ).then(results => {
+          const byVariety: Record<string, TreeUpdate[]> = {};
+          results.forEach(({ variety, updates }) => { byVariety[variety] = updates; });
+          setUpdatesByVariety(byVariety);
+        });
       }
     }).finally(() => setLoading(false));
   }, [user, authLoading, navigate]);
@@ -189,6 +207,11 @@ export default function Dashboard() {
   }
 
   const activeRentals = rentals.filter(r => r.status === 'active').length;
+  const PLAN_META = {
+    sapling: { ...PLAN_META_BASE.sapling, img: treePhotos.sapling || PLAN_META_BASE.sapling.fallbackImg },
+    adult:   { ...PLAN_META_BASE.adult,   img: treePhotos.adult   || PLAN_META_BASE.adult.fallbackImg   },
+    grand:   { ...PLAN_META_BASE.grand,   img: treePhotos.grand   || PLAN_META_BASE.grand.fallbackImg   },
+  };
 
   return (
     <div className="dash">
@@ -223,64 +246,6 @@ export default function Dashboard() {
 
       <div className="dash-body">
 
-        {/* Your Tree This Week */}
-        {(updatesLoading || treeUpdates.length > 0) && (
-          <section className="dash-section">
-            <div className="dash-section-header">
-              <span className="dash-section-label">Live from the Farm</span>
-              <h2 className="dash-section-title">Your Tree This Week</h2>
-              <p className="dash-section-sub">Latest updates from our orchardists in Ramnagar.</p>
-            </div>
-
-            {updatesLoading ? (
-              <div className="dash-loading-inline"><div className="dash-spinner" /></div>
-            ) : (
-              <div className="dash-updates-wrap">
-                {/* Featured */}
-                <div className="dash-update-featured">
-                  {treeUpdates[activeUpdateIdx]?.media[0]?.type === 'video' ? (
-                    <video
-                      src={treeUpdates[activeUpdateIdx].media[0].url}
-                      controls
-                      className="dash-update-media"
-                    />
-                  ) : (
-                    <img
-                      src={treeUpdates[activeUpdateIdx]?.media[0]?.url}
-                      alt={treeUpdates[activeUpdateIdx]?.caption}
-                      className="dash-update-media"
-                    />
-                  )}
-                  <div className="dash-update-caption">
-                    <p>{treeUpdates[activeUpdateIdx]?.caption}</p>
-                    <span className="dash-update-date">
-                      {new Date(treeUpdates[activeUpdateIdx]?.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Thumbnails */}
-                {treeUpdates.length > 1 && (
-                  <div className="dash-update-thumbs">
-                    {treeUpdates.map((u, i) => (
-                      <button
-                        key={u._id}
-                        className={`dash-update-thumb ${i === activeUpdateIdx ? 'active' : ''}`}
-                        onClick={() => setActiveUpdateIdx(i)}
-                      >
-                        {u.media[0]?.type === 'video' ? (
-                          <div className="dash-thumb-video-icon">▶</div>
-                        ) : (
-                          <img src={u.media[0]?.url} alt={u.caption} />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </section>
-        )}
 
         {/* Rentals */}
         <section className="dash-section">
@@ -401,6 +366,34 @@ export default function Dashboard() {
                       {(r.status === 'active' || r.status === 'completed') && (
                         <StatusStepper steps={RENTAL_STEPS} current={r.status} />
                       )}
+                      {r.status === 'active' && (() => {
+                        const updates = updatesByVariety[r.variety];
+                        const latest = updates?.[0];
+                        if (!latest) return null;
+                        const allMedia = latest.media.slice(0, 4);
+                        return (
+                          <div className="dash-card-update">
+                            <div className="dash-card-update-header">
+                              <span className="dash-card-update-label">This week from your tree</span>
+                              <span className="dash-card-update-date">
+                                {new Date(latest.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                              </span>
+                            </div>
+                            <div className="dash-card-update-thumbs">
+                              {allMedia.map((m, mi) => (
+                                <div key={mi} className="dash-card-update-thumb">
+                                  {m.type === 'video'
+                                    ? <video src={m.url} muted playsInline className="dash-card-update-thumb-media" />
+                                    : <img src={m.url} alt="" className="dash-card-update-thumb-media" />}
+                                </div>
+                              ))}
+                            </div>
+                            {latest.caption && (
+                              <p className="dash-card-update-caption">{latest.caption}</p>
+                            )}
+                          </div>
+                        );
+                      })()}
                       <div className="dash-card-footer">
                         <span className="dash-card-date">Rented {formatDate(r.createdAt)}</span>
                         {r.status === 'active' && !r.balancePaid && (

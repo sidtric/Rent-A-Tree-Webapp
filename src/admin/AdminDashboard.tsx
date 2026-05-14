@@ -12,6 +12,7 @@ import MessagesTab      from './tabs/MessagesTab';
 import UserRolesTab     from './tabs/UserRolesTab';
 import PaymentsTab      from './tabs/PaymentsTab';
 import SiteSettingsTab  from './tabs/SiteSettingsTab';
+import OrchardBoardTab  from './tabs/OrchardBoardTab';
 import './admin.css';
 
 interface Props {
@@ -86,6 +87,7 @@ export default function AdminDashboard({ onExit, user }: Props) {
         {tab === 'rentals'       && <RentalsTab rentals={rentals} updateRentalStatus={updateRentalStatus} />}
         {tab === 'orders'        && <OrdersTab orders={orders} updateOrderStatus={updateOrderStatus} />}
         {tab === 'publicupdates' && <PublicUpdatesTab publicUpdates={publicUpdates} addPublicUpdate={addPublicUpdate} deletePublicUpdate={deletePublicUpdate} flash={flash} />}
+        {tab === 'orchardboard'  && <OrchardBoardTab />}
         {tab === 'reviews'       && <ReviewsTab reviews={reviews} deleteReview={deleteReview} />}
         {tab === 'messages'      && <MessagesTab messages={messages} deleteMessage={deleteMessage} />}
         {tab === 'userroles'     && <UserRolesTab flash={flash} />}

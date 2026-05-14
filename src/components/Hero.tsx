@@ -11,7 +11,14 @@ function scrollTo(id: string) {
 }
 
 export default function Hero() {
-  const [media,   setMedia]   = useState<HeroMedia[]>([]);
+  const [media, setMedia] = useState<HeroMedia[]>(() => {
+    try {
+      const cached = localStorage.getItem('hero-media');
+      const parsed = cached ? JSON.parse(cached) : null;
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    } catch {}
+    return [];
+  });
   const [idx,     setIdx]     = useState(0);
   const timerRef              = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoRef              = useRef<HTMLVideoElement>(null);
@@ -19,7 +26,12 @@ export default function Hero() {
   useEffect(() => {
     fetch(`${API_BASE}/api/settings`)
       .then(r => r.json())
-      .then(d => { if (Array.isArray(d.heroMedia) && d.heroMedia.length > 0) setMedia(d.heroMedia); })
+      .then(d => {
+        if (Array.isArray(d.heroMedia) && d.heroMedia.length > 0) {
+          setMedia(d.heroMedia);
+          localStorage.setItem('hero-media', JSON.stringify(d.heroMedia));
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -50,35 +62,33 @@ export default function Hero() {
   const hasMedia = media.length > 0;
 
   return (
-    <section className="hero">
+    <section className={`hero${hasMedia ? ' hero--has-media' : ''}`}>
 
-      {/* Static fallback */}
-      {!hasMedia && <div className="hero-bg-picture" />}
+      {/* Static background — fades out once admin media is ready */}
+      <div className="hero-bg-picture" />
 
       {/* Media slideshow */}
-      {hasMedia && (
-        <div className="hero-bg-slides">
-          {media.map((item, i) => (
-            <div key={i} className={`hero-slide ${i === idx ? 'hero-slide--active' : ''}`}>
-              {item.type === 'image' ? (
-                <div className="hero-slide-img" style={{ backgroundImage: `url(${item.url})` }} />
-              ) : (
-                <video
-                  ref={i === idx ? videoRef : undefined}
-                  className="hero-slide-video"
-                  src={item.url}
-                  autoPlay
-                  muted
-                  playsInline
-                  onEnded={next}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="hero-bg-slides">
+        {media.map((item, i) => (
+          <div key={i} className={`hero-slide ${i === idx ? 'hero-slide--active' : ''}`}>
+            {item.type === 'image' ? (
+              <div className="hero-slide-img" style={{ backgroundImage: `url(${item.url})` }} />
+            ) : (
+              <video
+                ref={i === idx ? videoRef : undefined}
+                className="hero-slide-video"
+                src={item.url}
+                autoPlay
+                muted
+                playsInline
+                onEnded={next}
+              />
+            )}
+          </div>
+        ))}
+      </div>
 
-      {/* Overlay only on photos / no media */}
+      {/* Overlay */}
       {(!hasMedia || current?.type === 'image') && <div className="hero-overlay" />}
 
       <div className="hero-content">

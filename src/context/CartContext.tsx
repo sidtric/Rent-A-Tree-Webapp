@@ -59,7 +59,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   function addItem(item: Omit<CartItem, 'qty'>) {
     setItems(prev => {
       const existing = prev.find(i => i.id === item.id);
-      if (existing) return prev.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i);
+      if (existing) {
+        // tree rentals are always qty 1 — re-adding just keeps it in cart
+        if (item.type === 'tree') return prev;
+        return prev.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i);
+      }
       return [...prev, { ...item, qty: 1 }];
     });
   }
@@ -70,7 +74,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function updateQty(id: string, qty: number) {
     if (qty < 1) return removeItem(id);
-    setItems(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
+    setItems(prev => prev.map(i => {
+      if (i.id !== id) return i;
+      // tree rentals are capped at qty 1
+      return { ...i, qty: i.type === 'tree' ? 1 : qty };
+    }));
   }
 
   function clearCart() {

@@ -2,108 +2,88 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import './TreeVideos.css';
 
-interface MediaItem {
-  url: string;
-  type: 'image' | 'video';
-}
-
-interface Update {
+interface RentedTree {
   _id: string;
-  caption: string;
-  variety?: string;
-  media: MediaItem[];
-  createdAt: string;
+  plan: 'sapling' | 'adult' | 'grand';
+  variety: 'chausa' | 'dasheri' | 'langra';
+  season: string;
+  userName: string;
 }
 
-const FALLBACK: Update[] = [
-  {
-    _id: 'f1',
-    caption: 'Chausa trees in full bloom — Week 4 update from our Ramnagar orchard.',
-    variety: 'chausa',
-    media: [{ url: 'https://www.w3schools.com/html/mov_bbb.mp4', type: 'video' }],
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: 'f2',
-    caption: 'Dasheri mangoes setting fruit — looking great this season.',
-    variety: 'dasheri',
-    media: [{ url: 'https://www.w3schools.com/html/movie.mp4', type: 'video' }],
-    createdAt: new Date().toISOString(),
-  },
-];
+const PLAN_META = {
+  sapling: { label: 'Sapling Tree', size: 'Small Tree', img: 'https://images.unsplash.com/photo-1542223616-9de9adb5e3e8?w=600&q=80' },
+  adult:   { label: 'Adult Tree',   size: 'Mid Tree',   img: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80' },
+  grand:   { label: 'Grand Tree',   size: 'Big Tree',   img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
+};
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-}
+const VARIETY_LABEL: Record<string, string> = {
+  chausa:  'Chausa',
+  dasheri: 'Dasheri',
+  langra:  'Langra',
+};
+
+const PAGE = 8;
 
 export default function TreeVideos() {
-  const [updates, setUpdates] = useState<Update[]>([]);
+  const [trees, setTrees]     = useState<RentedTree[]>([]);
   const [loading, setLoading] = useState(true);
-  const [active, setActive] = useState<{ url: string; caption: string } | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    apiFetch<Update[]>('/api/public-updates')
-      .then(data => {
-        const videos = data.filter(u => u.media.some(m => m.type === 'video'));
-        setUpdates(videos.length > 0 ? videos : FALLBACK);
-      })
-      .catch(() => setUpdates(FALLBACK))
+    apiFetch<RentedTree[]>('/api/rentals/public')
+      .then(setTrees)
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
   if (loading) return null;
+  if (trees.length === 0) return null;
+
+  const visible = showAll ? trees : trees.slice(0, PAGE);
 
   return (
-    <section className="tv">
+    <section className="tv" id="orchard-board">
       <div className="tv-inner">
         <div className="tv-header">
-          <span className="tv-label">Live from the Orchard</span>
-          <h2 className="tv-title">Your Tree, This Week</h2>
-          <p className="tv-sub">Weekly video updates sent directly from our orchardists to every tree owner.</p>
+          <span className="tv-label">Our Orchard Community</span>
+          <h2 className="tv-title">Trees Rented This Season</h2>
+          <p className="tv-sub">Every tree below belongs to a member of our orchard community — tended all season, delivered at harvest.</p>
         </div>
 
         <div className="tv-grid">
-          {updates.map(u => {
-            const video = u.media.find(m => m.type === 'video')!;
+          {visible.map(r => {
+            const plan = PLAN_META[r.plan];
             return (
               <div
-                key={u._id}
-                className="tv-card tv-card-native"
-                onClick={() => setActive({ url: video.url, caption: u.caption })}
+                key={r._id}
+                className="tv-card"
+                style={{ backgroundImage: `url(${plan.img})` }}
               >
-                <video src={video.url} className="tv-native-bg" muted preload="metadata" />
                 <div className="tv-card-overlay" />
-                <div className="tv-play">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="5,3 19,12 5,21" />
-                  </svg>
-                </div>
-                {u.variety && <div className="tv-date">{u.variety.charAt(0).toUpperCase() + u.variety.slice(1)}</div>}
+                <div className="tv-date">{VARIETY_LABEL[r.variety]}</div>
                 <div className="tv-card-info">
-                  <div className="tv-tree">{u.caption}</div>
+                  <div className="tv-tree">{r.userName}'s Tree</div>
                   <div className="tv-customer">
-                    <span className="tv-loc">{formatDate(u.createdAt)}</span>
+                    <span className="tv-name">{plan.label}</span>
+                    <span className="tv-loc">Season {r.season}</span>
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
-      </div>
 
-      {active && (
-        <div className="tv-modal-overlay" onClick={() => setActive(null)}>
-          <div className="tv-modal" onClick={e => e.stopPropagation()}>
-            <button className="tv-modal-close" onClick={() => setActive(null)}>✕</button>
-            <div className="tv-embed-wrap">
-              <video src={active.url} controls autoPlay className="tv-native-player" />
-            </div>
-            <div className="tv-modal-info">
-              <div className="tv-modal-tree">{active.caption}</div>
-            </div>
+        {trees.length > PAGE && (
+          <div style={{ textAlign: 'center', marginTop: 40 }}>
+            <button
+              className="tv-browse-btn"
+              onClick={() => setShowAll(s => !s)}
+            >
+              {showAll ? 'Show Less' : `Browse all ${trees.length} rented trees`}
+            </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </section>
   );
 }

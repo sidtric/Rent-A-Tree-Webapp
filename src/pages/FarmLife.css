@@ -15,6 +15,11 @@
   background-image: url('/hero-bg.jpg');
   background-size: cover;
   background-position: center;
+  transition: opacity 1.2s ease-in-out;
+}
+
+.fl-hero-bg-static--hidden {
+  opacity: 0;
 }
 
 .fl-hero-slides {
@@ -182,65 +187,95 @@
   margin: 0 auto;
 }
 
-/* Grid */
-.fl-grid {
-  columns: 3;
-  column-gap: 20px;
+/* Media wall — CSS Grid with dense packing for varied big/small layout */
+.fl-wall {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-flow: dense;
+  gap: 8px;
 }
 
-.fl-card {
-  break-inside: avoid;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+.fl-wall-item {
   border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.fl-card-media {
   position: relative;
+  background: #111;
   cursor: pointer;
-  line-height: 0;
+  aspect-ratio: 4/5;
 }
 
-.fl-card-img {
+/* Wide items span 2 columns and are landscape */
+.fl-wall-item--wide {
+  grid-column: span 2;
+  aspect-ratio: 16/9;
+}
+
+.fl-wall-img {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
   object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
 }
 
-.fl-card-video {
+.fl-wall-item:hover .fl-wall-img {
+  transform: scale(1.04);
+}
+
+.fl-wall-video {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
   cursor: default;
 }
 
-.fl-card-more {
+/* Caption overlay on images — visible on hover */
+.fl-wall-overlay {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.55);
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0) 55%);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 14px 14px 12px;
+  pointer-events: none;
+}
+
+.fl-wall-item:hover .fl-wall-overlay {
+  opacity: 1;
+}
+
+.fl-wall-caption {
+  font-size: 12.5px;
+  font-weight: 500;
   color: #fff;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 99px;
+  margin: 0 0 4px;
+  line-height: 1.4;
 }
 
-.fl-card-body {
-  padding: 14px 16px;
+.fl-wall-date {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
 }
 
-.fl-card-caption {
-  font-size: 0.9rem;
+/* Caption below videos */
+.fl-wall-video-caption {
+  padding: 10px 12px 12px;
+  background: #fff;
+}
+
+.fl-wall-video-caption p {
+  font-size: 13px;
   color: #374151;
-  line-height: 1.5;
-  margin: 0 0 8px;
+  margin: 0 0 3px;
+  line-height: 1.4;
 }
 
-.fl-card-date {
-  font-size: 0.75rem;
+.fl-wall-video-caption span {
+  font-size: 11px;
   color: #9ca3af;
 }
 
@@ -304,10 +339,11 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .fl-grid { columns: 2; }
+  .fl-wall { grid-template-columns: repeat(2, 1fr); }
   .fl-hero-title { letter-spacing: -1px; }
 }
 
 @media (max-width: 480px) {
-  .fl-grid { columns: 1; }
+  .fl-wall { grid-template-columns: repeat(2, 1fr); }
+  .fl-wall-item--wide { grid-column: span 1; aspect-ratio: 4/5; }
 }

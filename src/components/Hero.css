@@ -17,6 +17,11 @@
   background-position: center;
   filter: saturate(1.1) contrast(1.05);
   animation: heroZoom 14s ease-out forwards;
+  transition: opacity 1.2s ease-in-out;
+}
+
+.hero--has-media .hero-bg-picture {
+  opacity: 0;
 }
 
 @keyframes heroZoom {

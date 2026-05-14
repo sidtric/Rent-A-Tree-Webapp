@@ -11,25 +11,53 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function UpdateCard({ update }: { update: Update }) {
-  const [lightbox, setLightbox] = useState<MediaItem | null>(null);
-  const first = update.media[0];
+interface WallItem extends MediaItem { caption: string; date: string }
+
+function MediaWall({ updates }: { updates: Update[] }) {
+  const [lightbox, setLightbox] = useState<WallItem | null>(null);
+
+  const items: WallItem[] = updates.flatMap(u =>
+    u.media.map(m => ({ ...m, caption: u.caption, date: u.createdAt }))
+  );
+
+  // Give certain items a "wide" class (span 2 cols) for the varied big-grid look
+  // Pattern: positions 0, 4, 9, 14... — feels organic without being perfectly uniform
+  const wideSet = new Set<number>();
+  let pos = 0;
+  const pattern = [4, 5, 4, 5]; // gaps between wide items
+  let pi = 0;
+  while (pos < items.length) {
+    wideSet.add(pos);
+    pos += pattern[pi % pattern.length];
+    pi++;
+  }
 
   return (
     <>
-      <div className="fl-card">
-        {first && (
-          <div className="fl-card-media" onClick={() => first.type === 'image' ? setLightbox(first) : undefined}>
-            {first.type === 'image'
-              ? <img src={first.url} alt={update.caption} className="fl-card-img" />
-              : <video src={first.url} controls className="fl-card-video" />}
-            {update.media.length > 1 && <div className="fl-card-more">+{update.media.length - 1}</div>}
+      <div className="fl-wall">
+        {items.map((item, i) => (
+          <div
+            key={i}
+            className={`fl-wall-item${wideSet.has(i) ? ' fl-wall-item--wide' : ''}`}
+            onClick={() => item.type === 'image' ? setLightbox(item) : undefined}
+          >
+            {item.type === 'image'
+              ? <img src={item.url} alt={item.caption} className="fl-wall-img" loading="lazy" />
+              : <video src={item.url} autoPlay loop muted playsInline controls className="fl-wall-video" />}
+            {item.caption && item.type === 'image' && (
+              <div className="fl-wall-overlay">
+                <p className="fl-wall-caption">{item.caption}</p>
+                <span className="fl-wall-date">{formatDate(item.date)}</span>
+              </div>
+            )}
+            {item.type !== 'image' && item.caption && (
+              <div className="fl-wall-video-caption">
+                <p>{item.caption}</p>
+                <span>{formatDate(item.date)}</span>
+              </div>
+            )}
           </div>
-        )}
-        <div className="fl-card-body">
-          {update.caption && <p className="fl-card-caption">{update.caption}</p>}
-          <span className="fl-card-date">{formatDate(update.createdAt)}</span>
-        </div>
+        ))}
       </div>
 
       {lightbox && (
@@ -43,7 +71,14 @@ function UpdateCard({ update }: { update: Update }) {
 }
 
 function FarmHero() {
-  const [media,   setMedia]  = useState<MediaItem[]>([]);
+  const [media, setMedia] = useState<MediaItem[]>(() => {
+    try {
+      const cached = localStorage.getItem('farm-hero-media');
+      const parsed = cached ? JSON.parse(cached) : null;
+      if (Array.isArray(parsed) && parsed.length > 0) return [...parsed].reverse();
+    } catch {}
+    return [];
+  });
   const [idx,     setIdx]    = useState(0);
   const timerRef             = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoRef             = useRef<HTMLVideoElement>(null);
@@ -51,7 +86,12 @@ function FarmHero() {
   useEffect(() => {
     fetch(`${API_BASE}/api/settings`)
       .then(r => r.json())
-      .then(d => { if (Array.isArray(d.farmHeroMedia) && d.farmHeroMedia.length > 0) setMedia(d.farmHeroMedia); })
+      .then(d => {
+        if (Array.isArray(d.farmHeroMedia) && d.farmHeroMedia.length > 0) {
+          setMedia([...d.farmHeroMedia].reverse());
+          localStorage.setItem('farm-hero-media', JSON.stringify(d.farmHeroMedia));
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -79,19 +119,18 @@ function FarmHero() {
 
   return (
     <>
-      {!hasMedia && <div className="fl-hero-bg-static" />}
+      {/* Static background — fades out once admin media is ready */}
+      <div className={`fl-hero-bg-static${hasMedia ? ' fl-hero-bg-static--hidden' : ''}`} />
 
-      {hasMedia && (
-        <div className="fl-hero-slides">
-          {media.map((item, i) => (
-            <div key={i} className={`fl-hero-slide ${i === idx ? 'fl-hero-slide--active' : ''}`}>
-              {item.type === 'image'
-                ? <div className="fl-hero-slide-img" style={{ backgroundImage: `url(${item.url})` }} />
-                : <video ref={i === idx ? videoRef : undefined} className="fl-hero-slide-video" src={item.url} autoPlay muted playsInline onEnded={next} />}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="fl-hero-slides">
+        {media.map((item, i) => (
+          <div key={i} className={`fl-hero-slide ${i === idx ? 'fl-hero-slide--active' : ''}`}>
+            {item.type === 'image'
+              ? <div className="fl-hero-slide-img" style={{ backgroundImage: `url(${item.url})` }} />
+              : <video ref={i === idx ? videoRef : undefined} className="fl-hero-slide-video" src={item.url} autoPlay muted playsInline onEnded={next} />}
+          </div>
+        ))}
+      </div>
 
       <div className="fl-hero-overlay" style={{ background: current?.type === 'video' ? 'rgba(0,0,0,0.25)' : 'rgba(0,0,0,0.38)' }} />
     </>
@@ -147,9 +186,7 @@ export default function FarmLife() {
               <p>Updates coming soon — we're getting the camera ready. 🌿</p>
             </div>
           ) : (
-            <div className="fl-grid">
-              {updates.map(u => <UpdateCard key={u._id} update={u} />)}
-            </div>
+            <MediaWall updates={updates} />
           )}
         </div>
       </div>

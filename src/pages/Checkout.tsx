@@ -346,11 +346,15 @@ export default function Checkout() {
                     <div className="chk-cart-price">₹{(item.price * item.qty).toLocaleString('en-IN')}</div>
                   </div>
                   <div className="chk-cart-controls">
-                    <div className="chk-qty">
-                      <button type="button" onClick={() => updateQty(item.id, item.qty - 1)}>−</button>
-                      <span>{item.qty}</span>
-                      <button type="button" onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
-                    </div>
+                    {item.type === 'box' ? (
+                      <div className="chk-qty">
+                        <button type="button" onClick={() => updateQty(item.id, item.qty - 1)}>−</button>
+                        <span>{item.qty}</span>
+                        <button type="button" onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '12px', color: '#9ca3af' }}>×1</span>
+                    )}
                     <button type="button" className="chk-remove" onClick={() => removeItem(item.id)}>✕</button>
                   </div>
                 </div>
