@@ -57,9 +57,26 @@ export default function Navbar() {
   const handleClick = (link: NavLink) => {
     setMenuOpen(false);
     setShopOpen(false);
+
+    const goTop = () => {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      } catch {
+        window.scrollTo(0, 0);
+      }
+      // iOS Safari fallback
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+
     if (link.scrollTo === 'root-top') {
-      if (location.pathname !== '/') navigate('/');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (location.pathname !== '/') {
+        navigate('/');
+        setTimeout(goTop, 60);
+      } else {
+        // Wait one tick so menu close re-render completes first
+        setTimeout(goTop, 30);
+      }
       return;
     }
     if (!link.scrollTo) return;
@@ -67,7 +84,7 @@ export default function Navbar() {
       navigate('/');
       setTimeout(() => scrollTo(link.scrollTo!), 100);
     } else {
-      scrollTo(link.scrollTo);
+      setTimeout(() => scrollTo(link.scrollTo!), 30);
     }
   };
 
