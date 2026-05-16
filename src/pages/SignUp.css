@@ -131,6 +131,34 @@
   background: #333;
 }
 
+/* Divider */
+.signup-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: #d1d5db;
+  font-size: 13px;
+}
+.signup-divider::before,
+.signup-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+.signup-divider span { color: #9ca3af; }
+
+/* Google button wrapper */
+.signup-google-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.signup-google-wrap > div {
+  width: 100% !important;
+}
+
 .signup-login {
   text-align: center;
   margin-top: 20px;

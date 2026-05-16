@@ -1,11 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 import './SignUp.css';
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const { sendOtp, verifyOtp } = useAuth();
+  const { user, sendOtp, verifyOtp, googleAuth } = useAuth();
+
+  useEffect(() => {
+    if (user) navigate('/', { replace: true });
+  }, [user, navigate]);
 
   const [step, setStep] = useState<'details' | 'otp'>('details');
   const [name, setName] = useState('');
@@ -204,6 +209,32 @@ export default function SignUp() {
             {loading ? 'Sending code…' : 'Continue'}
           </button>
         </form>
+
+        <div className="signup-divider"><span>or</span></div>
+
+        <div className="signup-google-wrap">
+          <GoogleLogin
+            onSuccess={async res => {
+              if (!res.credential) return;
+              setError('');
+              setLoading(true);
+              try {
+                await googleAuth(res.credential);
+                navigate('/');
+              } catch (err: any) {
+                setError(err.message || 'Google sign-in failed.');
+              } finally {
+                setLoading(false);
+              }
+            }}
+            onError={() => setError('Google sign-in failed. Please try again.')}
+            theme="outline"
+            size="large"
+            width="100%"
+            text="signup_with"
+            shape="rectangular"
+          />
+        </div>
 
         <p className="signup-login">
           Already have an account?{' '}

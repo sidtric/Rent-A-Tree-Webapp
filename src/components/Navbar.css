@@ -224,6 +224,93 @@
     margin-left: 4px;
   }
 
+  .navbar-mobile-user-header,
+  .navbar-mobile-user-actions,
+  .navbar-mobile-auth {
+    display: flex;
+  }
+
+  .navbar-mobile-user-header {
+    padding: 14px 24px 10px;
+    border-top: 1px solid #f3f4f6;
+    background: #f6f9f5;
+  }
+
+  .navbar-mobile-user-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2d5a27;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .navbar-mobile-user-actions {
+    display: flex;
+    gap: 10px;
+    padding: 12px 24px 16px;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .navbar-mobile-user-actions button {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #111;
+    transition: background 0.15s;
+  }
+
+  .navbar-mobile-user-actions button:hover {
+    background: #f3f4f6;
+  }
+
+  .navbar-mobile-logout {
+    color: #dc2626 !important;
+    border-color: #fecaca !important;
+  }
+
+  .navbar-mobile-logout:hover {
+    background: #fef2f2 !important;
+  }
+
+  .navbar-mobile-auth {
+    display: flex;
+    gap: 10px;
+    padding: 12px 24px 16px;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .navbar-mobile-login,
+  .navbar-mobile-signup {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .navbar-mobile-login {
+    background: #2d5a27;
+    color: #fff;
+    border: none;
+  }
+
+  .navbar-mobile-login:hover { background: #1e3d1a; }
+
+  .navbar-mobile-signup {
+    background: #111;
+    color: #fff;
+    border: none;
+  }
+
+  .navbar-mobile-signup:hover { background: #333; }
+
   .navbar-dropdown {
     position: static;
     box-shadow: none;
@@ -237,6 +324,13 @@
     padding: 12px 36px;
     font-size: 14px;
   }
+}
+
+/* Hide mobile-only items on desktop */
+.navbar-mobile-user-header,
+.navbar-mobile-user-actions,
+.navbar-mobile-auth {
+  display: none;
 }
 
 /* ── Shop dropdown ── */

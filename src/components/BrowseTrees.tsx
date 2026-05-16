@@ -36,7 +36,7 @@ export default function BrowseTrees() {
           <p className="bt-sub">Choose a variety and book your tree for the 2026 season.</p>
         </div>
 
-        <div className="bt-variety-row">
+        <div className="bt-variety-row" id="browse-trees-cards">
           {VARIETIES.map(v => (
             <span
               key={v}

@@ -8,7 +8,11 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as any)?.from || '/';
-  const { sendOtp, verifyOtp, googleAuth } = useAuth();
+  const { user, sendOtp, verifyOtp, googleAuth } = useAuth();
+
+  useEffect(() => {
+    if (user) navigate('/', { replace: true });
+  }, [user, navigate]);
 
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [email, setEmail] = useState('');

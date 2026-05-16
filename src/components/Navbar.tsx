@@ -14,7 +14,7 @@ type NavLink = {
 const LINKS: NavLink[] = [
   { label: 'Home', scrollTo: 'root-top' },
   { label: 'How It Works', scrollTo: 'how-it-works' },
-  { label: 'Pick Your Tree', scrollTo: 'browse-trees' },
+  { label: 'Pick Your Tree', scrollTo: 'browse-trees-cards' },
   { label: 'Life on the Farm', href: '/farm-life' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
@@ -114,6 +114,11 @@ export default function Navbar() {
         />
 
         <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>
+          {user && (
+            <li className="navbar-mobile-user-header">
+              <span className="navbar-mobile-user-name">{user.name}</span>
+            </li>
+          )}
           {LINKS.map(link => (
             <li
               key={link.label}
@@ -148,6 +153,18 @@ export default function Navbar() {
               )}
             </li>
           ))}
+          {user && (
+            <li className="navbar-mobile-user-actions">
+              <button onClick={() => { setMenuOpen(false); navigate('/dashboard'); }}>Dashboard</button>
+              <button className="navbar-mobile-logout" onClick={handleLogout}>Logout</button>
+            </li>
+          )}
+          {!user && (
+            <li className="navbar-mobile-auth">
+              <button className="navbar-mobile-login" onClick={() => { setMenuOpen(false); navigate('/login'); }}>Login</button>
+              <button className="navbar-mobile-signup" onClick={() => { setMenuOpen(false); navigate('/signup'); }}>Sign Up</button>
+            </li>
+          )}
         </ul>
 
         <div className="navbar-auth">
