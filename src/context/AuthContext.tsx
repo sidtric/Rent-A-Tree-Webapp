@@ -44,9 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     apiFetch<AuthUser>('/api/auth/me')
       .then(u => { setUser(u); localStorage.setItem('user', JSON.stringify(u)); })
       .catch(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
+        // Don't wipe the session on transient backend errors (500/503/network).
+        // Real 401s come through apiFetch's auth:expired event, which already handles logout.
       })
       .finally(() => setLoading(false));
   }, []);
