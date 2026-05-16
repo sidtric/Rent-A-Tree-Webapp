@@ -54,18 +54,26 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleOutside);
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [menuOpen]);
+
   const handleClick = (link: NavLink) => {
     setMenuOpen(false);
     setShopOpen(false);
 
     const goTop = () => {
+      const target = (document.scrollingElement || document.documentElement) as HTMLElement;
       try {
-        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        target.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       } catch {
-        window.scrollTo(0, 0);
+        target.scrollTop = 0;
       }
-      // iOS Safari fallback
-      document.documentElement.scrollTop = 0;
+      // Belt-and-suspenders for iOS Safari
+      window.scrollTo(0, 0);
       document.body.scrollTop = 0;
     };
 
