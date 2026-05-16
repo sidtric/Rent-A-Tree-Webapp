@@ -96,46 +96,63 @@ export default function LifeOnFarmPreview() {
           <p className="lofp-sub">Watch your mangoes grow — real photos and videos from our orchardists.</p>
         </div>
 
-        <div className="lofp-stage">
-          <div className="lofp-progress">
-            <div className="lofp-progress-bar" style={{ width: `${progress}%` }} />
-          </div>
-
-          <div className="lofp-counter">
-            {String(idx + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-          </div>
-
-          <div className="lofp-slides">
-            {slides.map((item, i) => (
-              <div key={i} className={`lofp-slide${i === idx ? ' lofp-slide--active' : ''}`}>
+        <div className="lofp-deck">
+          {slides.map((item, i) => {
+            const n = slides.length;
+            // shortest signed offset around the ring: -n/2..+n/2
+            let off = i - idx;
+            if (off > n / 2) off -= n;
+            if (off < -n / 2) off += n;
+            let pos: 'prev' | 'active' | 'next' | 'hidden';
+            if (off === 0) pos = 'active';
+            else if (off === -1) pos = 'prev';
+            else if (off === 1) pos = 'next';
+            else pos = 'hidden';
+            return (
+              <div
+                key={i}
+                className={`lofp-card lofp-card--${pos}`}
+                onClick={() => { if (pos !== 'active') setIdx(i); }}
+                aria-hidden={pos !== 'active'}
+              >
                 {item.type === 'image'
-                  ? <div className="lofp-slide-img" style={{ backgroundImage: `url(${item.url})` }} />
+                  ? <div className="lofp-card-img" style={{ backgroundImage: `url(${item.url})` }} />
                   : <video
-                      ref={i === idx ? videoRef : undefined}
-                      className="lofp-slide-video"
+                      ref={pos === 'active' ? videoRef : undefined}
+                      className="lofp-card-video"
                       src={item.url}
                       muted
                       playsInline
-                      onEnded={next}
+                      preload={pos === 'active' ? 'auto' : 'metadata'}
+                      onEnded={pos === 'active' ? next : undefined}
                     />}
+
+                {pos === 'active' && (
+                  <>
+                    <div className="lofp-progress">
+                      <div className="lofp-progress-bar" style={{ width: `${progress}%` }} />
+                    </div>
+                    <div className="lofp-counter">
+                      {String(idx + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}
+                    </div>
+                    <div className="lofp-caption">
+                      <p className="lofp-caption-text">{current.caption || 'From our orchard'}</p>
+                    </div>
+                    <div className="lofp-controls">
+                      {slides.map((_, j) => (
+                        <button
+                          key={j}
+                          className={`lofp-dot${j === idx ? ' lofp-dot--active' : ''}`}
+                          onClick={(e) => { e.stopPropagation(); setIdx(j); }}
+                          aria-label={`Slide ${j + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
-            ))}
-          </div>
-
-          <div className="lofp-caption">
-            <p className="lofp-caption-text">{current.caption || 'From our orchard'}</p>
-          </div>
-
-          <div className="lofp-controls">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                className={`lofp-dot${i === idx ? ' lofp-dot--active' : ''}`}
-                onClick={() => setIdx(i)}
-                aria-label={`Slide ${i + 1}`}
-              />
-            ))}
-          </div>
+            );
+          })}
         </div>
 
         <div className="lofp-cta-row">
