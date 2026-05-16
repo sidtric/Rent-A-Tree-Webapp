@@ -280,14 +280,39 @@
 
 @media (max-width: 900px) {
   .bt-cards {
-    grid-template-columns: 1fr;
-    max-width: 420px;
-    margin: 0 auto;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
   .bt {
-    padding: 48px 24px 32px;
+    padding: 48px 16px 32px;
+  }
+  .bt-cards {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .bt-single-img {
+    height: 220px;
+  }
+  .bt-single-body {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bt {
+    padding: 40px 12px 28px;
+  }
+  .bt-single-card {
+    max-width: 100%;
+  }
+  .bt-single-img {
+    height: 180px;
+  }
+  .bt-variety-tag {
+    padding: 8px 18px;
+    font-size: 13px;
   }
 }

@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { TIER_DATA } from '../constants/prices';
+import { usePrices } from '../context/PricesContext';
 import { apiFetch } from '../lib/api';
 import './TreeDetail.css';
 import { useState, useEffect } from 'react';
@@ -41,31 +41,8 @@ const VARIETY_CODE: Record<Variety, string> = {
 };
 
 const TIER_NUM: Record<Tier, string> = { Base: '01', Mid: '02', Big: '03' };
-const TIER_TO_PLAN: Record<Tier, string> = { Base: 'sapling', Mid: 'adult', Big: 'grand' };
-
-function buildTrees(): Tree[] {
-  const list: Tree[] = [];
-  (['dasheri', 'chausa', 'langra'] as Variety[]).forEach((variety, vi) => {
-    (['Base', 'Mid', 'Big'] as Tier[]).forEach((tier) => {
-      const num = String(vi + 1).padStart(2, '0');
-      list.push({
-        slug: `${variety}-${tier.toLowerCase()}`,
-        id: `TREE27MG${VARIETY_CODE[variety]}${num}${TIER_NUM[tier]}`,
-        variety,
-        varietyLabel: VARIETY_LABEL[variety],
-        tier,
-        fullPrice: TIER_DATA[tier].fullPrice,
-        tokenPrice: TIER_DATA[tier].tokenPrice,
-        yield: TIER_DATA[tier].yield,
-        img: VARIETY_IMG[variety],
-      });
-    });
-  });
-  return list;
-}
-
-const TREES: Tree[] = buildTrees();
-const TREE_BY_SLUG: Record<string, Tree> = Object.fromEntries(TREES.map(t => [t.slug, t]));
+const TIER_TO_PLAN: Record<Tier, 'sapling' | 'adult' | 'grand'> = { Base: 'sapling', Mid: 'adult', Big: 'grand' };
+const TIER_YIELD: Record<Tier, string> = { Base: '15–25 kg', Mid: '30–45 kg', Big: '50–70 kg' };
 const LEGACY_MAP: Record<string, string> = { sapling: 'chausa-base', adult: 'dasheri-mid', grand: 'langra-big' };
 
 const TIER_COLOR: Record<Tier, string> = { Base: '#4b5563', Mid: '#2563eb', Big: '#d97706' };
@@ -77,11 +54,33 @@ export default function TreeDetail() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { items, addItem, setOpen } = useCart();
+  const prices = usePrices();
   const [bookedSlugs, setBookedSlugs] = useState<string[]>([]);
+
+  if (!prices) return null;
+
+  const trees: Tree[] = (['dasheri', 'chausa', 'langra'] as Variety[]).flatMap((variety, vi) =>
+    (['Base', 'Mid', 'Big'] as Tier[]).map(tier => {
+      const plan = TIER_TO_PLAN[tier];
+      const num = String(vi + 1).padStart(2, '0');
+      return {
+        slug: `${variety}-${tier.toLowerCase()}`,
+        id: `TREE27MG${VARIETY_CODE[variety]}${num}${TIER_NUM[tier]}`,
+        variety,
+        varietyLabel: VARIETY_LABEL[variety],
+        tier,
+        fullPrice:  prices.plans[plan].full,
+        tokenPrice: prices.plans[plan].token,
+        yield: TIER_YIELD[tier],
+        img: VARIETY_IMG[variety],
+      };
+    })
+  );
+  const treeBySlug: Record<string, Tree> = Object.fromEntries(trees.map(t => [t.slug, t]));
 
   useEffect(() => {
     if (!user) return;
-    apiFetch<{ plan: string; variety: string }[]>('/api/rentals')
+    apiFetch<{ plan: string; variety: string }[]>('/api/rentals/my')
       .then(rentals => {
         const slugs = rentals
           .filter(r => PLAN_TO_TIER[r.plan])
@@ -92,7 +91,7 @@ export default function TreeDetail() {
   }, [user]);
 
   const slug = id ? (LEGACY_MAP[id] || id) : '';
-  const tree = TREE_BY_SLUG[slug];
+  const tree = treeBySlug[slug];
 
   if (!tree) {
     return (
@@ -104,7 +103,7 @@ export default function TreeDetail() {
   }
 
   const balance = tree.fullPrice - tree.tokenPrice;
-  const sameVarietyTrees = TREES.filter(t => t.variety === tree.variety);
+  const sameVarietyTrees = trees.filter(t => t.variety === tree.variety);
   const isBooked = bookedSlugs.includes(tree.slug);
   const inCart = items.some(i => i.id === tree.slug);
 
