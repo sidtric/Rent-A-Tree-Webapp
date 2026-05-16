@@ -173,11 +173,10 @@ export default function Checkout() {
 
   return (
     <div className="chk-overlay">
-      <div className="chk-fullscreen">
+<div className="chk-fullscreen">
 
         {/* ── Left: Delivery form ── */}
         <div className="chk-left">
-          <button className="chk-back" onClick={() => navigate(-1)}>← Back</button>
           <h2 className="chk-left-title">Delivery Details</h2>
           <p className="chk-left-sub">We'll ship your order to this address after harvest.</p>
 
