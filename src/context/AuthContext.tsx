@@ -21,8 +21,9 @@ export interface AuthUser {
 interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, phone?: string) => Promise<void>;
+  sendOtp: (email: string, name?: string, phone?: string) => Promise<void>;
+  verifyOtp: (email: string, otp: string) => Promise<void>;
+  googleAuth: (credential: string) => Promise<void>;
   logout: () => void;
   updateUser: (patch: Partial<AuthUser>) => void;
 }
@@ -43,10 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!token) return;
     apiFetch<AuthUser>('/api/auth/me')
       .then(u => { setUser(u); localStorage.setItem('user', JSON.stringify(u)); })
-      .catch(() => {
-        // Don't wipe the session on transient backend errors (500/503/network).
-        // Real 401s come through apiFetch's auth:expired event, which already handles logout.
-      })
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
@@ -56,24 +54,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('auth:expired', handleExpired);
   }, []);
 
-  async function login(email: string, password: string) {
-    const data = await apiFetch<{ token: string; user: AuthUser }>('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
+  function persist(data: { token: string; user: AuthUser }) {
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
     setUser(data.user);
   }
 
-  async function register(name: string, email: string, password: string, phone?: string) {
-    const data = await apiFetch<{ token: string; user: AuthUser }>('/api/auth/register', {
+  async function sendOtp(email: string, name?: string, phone?: string) {
+    await apiFetch('/api/auth/send-otp', {
       method: 'POST',
-      body: JSON.stringify({ name, email, password, phone }),
+      body: JSON.stringify({ email, ...(name ? { name, phone } : {}) }),
     });
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setUser(data.user);
+  }
+
+  async function verifyOtp(email: string, otp: string) {
+    const data = await apiFetch<{ token: string; user: AuthUser }>('/api/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    });
+    persist(data);
+  }
+
+  async function googleAuth(credential: string) {
+    const data = await apiFetch<{ token: string; user: AuthUser }>('/api/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ credential }),
+    });
+    persist(data);
   }
 
   function logout() {
@@ -94,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, sendOtp, verifyOtp, googleAuth, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

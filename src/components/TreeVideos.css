@@ -130,6 +130,34 @@
   color: rgba(255,255,255,0.5);
 }
 
+.tv-coming-soon {
+  text-align: center;
+  padding: 64px 24px;
+  background: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 16px;
+}
+
+.tv-coming-soon-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.tv-coming-soon-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+}
+
+.tv-coming-soon-sub {
+  font-size: 0.95rem;
+  color: #6b7280;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
 .tv-browse-btn {
   padding: 12px 28px;
   font-size: 14px;

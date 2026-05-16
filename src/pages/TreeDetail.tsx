@@ -179,7 +179,7 @@ export default function TreeDetail() {
                     <span className="td-plan-name">{t.tier} Tree</span>
                     <span className={`td-plan-badge td-plan-badge-${t.tier.toLowerCase()}`}>{t.tier}</span>
                   </div>
-                  <p className="td-plan-prebook">Booking available</p>
+                  <p className="td-plan-prebook">{tBooked ? 'Booked by you' : 'Booking available'}</p>
                   <ul className="td-plan-features">
                     <li>{t.yield} minimum yield</li>
                     <li>Fresh delivery included</li>

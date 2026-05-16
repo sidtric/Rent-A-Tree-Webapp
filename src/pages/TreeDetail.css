@@ -175,6 +175,7 @@
   background: #fff;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 .td-related-card.is-current { border-color: #2d5a27; box-shadow: 0 0 0 1px #2d5a27 inset; }
 .td-related-card.is-booked { opacity: 0.7; }
@@ -380,12 +381,16 @@
   font-weight: 700;
   color: #16a34a;
 }
+.td-related-card.is-booked .td-plan-prebook {
+  color: #6b7280;
+}
 
 .td-plan-custom {
   font-size: 28px;
   font-weight: 900;
   color: #111;
   line-height: 1;
+  overflow: hidden;
 }
 .td-plan-custom span {
   font-size: 15px;

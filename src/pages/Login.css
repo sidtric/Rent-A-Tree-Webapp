@@ -125,3 +125,90 @@
     font-size: 22px;
   }
 }
+
+/* OTP boxes */
+.otp-boxes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 8px 0 4px;
+}
+
+.otp-box {
+  width: 48px;
+  height: 56px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: #111;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: #fafafa;
+}
+
+.otp-box:focus {
+  border-color: #2d5a27;
+  box-shadow: 0 0 0 3px rgba(45,90,39,0.12);
+  background: #fff;
+}
+
+/* Divider */
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: #d1d5db;
+  font-size: 13px;
+}
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+.login-divider span { color: #9ca3af; }
+
+/* Google button wrapper */
+.login-google-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.login-google-wrap > div {
+  width: 100% !important;
+}
+
+/* Resend */
+.login-resend {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+.login-resend-wait { color: #9ca3af; }
+.login-resend-btn {
+  background: none;
+  border: none;
+  color: #2d5a27;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+/* Back link */
+.login-back {
+  display: block;
+  margin: 14px auto 0;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+.login-back:hover { color: #111; }
