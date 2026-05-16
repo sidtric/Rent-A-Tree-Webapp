@@ -99,7 +99,6 @@ export default function LifeOnFarmPreview() {
         <div className="lofp-deck">
           {slides.map((item, i) => {
             const n = slides.length;
-            // shortest signed offset around the ring: -n/2..+n/2
             let off = i - idx;
             if (off > n / 2) off -= n;
             if (off < -n / 2) off += n;
