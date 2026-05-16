@@ -341,9 +341,62 @@
 @media (max-width: 768px) {
   .fl-wall { grid-template-columns: repeat(2, 1fr); }
   .fl-hero-title { letter-spacing: -1px; }
+
+  .fl-hero-content {
+    padding: 48px 20px;
+    max-width: 100%;
+  }
+
+  .fl-hero-sub {
+    font-size: 15px;
+    max-width: 100%;
+  }
+
+  .fl-orchard-para {
+    font-size: 14px;
+    max-width: 100%;
+  }
+
+  .fl-updates {
+    padding: 0 16px 60px;
+  }
+
+  .fl-updates-header {
+    padding: 48px 0 36px;
+  }
+
+  .fl-updates-title {
+    font-size: clamp(22px, 6vw, 32px);
+  }
+
+  .fl-updates-sub {
+    font-size: 14px;
+    max-width: 100%;
+  }
+
+  .fl-updates-inner {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
-  .fl-wall { grid-template-columns: repeat(2, 1fr); }
-  .fl-wall-item--wide { grid-column: span 1; aspect-ratio: 4/5; }
+  .fl-wall { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .fl-wall-item--wide { grid-column: span 2; aspect-ratio: 16/9; }
+
+  .fl-hero-content {
+    padding: 40px 16px;
+  }
+
+  .fl-hero-title {
+    font-size: clamp(36px, 9vw, 56px);
+    letter-spacing: -1px;
+  }
+
+  .fl-orchard-title {
+    font-size: clamp(26px, 7vw, 40px);
+  }
+
+  .fl-updates {
+    padding: 0 12px 48px;
+  }
 }

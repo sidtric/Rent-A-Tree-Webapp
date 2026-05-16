@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch, API_BASE } from '../lib/api';
 import { openBalancePayment } from '../lib/razorpay';
-import { PLAN_AMOUNTS } from '../constants/prices';
+import { usePrices } from '../context/PricesContext';
 import './Dashboard.css';
 
 interface TreeUpdate {
@@ -90,6 +90,7 @@ function StatusStepper({ steps, current }: { steps: string[]; current: string })
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const prices = usePrices();
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [orders, setOrders] = useState<BoxOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -335,7 +336,7 @@ export default function Dashboard() {
                 const plan = PLAN_META[r.plan];
                 const variety = VARIETY_META[r.variety];
                 const status = RENTAL_STATUS[r.status];
-                const amounts = PLAN_AMOUNTS[r.plan];
+                const amounts = prices ? { token: prices.plans[r.plan].token, full: prices.plans[r.plan].full } : { token: 0, full: 0 };
                 const balance = amounts.full - amounts.token;
                 const showBalance = r.status !== 'completed' && r.status !== 'cancelled';
                 const balanceDue = new Date(new Date(r.createdAt).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });

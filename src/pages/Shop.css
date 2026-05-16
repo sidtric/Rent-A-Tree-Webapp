@@ -7,7 +7,26 @@
 
 @media (max-width: 768px) {
   .shop-litchi {
-    padding: 40px 24px;
+    padding: 40px 20px;
+  }
+  .notify-modal {
+    padding: 32px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shop-litchi {
+    padding: 32px 16px;
+  }
+  .shop-litchi-sub {
+    font-size: 14px;
+  }
+  .notify-modal {
+    padding: 28px 18px;
+    border-radius: 16px;
+  }
+  .notify-title {
+    font-size: 19px;
   }
 }
 
