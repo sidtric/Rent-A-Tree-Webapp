@@ -7,6 +7,7 @@ import HowItWorks from './components/HowItWorks';
 import BrowseTrees from './components/BrowseTrees';
 import MangoBoxes from './components/MangoBoxes';
 import TreeVideos from './components/TreeVideos';
+import LifeOnFarmPreview from './components/LifeOnFarmPreview';
 import Reviews from './components/Reviews';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
@@ -31,6 +32,7 @@ function Home() {
   return (
     <>
       <Hero />
+      <LifeOnFarmPreview />
       <HowItWorks />
       <BrowseTrees />
       <MangoBoxes />

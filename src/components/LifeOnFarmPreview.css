@@ -1,0 +1,320 @@
+.lofp {
+  padding: 44px 24px 48px;
+  background: linear-gradient(180deg, #f8faf7 0%, #eef2ec 100%);
+  color: #111;
+}
+
+.lofp-inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.lofp-header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.lofp-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.08);
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.lofp-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d97706;
+  animation: lofp-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes lofp-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.45; transform: scale(1.4); }
+}
+
+.lofp-title {
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.8px;
+  margin-bottom: 8px;
+}
+
+.lofp-sub {
+  font-size: 13px;
+  color: #5d6b62;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.lofp-stage {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #0e2015;
+  box-shadow: 0 24px 70px rgba(14, 32, 21, 0.28), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.lofp-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.18);
+  z-index: 3;
+}
+
+.lofp-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(to right, #d97706, #fbbf24);
+  transition: width 0.15s linear;
+}
+
+.lofp-slides {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 8;
+}
+
+.lofp-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease-in-out, transform 6s ease-out;
+  pointer-events: none;
+  transform: scale(1.02);
+}
+
+.lofp-slide--active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1.06);
+}
+
+.lofp-slide-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.lofp-slide-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lofp-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 22px 20px 48px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.4) 55%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lofp-caption-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: 1.4;
+  max-width: 75%;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+}
+
+.lofp-caption-date {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+  padding-bottom: 4px;
+}
+
+.lofp-controls {
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  z-index: 2;
+}
+
+.lofp-dot {
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s, width 0.25s;
+}
+
+.lofp-dot:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.lofp-dot--active {
+  background: #fff;
+  width: 38px;
+}
+
+.lofp-counter {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 5px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+
+.lofp-cta-row {
+  text-align: center;
+  margin-top: 28px;
+}
+
+.lofp-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 26px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #2d6a4f;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 18px rgba(45, 106, 79, 0.25);
+}
+
+.lofp-cta:hover {
+  background: #1b4332;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(45, 106, 79, 0.35);
+}
+
+@media (max-width: 768px) {
+  .lofp {
+    padding: 32px 16px 36px;
+  }
+
+  .lofp-inner {
+    max-width: 100%;
+  }
+
+  .lofp-header {
+    margin-bottom: 18px;
+  }
+
+  .lofp-label {
+    font-size: 10px;
+    letter-spacing: 1.6px;
+    padding: 4px 10px;
+  }
+
+  .lofp-title {
+    font-size: 22px;
+  }
+
+  .lofp-sub {
+    font-size: 12px;
+    padding: 0 8px;
+  }
+
+  .lofp-stage {
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(14, 32, 21, 0.22);
+  }
+
+  .lofp-caption {
+    padding: 18px 16px 44px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .lofp-caption-text {
+    font-size: 13px;
+    max-width: 100%;
+  }
+
+  .lofp-caption-date {
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding-bottom: 0;
+  }
+
+  .lofp-counter {
+    top: 12px;
+    right: 12px;
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .lofp-controls {
+    bottom: 14px;
+    gap: 6px;
+  }
+
+  .lofp-dot {
+    width: 16px;
+    height: 2.5px;
+  }
+
+  .lofp-dot--active {
+    width: 28px;
+  }
+
+  .lofp-cta-row {
+    margin-top: 20px;
+  }
+
+  .lofp-cta {
+    padding: 10px 22px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lofp-slides {
+    aspect-ratio: 4 / 3;
+  }
+}

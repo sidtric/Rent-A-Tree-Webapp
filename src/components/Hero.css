@@ -1,7 +1,7 @@
 .hero {
   position: relative;
-  height: 100vh;
-  min-height: 600px;
+  height: 110vh;
+  min-height: 780px;
   display: flex;
   align-items: center;
   background: #111;
@@ -56,9 +56,7 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at center, rgba(0,0,0,0) 30%, rgba(0,0,0,0.45) 100%),
-    linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 60%, rgba(20,10,0,0.3) 100%),
-    linear-gradient(180deg, rgba(217,119,6,0.08), rgba(0,0,0,0.15));
+    linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.1) 100%);
 }
 
 .hero-content {
