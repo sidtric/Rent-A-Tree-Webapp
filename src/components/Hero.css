@@ -135,9 +135,16 @@
 
 @media (max-width: 768px) {
   .hero {
-    height: auto;
-    min-height: 520px;
-    padding: 60px 0;
+    height: 80vh;
+    min-height: 560px;
+    padding: 60px 0 48px;
+    align-items: stretch;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 
   .hero-heading {
@@ -178,5 +185,9 @@
   .hero-btn-ghost {
     padding: 11px 22px;
     font-size: 14px;
+  }
+
+  .hero-actions {
+    margin-top: auto;
   }
 }

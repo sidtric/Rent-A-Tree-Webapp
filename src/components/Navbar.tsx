@@ -56,6 +56,12 @@ export default function Navbar() {
 
   const handleClick = (link: NavLink) => {
     setMenuOpen(false);
+    setShopOpen(false);
+    if (link.scrollTo === 'root-top') {
+      if (location.pathname !== '/') navigate('/');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     if (!link.scrollTo) return;
     if (location.pathname !== '/') {
       navigate('/');
@@ -93,7 +99,13 @@ export default function Navbar() {
             >
               <a
                 href={link.scrollTo ? undefined : link.href}
-                onClick={link.scrollTo ? () => handleClick(link) : link.dropdown ? (e) => { e.preventDefault(); setShopOpen(o => !o); } : undefined}
+                onClick={
+                  link.scrollTo
+                    ? () => handleClick(link)
+                    : link.dropdown
+                    ? (e) => { e.preventDefault(); setShopOpen(o => !o); }
+                    : () => { setMenuOpen(false); setShopOpen(false); }
+                }
                 style={link.scrollTo || link.dropdown ? { cursor: 'pointer' } : undefined}
                 className={link.dropdown ? 'navbar-dropdown-toggle' : undefined}
               >
