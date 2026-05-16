@@ -5,3 +5,13 @@ body { overflow-x: hidden; width: 100%; }
 
 html { scroll-padding-top: 76px; }
 @media (max-width: 768px) { html { scroll-padding-top: 72px; } }
+
+.btn-arrow {
+  display: inline-block;
+  transition: transform 0.18s ease;
+  margin-left: 2px;
+}
+button:hover .btn-arrow,
+a:hover .btn-arrow {
+  transform: translateX(4px);
+}

@@ -152,7 +152,7 @@ export default function TreeDetail() {
             <div className="td-booked">🔒 This tree is booked</div>
           ) : inCart ? (
             <button className="td-prebook-btn td-prebook-btn--added" onClick={() => setOpen(true)}>
-              Added to Cart — View Cart →
+              Added to Cart — View Cart <span className="btn-arrow">→</span>
             </button>
           ) : (
             <button className="td-prebook-btn" onClick={handleBook}>

@@ -157,7 +157,7 @@ export default function LifeOnFarmPreview() {
 
         <div className="lofp-cta-row">
           <button className="lofp-cta" onClick={() => { navigate('/farm-life'); window.scrollTo({ top: 0 }); }}>
-            See full farm wall →
+            See full farm wall <span className="btn-arrow">→</span>
           </button>
         </div>
       </div>

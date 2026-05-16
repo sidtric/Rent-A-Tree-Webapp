@@ -52,7 +52,7 @@ export default function CartDrawer() {
                 <span className="cd-total-amount">₹{total.toLocaleString('en-IN')}</span>
               </div>
               <button className="cd-checkout" onClick={() => { setOpen(false); navigate('/checkout'); }}>
-                Proceed to Checkout →
+                Proceed to Checkout <span className="btn-arrow">→</span>
               </button>
               <button className="cd-continue" onClick={() => setOpen(false)}>Continue Shopping</button>
             </div>

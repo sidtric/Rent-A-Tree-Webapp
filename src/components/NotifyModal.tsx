@@ -132,7 +132,7 @@ export default function NotifyModal({ icon, title, subtitle, successMsg, backend
 
               {err && <p className="notify-err">{err}</p>}
               <button type="submit" className="notify-submit" disabled={submitting}>
-                {submitting ? 'Saving…' : 'Notify Me →'}
+                {submitting ? 'Saving…' : <>Notify Me <span className="btn-arrow">→</span></>}
               </button>
             </form>
           </>

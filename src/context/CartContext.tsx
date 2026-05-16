@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { useAuth } from './AuthContext';
+import { usePrices } from './PricesContext';
 
 export interface CartItem {
   id: string;
@@ -37,6 +38,7 @@ const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const prices = usePrices();
   const userId = user?.id || 'guest';
   const key = cartKey(userId);
 
@@ -78,11 +80,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(key);
   }
 
-  const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
+  function livePrice(item: CartItem): number {
+    if (prices) {
+      if (item.type === 'tree' && item.plan) {
+        return (prices.plans as any)[item.plan]?.token ?? item.price;
+      }
+      if (item.type === 'box') {
+        return (prices.boxes as any)[item.variety] ?? item.price;
+      }
+    }
+    return item.price;
+  }
+
+  const total = items.reduce((sum, i) => sum + livePrice(i) * i.qty, 0);
   const count = items.reduce((sum, i) => sum + i.qty, 0);
 
+  const itemsWithLivePrice = items.map(i => ({ ...i, price: livePrice(i) }));
+
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQty, clearCart, total, count, open, setOpen }}>
+    <CartContext.Provider value={{ items: itemsWithLivePrice, addItem, removeItem, updateQty, clearCart, total, count, open, setOpen }}>
       {children}
     </CartContext.Provider>
   );

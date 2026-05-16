@@ -145,7 +145,7 @@ export default function OrderConfirmation() {
         {/* Actions */}
         <div className="oc-actions">
           <button className="oc-btn-outline" onClick={() => window.print()}>Print / Save</button>
-          <button className="oc-btn-primary" onClick={() => navigate('/dashboard')}>View Dashboard →</button>
+          <button className="oc-btn-primary" onClick={() => navigate('/dashboard')}>View Dashboard <span className="btn-arrow">→</span></button>
         </div>
 
       </div>

@@ -367,7 +367,7 @@ export default function Checkout() {
             </div>
 
             <button type="submit" form="chk-form" className="chk-pay-btn" disabled={paying}>
-              {paying ? 'Processing…' : `Pay ₹${total.toLocaleString('en-IN')} →`}
+              {paying ? 'Processing…' : <>Pay ₹{total.toLocaleString('en-IN')} <span className="btn-arrow">→</span></>}
             </button>
 
             <p className="chk-secure-note">🔒 Secured by Razorpay · 256-bit encryption</p>
