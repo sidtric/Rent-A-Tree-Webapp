@@ -23,18 +23,22 @@ function PostForm({ onPosted, flash }: { onPosted: (u: AdminPublicUpdate) => voi
       data.append('caption', caption);
       Array.from(files).forEach(f => data.append('media', f));
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE}/api/public-updates`, {
+      const r = await fetch(`${API_BASE}/api/public-updates`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token || ''}` },
         body: data,
-      }).then(r => r.json());
-      if (res._id) {
+      });
+      let res: any = {};
+      try { res = await r.json(); } catch { res = { message: `HTTP ${r.status}` }; }
+      if (r.ok && res._id) {
         onPosted(res);
         setCaption(''); setFiles(null);
         flash('Posted to Life on Farm!');
       } else {
-        flash(res.message || 'Upload failed');
+        flash(res.message || `Upload failed (HTTP ${r.status})`);
       }
+    } catch (err: any) {
+      flash(err?.message || 'Upload error');
     } finally { setPosting(false); }
   };
 

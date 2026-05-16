@@ -37,9 +37,6 @@ export default function TreeVideos() {
   }, []);
 
   if (loading) return null;
-  if (trees.length === 0) return null;
-
-  const visible = showAll ? trees : trees.slice(0, PAGE);
 
   return (
     <section className="tv" id="orchard-board">
@@ -50,38 +47,11 @@ export default function TreeVideos() {
           <p className="tv-sub">Every tree below belongs to a member of our orchard community — tended all season, delivered at harvest.</p>
         </div>
 
-        <div className="tv-grid">
-          {visible.map(r => {
-            const plan = PLAN_META[r.plan];
-            return (
-              <div
-                key={r._id}
-                className="tv-card tv-card--no-photo"
-              >
-                <div className="tv-card-overlay" />
-                <div className="tv-date">{VARIETY_LABEL[r.variety]}</div>
-                <div className="tv-card-info">
-                  <div className="tv-tree">{r.userName}'s Tree</div>
-                  <div className="tv-customer">
-                    <span className="tv-name">{plan.label}</span>
-                    <span className="tv-loc">Season {r.season}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="tv-coming-soon">
+          <span className="tv-coming-soon-pill">Coming Soon</span>
+          <h3 className="tv-coming-soon-title">The orchard board is being prepared</h3>
+          <p className="tv-coming-soon-sub">Real photos and stories from this season's rented trees will appear here once trees are assigned.</p>
         </div>
-
-        {trees.length > PAGE && (
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <button
-              className="tv-browse-btn"
-              onClick={() => setShowAll(s => !s)}
-            >
-              {showAll ? 'Show Less' : `Browse all ${trees.length} rented trees`}
-            </button>
-          </div>
-        )}
       </div>
     </section>
   );
