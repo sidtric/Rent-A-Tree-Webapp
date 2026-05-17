@@ -45,16 +45,16 @@ const PLAN_META_BASE = {
 
 
 const VARIETY_META = {
-  chausa:  { label: 'Chausa Aam',  img: '/chausa-box.jpg' },
-  dasheri: { label: 'Dasheri Aam', img: '/dasheri-box.jpg' },
-  langra:  { label: 'Langra Aam',  img: '/langra-box.jpg' },
+  chausa:  { label: 'Chausa Aam',  img: '/chausa-box.jpg',  treeImg: '/chausa-tree.jpg' },
+  dasheri: { label: 'Dasheri Aam', img: '/dasheri-box.jpg', treeImg: '/dasheri-tree.jpg' },
+  langra:  { label: 'Langra Aam',  img: '/langra-box.jpg',  treeImg: '/langra-tree.jpg' },
 };
 
 const RENTAL_STATUS: Record<Rental['status'], { label: string; cls: string }> = {
-  active:          { label: 'Active',          cls: 'badge-green' },
-  completed:       { label: 'Completed',       cls: 'badge-gray' },
-  cancelled:       { label: 'Cancelled',       cls: 'badge-red' },
-  pending_payment: { label: 'Pending Payment', cls: 'badge-orange' },
+  active:          { label: 'Confirmed',  cls: 'badge-green' },
+  completed:       { label: 'Completed',  cls: 'badge-gray' },
+  cancelled:       { label: 'Cancelled',  cls: 'badge-red' },
+  pending_payment: { label: 'Pending',    cls: 'badge-orange' },
 };
 
 const ORDER_STATUS: Record<BoxOrder['status'], { label: string; cls: string }> = {
@@ -295,9 +295,10 @@ export default function Dashboard() {
                   const plan = PLAN_META[r.plan];
                   const variety = VARIETY_META[r.variety];
                   const ownerFirst = r.user?.name?.split(' ')[0] ?? 'A member';
+                  const allCardImg = treePhotos[r.plan] || variety.treeImg;
                   return (
                     <div key={r._id} className="dash-card">
-                      <div className="dash-card-img" style={{ backgroundImage: `url(${plan.img})` }}>
+                      <div className="dash-card-img" style={{ backgroundImage: `url(${allCardImg})` }}>
                         <span className="dash-card-badge badge-green">Active</span>
                       </div>
                       <div className="dash-card-body">
@@ -340,9 +341,10 @@ export default function Dashboard() {
                 const balance = amounts.full - amounts.token;
                 const showBalance = r.status !== 'completed' && r.status !== 'cancelled';
                 const balanceDue = new Date(new Date(r.createdAt).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                const cardImg = treePhotos[r.plan] || variety.treeImg;
                 return (
                   <div key={r._id} className="dash-card">
-                    <div className="dash-card-img" style={{ backgroundImage: `url(${plan.img})` }}>
+                    <div className="dash-card-img" style={{ backgroundImage: `url(${cardImg})` }}>
                       <span className={`dash-card-badge ${status.cls}`}>{status.label}</span>
                     </div>
                     <div className="dash-card-body">
