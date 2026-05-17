@@ -128,15 +128,15 @@ export default function Navbar() {
               onMouseLeave={link.dropdown ? () => { if (!menuOpen) setShopOpen(false); } : undefined}
             >
               <a
-                href={link.scrollTo ? undefined : link.href}
+                href={link.href}
                 onClick={
                   link.scrollTo
                     ? () => handleClick(link)
                     : link.dropdown
                     ? (e) => { e.preventDefault(); setShopOpen(o => !o); }
-                    : () => { setMenuOpen(false); setShopOpen(false); }
+                    : (e) => { e.preventDefault(); setMenuOpen(false); setShopOpen(false); if (link.href) navigate(link.href); }
                 }
-                style={link.scrollTo || link.dropdown ? { cursor: 'pointer' } : undefined}
+                style={{ cursor: 'pointer' }}
                 className={link.dropdown ? 'navbar-dropdown-toggle' : undefined}
               >
                 {link.label}
@@ -146,7 +146,7 @@ export default function Navbar() {
                 <ul className="navbar-dropdown">
                   {link.dropdown.map(item => (
                     <li key={item.label}>
-                      <a href={item.href} onClick={() => { setShopOpen(false); setMenuOpen(false); }}>{item.label}</a>
+                      <a href={item.href} onClick={(e) => { e.preventDefault(); setShopOpen(false); setMenuOpen(false); navigate(item.href); }}>{item.label}</a>
                     </li>
                   ))}
                 </ul>
