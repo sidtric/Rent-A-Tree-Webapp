@@ -152,6 +152,19 @@
 .chk-pay-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .chk-secure-note { text-align: center; font-size: 0.75rem; color: #888; margin: 12px 0 0; }
 
+/* ── Coupon ── */
+.chk-coupon-row { display: flex; gap: 8px; margin: 4px 0 2px; }
+.chk-coupon-input { flex: 1; border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 8px 12px; font-size: 0.875rem; font-family: inherit; letter-spacing: 0.05em; color: #1a1a1a; transition: border-color 0.15s; }
+.chk-coupon-input:focus { outline: none; border-color: #2d5a27; }
+.chk-coupon-btn { padding: 8px 14px; background: #2d5a27; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+.chk-coupon-btn:hover:not(:disabled) { background: #1e3d1a; }
+.chk-coupon-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.chk-coupon-err { font-size: 0.75rem; color: #e53e3e; margin: 0 0 4px; }
+.chk-coupon-applied { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; color: #2d5a27; font-weight: 600; }
+.chk-coupon-remove { background: none; border: none; font-size: 11px; color: #aaa; cursor: pointer; padding: 0 2px; line-height: 1; }
+.chk-coupon-remove:hover { color: #e53e3e; }
+.chk-discount-amt { color: #2d5a27; font-weight: 600; font-size: 0.9375rem; }
+
 .chk-notes { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; resize: vertical; font-family: inherit; box-sizing: border-box; transition: border-color 0.15s; }
 .chk-notes:focus { outline: none; border-color: #2d5a27; }
 .chk-delivery-est { font-size: 12px; color: #6b7280; text-align: center; margin-top: 8px; }

@@ -31,12 +31,36 @@ export default function Checkout() {
   const [city,    setCity]    = useState(saved?.city    || '');
   const [state,   setState]   = useState(saved?.state   || '');
   const [pincode, setPincode] = useState(saved?.pincode || '');
-  const [notes,    setNotes]    = useState('');
-  const [paying,   setPaying]   = useState(false);
-  const [err,      setErr]      = useState('');
-  const [touched,  setTouched]  = useState<Record<string, boolean>>({});
+  const [notes,         setNotes]         = useState('');
+  const [paying,        setPaying]        = useState(false);
+  const [err,           setErr]           = useState('');
+  const [touched,       setTouched]       = useState<Record<string, boolean>>({});
+  const [couponInput,   setCouponInput]   = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountPct: number } | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponErr,     setCouponErr]     = useState('');
 
   function touch(field: string) { setTouched(prev => ({ ...prev, [field]: true })); }
+
+  const discountAmount = appliedCoupon ? Math.round(total * appliedCoupon.discountPct / 100) : 0;
+  const finalTotal = Math.max(1, total - discountAmount);
+
+  async function applyCoupon() {
+    const code = couponInput.trim().toUpperCase();
+    if (!code) return;
+    setCouponErr('');
+    setCouponLoading(true);
+    try {
+      const data = await apiFetch<{ code: string; discountPct: number }>(`/api/coupons/validate?code=${encodeURIComponent(code)}`);
+      setAppliedCoupon(data);
+      setCouponInput('');
+    } catch (e: any) {
+      setCouponErr(e.message || 'Invalid coupon code.');
+      setAppliedCoupon(null);
+    } finally {
+      setCouponLoading(false);
+    }
+  }
 
   function inputClass(field: string, value: string) {
     if (!touched[field]) return '';
@@ -118,6 +142,7 @@ export default function Checkout() {
         notes,
         phone,
         description: desc,
+        couponCode: appliedCoupon?.code,
         onError: (msg) => { setErr(msg); setPaying(false); },
         onSuccess: async (paymentId, orderId, razorpaySignature) => {
           try {
@@ -358,15 +383,40 @@ export default function Checkout() {
               <span className="chk-free">Free</span>
             </div>
 
+            {/* Coupon */}
+            {appliedCoupon ? (
+              <div className="chk-summary-line">
+                <span className="chk-coupon-applied">
+                  🎉 {appliedCoupon.code} ({appliedCoupon.discountPct}% off)
+                  <button className="chk-coupon-remove" onClick={() => setAppliedCoupon(null)}>✕</button>
+                </span>
+                <span className="chk-discount-amt">−₹{discountAmount.toLocaleString('en-IN')}</span>
+              </div>
+            ) : (
+              <div className="chk-coupon-row">
+                <input
+                  className="chk-coupon-input"
+                  placeholder="Coupon code"
+                  value={couponInput}
+                  onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponErr(''); }}
+                  onKeyDown={e => e.key === 'Enter' && applyCoupon()}
+                />
+                <button className="chk-coupon-btn" onClick={applyCoupon} disabled={couponLoading || !couponInput.trim()}>
+                  {couponLoading ? '…' : 'Apply'}
+                </button>
+              </div>
+            )}
+            {couponErr && <p className="chk-coupon-err">{couponErr}</p>}
+
             <div className="chk-divider" />
 
             <div className="chk-summary-total">
               <span>Total</span>
-              <span>₹{total.toLocaleString('en-IN')}</span>
+              <span>₹{finalTotal.toLocaleString('en-IN')}</span>
             </div>
 
             <button type="submit" form="chk-form" className="chk-pay-btn" disabled={paying}>
-              {paying ? 'Processing…' : <>Pay ₹{total.toLocaleString('en-IN')} <span className="btn-arrow">→</span></>}
+              {paying ? 'Processing…' : <>Pay ₹{finalTotal.toLocaleString('en-IN')} <span className="btn-arrow">→</span></>}
             </button>
 
             <p className="chk-secure-note">🔒 Secured by Razorpay · 256-bit encryption</p>

@@ -42,6 +42,7 @@ interface OpenCheckoutOpts {
   notes?: string;
   phone: string;
   description?: string;
+  couponCode?: string;
   onSuccess: (paymentId: string, orderId: string, signature: string) => void;
   onError?: (message: string) => void;
   onDismiss?: () => void;
@@ -103,6 +104,7 @@ export async function openRazorpayCheckout(opts: OpenCheckoutOpts) {
       body: JSON.stringify({
         type: 'cart',
         items: opts.items,
+        couponCode: opts.couponCode || undefined,
         meta: {
           userName:                   opts.userName,
           userEmail:                  opts.userEmail,
