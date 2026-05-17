@@ -4,6 +4,7 @@ import { apiFetch } from '../lib/api';
 export interface DeliveryAddress {
   flat: string;
   street: string;
+  landmark?: string;
   city: string;
   state: string;
   pincode: string;
