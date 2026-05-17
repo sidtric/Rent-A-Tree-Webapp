@@ -82,7 +82,7 @@ export default function CouponsTab({ flash }: { flash: (m: string) => void }) {
           className="adm-input"
           type="number"
           placeholder="Discount %"
-          min={1} max={100}
+          min={0.1} max={100} step={0.1}
           value={pct}
           onChange={e => setPct(e.target.value)}
           style={{ width: 120 }}
