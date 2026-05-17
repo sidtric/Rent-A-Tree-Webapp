@@ -75,6 +75,7 @@ export default function App() {
     <div id="root-top">
       <ScrollToTop />
       {!isAdminPage && (isAuthPage ? <AuthNav /> : <Navbar />)}
+      {!isAdminPage && <div style={{ height: 68 }} />}
       {!isAdminPage && <CartDrawer />}
       {!isAdminPage && <ShopFloatingBtn />}
       {!isAdminPage && <WhatsAppBtn />}
