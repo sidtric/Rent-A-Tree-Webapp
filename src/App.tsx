@@ -12,6 +12,7 @@ import Reviews from './components/Reviews';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import ShopFloatingBtn from './components/ShopFloatingBtn';
+import WhatsAppBtn from './components/WhatsAppBtn';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import About from './pages/About';
@@ -76,6 +77,7 @@ export default function App() {
       {!isAdminPage && (isAuthPage ? <AuthNav /> : <Navbar />)}
       {!isAdminPage && <CartDrawer />}
       {!isAdminPage && <ShopFloatingBtn />}
+      {!isAdminPage && <WhatsAppBtn />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
