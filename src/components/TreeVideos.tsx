@@ -17,9 +17,9 @@ const PLAN_META = {
 };
 
 const VARIETY_LABEL: Record<string, string> = {
-  chausa:  'Chausa',
-  dasheri: 'Dasheri',
-  langra:  'Langra',
+  chausa:  'Chausa Aam',
+  dasheri: 'Dasheri Aam',
+  langra:  'Langra Aam',
 };
 
 const PAGE = 8;

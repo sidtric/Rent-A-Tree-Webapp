@@ -10,7 +10,7 @@ const STEPS = [
       </svg>
     ),
     title: 'Pick Your Variety & Plan',
-    desc: 'Choose from Chausa, Dasheri, or Langra. Then pick your tree size — Sapling (15–20 kg), Adult (30–45 kg), or Grand (60–80 kg). Every plan is a real, tagged tree on our Ramnagar farm.',
+    desc: 'Choose from Chausa Aam, Dasheri Aam, or Langra Aam. Then pick your tree size — Sapling (15–20 kg), Adult (30–45 kg), or Grand (60–80 kg). Every plan is a real, tagged tree on our Ramnagar farm.',
     tag: 'Step 1',
   },
   {

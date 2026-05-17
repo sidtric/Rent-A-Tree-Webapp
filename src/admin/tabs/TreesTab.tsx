@@ -37,9 +37,9 @@ function TreeForm({ form, editing, saving, onChange, onSave, onCancel }: FormPro
         <div className="adm-field">
           <label>Variety *</label>
           <select value={form.variety} onChange={e => set({ variety: e.target.value as TreeForm['variety'] })}>
-            <option value="chausa">Chausa</option>
-            <option value="dasheri">Dasheri</option>
-            <option value="langra">Langra</option>
+            <option value="chausa">Chausa Aam</option>
+            <option value="dasheri">Dasheri Aam</option>
+            <option value="langra">Langra Aam</option>
           </select>
         </div>
         <div className="adm-field">

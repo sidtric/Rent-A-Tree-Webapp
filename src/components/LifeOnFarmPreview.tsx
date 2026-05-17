@@ -20,7 +20,7 @@ const FALLBACK_SLIDES: SlideItem[] = [
   {
     url: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=1400&q=80',
     type: 'image',
-    caption: 'Chausa mangoes ripening on the tree',
+    caption: 'Chausa Aam ripening on the tree',
     date: new Date().toISOString(),
   },
   {

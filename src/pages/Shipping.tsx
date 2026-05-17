@@ -16,9 +16,9 @@ const SECTIONS = [
   {
     heading: '3. Mango Box Delivery',
     content: [
-      'Chausa: Available from approximately May 15. Dispatch begins when the variety is at peak ripeness.',
-      'Dasheri: Available from approximately June 1.',
-      'Langra: Available from approximately June 10.',
+      'Chausa Aam: Available from approximately May 15. Dispatch begins when the variety is at peak ripeness.',
+      'Dasheri Aam: Available from approximately June 1.',
+      'Langra Aam: Available from approximately June 10.',
       'Actual dispatch dates may shift by a few days depending on harvest conditions. We will send you a dispatch notification with a tracking link.',
       'Estimated delivery time after dispatch: 1–3 business days for metro cities; 3–5 business days for other locations.',
       'Delivery is free for all mango box orders placed on yourorchard.in.',

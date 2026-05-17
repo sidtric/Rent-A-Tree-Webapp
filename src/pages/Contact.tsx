@@ -85,7 +85,7 @@ export default function Contact() {
               <div className="contact-faq-list">
                 <div className="contact-faq-item">
                   <div className="contact-faq-q">When does the harvest season start?</div>
-                  <div className="contact-faq-a">Dasheri harvest begins around May 20, Chausa from June 10, and Langra from June 15.</div>
+                  <div className="contact-faq-a">Dasheri Aam harvest begins around May 20, Chausa Aam from June 10, and Langra Aam from June 15.</div>
                 </div>
                 <div className="contact-faq-item">
                   <div className="contact-faq-q">Can I visit my tree?</div>

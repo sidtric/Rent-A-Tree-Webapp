@@ -124,9 +124,9 @@ function MediaSection({
 
 // ── Your Tree This Week section ──────────────────────────────────────────
 const VARIETIES = [
-  { key: 'chausa',  label: 'Chausa' },
-  { key: 'dasheri', label: 'Dasheri' },
-  { key: 'langra',  label: 'Langra' },
+  { key: 'chausa',  label: 'Chausa Aam' },
+  { key: 'dasheri', label: 'Dasheri Aam' },
+  { key: 'langra',  label: 'Langra Aam' },
 ] as const;
 
 type Variety = 'chausa' | 'dasheri' | 'langra';

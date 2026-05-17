@@ -61,7 +61,7 @@ export default function BrowseTrees() {
           </div>
         </div>
 
-        <p className="bt-note">All trees are located in Ramnagar, Uttarakhand. Available varieties: Chausa, Dasheri, Langra.</p>
+        <p className="bt-note">All trees are located in Ramnagar, Uttarakhand. Available varieties: Chausa Aam, Dasheri Aam, Langra Aam.</p>
       </div>
     </section>
   );

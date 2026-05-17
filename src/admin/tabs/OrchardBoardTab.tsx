@@ -15,7 +15,7 @@ const PLAN_META = {
   grand:   { label: 'Grand Tree',   size: 'Big Tree',   fallback: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
 };
 
-const VARIETY_LABEL: Record<string, string> = { chausa: 'Chausa', dasheri: 'Dasheri', langra: 'Langra' };
+const VARIETY_LABEL: Record<string, string> = { chausa: 'Chausa Aam', dasheri: 'Dasheri Aam', langra: 'Langra Aam' };
 
 const VARIETY_COLOR: Record<string, string> = {
   chausa:  '#fbbf24',

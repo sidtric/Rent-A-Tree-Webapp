@@ -27,7 +27,7 @@ const SECTIONS = [
   {
     heading: '5. Mango Box Orders',
     content: [
-      'Mango boxes are available in three varieties: Chausa (₹1,299 / 10 kg), Dasheri (₹1,499 / 10 kg), and Langra (₹1,399 / 10 kg). Prices may change for future seasons.',
+      'Mango boxes are available in three varieties: Chausa Aam (₹1,299 / 10 kg), Dasheri Aam (₹1,499 / 10 kg), and Langra Aam (₹1,399 / 10 kg). Prices may change for future seasons.',
       'Box orders are prebooked before harvest and dispatched once the variety is in season. Estimated dispatch windows are communicated at time of order.',
       'We cannot guarantee exact delivery dates as harvest timing depends on natural ripening. We will notify you before dispatch.',
     ],

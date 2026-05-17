@@ -6,7 +6,7 @@ import NotifyModal from './NotifyModal';
 const BOXES = [
   {
     id: 'dasheri',
-    name: 'Dasheri',
+    name: 'Dasheri Aam',
     weight: '10 kg',
     available: 'May 20',
     badge: "People's Favourite",
@@ -15,7 +15,7 @@ const BOXES = [
   },
   {
     id: 'chausa',
-    name: 'Chausa',
+    name: 'Chausa Aam',
     weight: '10 kg',
     available: 'June 10',
     badge: 'Jewel of Ramnagar',
@@ -24,7 +24,7 @@ const BOXES = [
   },
   {
     id: 'langra',
-    name: 'Langra',
+    name: 'Langra Aam',
     weight: '10 kg',
     available: 'June 15',
     badge: 'Most Fulfilling',

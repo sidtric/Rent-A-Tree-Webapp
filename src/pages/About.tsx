@@ -81,7 +81,7 @@ export default function About() {
             <span className="about-label">The Orchard</span>
             <h2>Ramnagar, Uttarakhand</h2>
             <p>
-              Our farm sits at the edge of Corbett country in the Kumaon foothills. The elevation is right, the soil holds water well, and the trees here have been producing some of the finest Chausa, Dasheri, and Langra mangoes in the country for decades.
+              Our farm sits at the edge of Corbett country in the Kumaon foothills. The elevation is right, the soil holds water well, and the trees here have been producing some of the finest Chausa Aam, Dasheri Aam, and Langra Aam in the country for decades.
             </p>
             <p>
               We work with orchardists who have been farming this land for two generations. They know every tree by name. They do not use chemicals. They pick by feel, not by calendar.

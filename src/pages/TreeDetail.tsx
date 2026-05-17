@@ -28,9 +28,9 @@ const VARIETY_IMG: Record<Variety, string> = {
 };
 
 const VARIETY_LABEL: Record<Variety, string> = {
-  chausa: 'Chausa',
-  dasheri: 'Dasheri',
-  langra: 'Langra',
+  chausa:  'Chausa Aam',
+  dasheri: 'Dasheri Aam',
+  langra:  'Langra Aam',
 };
 
 
@@ -130,12 +130,11 @@ export default function TreeDetail() {
         </div>
 
         <div className="td-info">
-          <h1 className="td-title">Mango {tree.varietyLabel} <span className="td-id-hash">#{tree.id.slice(-4)}</span></h1>
+          <h1 className="td-title">{tree.varietyLabel} <span className="td-id-hash">#{tree.id.slice(-4)}</span></h1>
 
           <div className="td-tags">
             <span className="td-tag-tier" style={{ background: TIER_COLOR[tree.tier] }}>{tree.tier}</span>
             <span className="td-tag-variety">{tree.varietyLabel}</span>
-            <span className="td-tag-category">Mango</span>
           </div>
 
           <p className="td-id">{tree.id}</p>
