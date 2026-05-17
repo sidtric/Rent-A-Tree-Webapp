@@ -9,7 +9,8 @@ export type AdminTab =
   | 'messages'
   | 'userroles'
   | 'payments'
-  | 'sitesettings';
+  | 'sitesettings'
+  | 'coupons';
 
 export interface AdminTabMeta {
   id: AdminTab;
@@ -29,6 +30,7 @@ export const ADMIN_TABS: AdminTabMeta[] = [
   { id: 'userroles',     icon: '🔑', label: 'User Roles'   },
   { id: 'payments',      icon: '💳', label: 'Payments'     },
   { id: 'sitesettings', icon: '⚙️', label: 'Site Settings' },
+  { id: 'coupons',      icon: '🎟️', label: 'Coupons'       },
 ];
 
 export interface AdminTree {

@@ -13,6 +13,7 @@ import UserRolesTab     from './tabs/UserRolesTab';
 import PaymentsTab      from './tabs/PaymentsTab';
 import SiteSettingsTab  from './tabs/SiteSettingsTab';
 import OrchardBoardTab  from './tabs/OrchardBoardTab';
+import CouponsTab       from './tabs/CouponsTab';
 import './admin.css';
 
 interface Props {
@@ -93,6 +94,7 @@ export default function AdminDashboard({ onExit, user }: Props) {
         {tab === 'userroles'     && <UserRolesTab flash={flash} />}
         {tab === 'payments'      && <PaymentsTab />}
         {tab === 'sitesettings'  && <SiteSettingsTab flash={flash} />}
+        {tab === 'coupons'       && <CouponsTab flash={flash} />}
       </main>
     </div>
   );
