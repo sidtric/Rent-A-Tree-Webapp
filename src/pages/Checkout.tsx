@@ -420,7 +420,6 @@ export default function Checkout() {
             </button>
 
             <p className="chk-secure-note">🔒 Secured by Razorpay · 256-bit encryption</p>
-            <p className="chk-delivery-est">🥭 Estimated delivery: June – July 2026, straight from our Ramnagar orchard.</p>
           </div>
         </div>
 
