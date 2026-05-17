@@ -3,6 +3,18 @@ import { api } from '../api';
 import type { AdminTree, TreeForm } from '../types';
 import { EMPTY_TREE_FORM } from '../types';
 
+const VARIETY_LABELS: Record<string, string> = {
+  chausa:  'Chausa Aam',
+  dasheri: 'Dasheri Aam',
+  langra:  'Langra Aam',
+};
+
+const PLAN_LABELS: Record<string, string> = {
+  sapling: 'Sapling',
+  adult:   'Adult',
+  grand:   'Grand',
+};
+
 interface Props {
   trees: AdminTree[];
   addTree: (t: AdminTree) => void;
@@ -76,8 +88,8 @@ function TreeForm({ form, editing, saving, onChange, onSave, onCancel }: FormPro
 function TreeRow({ tree, onEdit, onDelete }: { tree: AdminTree; onEdit: () => void; onDelete: () => void }) {
   return (
     <tr>
-      <td><span className={`adm-plan-badge adm-plan--${tree.plan}`}>{tree.plan}</span></td>
-      <td className="adm-td-bold">{tree.variety}</td>
+      <td><span className={`adm-plan-badge adm-plan--${tree.plan}`}>{PLAN_LABELS[tree.plan] || tree.plan}</span></td>
+      <td className="adm-td-bold">{VARIETY_LABELS[tree.variety] || tree.variety}</td>
       <td>₹{tree.price?.toLocaleString('en-IN')}</td>
       <td>{tree.yieldMin}–{tree.yieldMax} kg</td>
       <td>

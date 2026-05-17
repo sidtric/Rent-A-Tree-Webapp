@@ -1,5 +1,17 @@
 import { usePayments } from '../hooks/useAdminData';
 
+const VARIETY_LABELS: Record<string, string> = {
+  chausa:  'Chausa Aam',
+  dasheri: 'Dasheri Aam',
+  langra:  'Langra Aam',
+};
+
+const PLAN_LABELS: Record<string, string> = {
+  sapling: 'Sapling',
+  adult:   'Adult',
+  grand:   'Grand',
+};
+
 const STATUS_LABELS: Record<string, string> = {
   captured: 'Captured',
   failed: 'Failed',
@@ -62,7 +74,7 @@ function PaymentRow({ payment }: { payment: any }) {
       </td>
       <td>
         {payment.rental
-          ? <div className="adm-pay-rental-tree">{payment.rental.plan} · {payment.rental.variety}</div>
+          ? <div className="adm-pay-rental-tree">{PLAN_LABELS[payment.rental.plan] || payment.rental.plan} · {VARIETY_LABELS[payment.rental.variety] || payment.rental.variety}</div>
           : <span className="adm-pay-customer-email">—</span>}
       </td>
       <td>

@@ -3,6 +3,25 @@ import type { AdminRental } from '../types';
 
 const RENTAL_STATUSES = ['pending_payment', 'active', 'completed', 'cancelled'];
 
+const RENTAL_STATUS_LABELS: Record<string, string> = {
+  pending_payment: 'Pending Payment',
+  active:          'Active',
+  completed:       'Completed',
+  cancelled:       'Cancelled',
+};
+
+const VARIETY_LABELS: Record<string, string> = {
+  chausa:  'Chausa Aam',
+  dasheri: 'Dasheri Aam',
+  langra:  'Langra Aam',
+};
+
+const PLAN_LABELS: Record<string, string> = {
+  sapling: 'Sapling',
+  adult:   'Adult',
+  grand:   'Grand',
+};
+
 interface Props {
   rentals: AdminRental[];
   updateRentalStatus: (id: string, status: string) => Promise<unknown>;
@@ -28,8 +47,8 @@ function RentalRow({ rental, onStatusChange }: { rental: AdminRental; onStatusCh
           </div>
         </div>
       </td>
-      <td><span className={`adm-plan-badge adm-plan--${rental.plan}`}>{rental.plan}</span></td>
-      <td className="adm-td-dim">{rental.variety}</td>
+      <td><span className={`adm-plan-badge adm-plan--${rental.plan}`}>{PLAN_LABELS[rental.plan] || rental.plan}</span></td>
+      <td className="adm-td-dim">{VARIETY_LABELS[rental.variety] || rental.variety}</td>
       <td>{rental.season}</td>
       <td
         className="adm-td-dim"
@@ -44,7 +63,7 @@ function RentalRow({ rental, onStatusChange }: { rental: AdminRental; onStatusCh
           disabled={saving}
           onChange={e => handleChange(e.target.value)}
         >
-          {RENTAL_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+          {RENTAL_STATUSES.map(s => <option key={s} value={s}>{RENTAL_STATUS_LABELS[s] || s}</option>)}
         </select>
       </td>
       <td className="adm-td-date">

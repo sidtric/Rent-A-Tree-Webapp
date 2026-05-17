@@ -1,5 +1,24 @@
 import type { AdminStats, AdminTree, AdminRental, AdminReview } from '../types';
 
+const VARIETY_LABELS: Record<string, string> = {
+  chausa:  'Chausa Aam',
+  dasheri: 'Dasheri Aam',
+  langra:  'Langra Aam',
+};
+
+const PLAN_LABELS: Record<string, string> = {
+  sapling: 'Sapling',
+  adult:   'Adult',
+  grand:   'Grand',
+};
+
+const RENTAL_STATUS_LABELS: Record<string, string> = {
+  pending_payment: 'Pending Payment',
+  active:          'Active',
+  completed:       'Completed',
+  cancelled:       'Cancelled',
+};
+
 interface Props {
   stats: AdminStats | null;
   trees: AdminTree[];
@@ -47,7 +66,7 @@ function TreesByPlan({ trees }: { trees: AdminTree[] }) {
         const pct = trees.length > 0 ? (count / trees.length) * 100 : 0;
         return (
           <div key={plan} className="adm-bar-row">
-            <span className={`adm-plan-badge adm-plan--${plan}`}>{plan}</span>
+            <span className={`adm-plan-badge adm-plan--${plan}`}>{PLAN_LABELS[plan]}</span>
             <div className="adm-bar-track">
               <div className={`adm-bar-fill adm-bar--${plan}`} style={{ width: `${pct}%` }} />
             </div>
@@ -103,10 +122,10 @@ function RecentRentals({ rentals }: { rentals: AdminRental[] }) {
                     </div>
                   </div>
                 </td>
-                <td><span className={`adm-plan-badge adm-plan--${r.plan}`}>{r.plan}</span></td>
-                <td className="adm-td-dim">{r.variety}</td>
+                <td><span className={`adm-plan-badge adm-plan--${r.plan}`}>{PLAN_LABELS[r.plan] || r.plan}</span></td>
+                <td className="adm-td-dim">{VARIETY_LABELS[r.variety] || r.variety}</td>
                 <td>{r.season}</td>
-                <td><span className={`adm-status adm-status--${r.status}`}>● {r.status}</span></td>
+                <td><span className={`adm-status adm-status--${r.status}`}>● {RENTAL_STATUS_LABELS[r.status] || r.status}</span></td>
                 <td className="adm-td-date">
                   {new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                 </td>

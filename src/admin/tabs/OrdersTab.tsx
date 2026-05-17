@@ -3,6 +3,20 @@ import type { AdminOrder } from '../types';
 
 const ORDER_STATUSES = ['pending_payment', 'confirmed', 'dispatched', 'delivered', 'cancelled'];
 
+const ORDER_STATUS_LABELS: Record<string, string> = {
+  pending_payment: 'Pending Payment',
+  confirmed:       'Confirmed',
+  dispatched:      'Dispatched',
+  delivered:       'Delivered',
+  cancelled:       'Cancelled',
+};
+
+const VARIETY_LABELS: Record<string, string> = {
+  chausa:  'Chausa Aam',
+  dasheri: 'Dasheri Aam',
+  langra:  'Langra Aam',
+};
+
 interface Props {
   orders: AdminOrder[];
   updateOrderStatus: (id: string, status: string) => Promise<unknown>;
@@ -28,7 +42,7 @@ function OrderRow({ order, onStatusChange }: { order: AdminOrder; onStatusChange
           </div>
         </div>
       </td>
-      <td className="adm-td-bold">{order.variety}</td>
+      <td className="adm-td-bold">{VARIETY_LABELS[order.variety] || order.variety}</td>
       <td>{order.quantity} box{order.quantity > 1 ? 'es' : ''}</td>
       <td>₹{order.totalAmount?.toLocaleString('en-IN')}</td>
       <td
@@ -44,7 +58,7 @@ function OrderRow({ order, onStatusChange }: { order: AdminOrder; onStatusChange
           disabled={saving}
           onChange={e => handleChange(e.target.value)}
         >
-          {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+          {ORDER_STATUSES.map(s => <option key={s} value={s}>{ORDER_STATUS_LABELS[s] || s}</option>)}
         </select>
       </td>
       <td className="adm-td-date">
