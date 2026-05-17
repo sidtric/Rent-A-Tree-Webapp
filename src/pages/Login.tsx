@@ -11,7 +11,7 @@ export default function Login() {
   const { user, sendOtp, verifyOtp, googleAuth } = useAuth();
 
   useEffect(() => {
-    if (user) navigate('/', { replace: true });
+    if (user) navigate(from, { replace: true });
   }, [user, navigate]);
 
   const [step, setStep] = useState<'email' | 'otp'>('email');

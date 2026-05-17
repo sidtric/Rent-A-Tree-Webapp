@@ -38,7 +38,7 @@ interface OpenCheckoutOpts {
   userEmail: string;
   userPhone?: string;
   deliveryAddress: string;
-  deliveryAddressStructured?: { flat: string; street: string; city: string; state: string; pincode: string };
+  deliveryAddressStructured?: { flat: string; street: string; landmark?: string; city: string; state: string; pincode: string };
   notes?: string;
   phone: string;
   description?: string;

@@ -57,7 +57,12 @@ export default function BrowseTrees() {
               <span>📍 Ramnagar, Uttarakhand</span>
               <span>3 sizes available</span>
             </div>
-            <button className="bt-btn bt-btn-full">View Trees &amp; Book Now <span className="btn-arrow">→</span></button>
+            <button
+              className="bt-btn bt-btn-full"
+              onClick={e => { e.stopPropagation(); navigate(`/trees/${selectedVariety}-base`); }}
+            >
+              View Trees &amp; Book Now <span className="btn-arrow">→</span>
+            </button>
           </div>
         </div>
 

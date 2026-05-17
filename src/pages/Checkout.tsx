@@ -26,11 +26,12 @@ export default function Checkout() {
   const [name,    setName]    = useState(user?.name || '');
   const [email,   setEmail]   = useState(user?.email || '');
   const [phone,   setPhone]   = useState(user?.phone || '');
-  const [flat,    setFlat]    = useState(saved?.flat    || '');
-  const [street,  setStreet]  = useState(saved?.street  || '');
-  const [city,    setCity]    = useState(saved?.city    || '');
-  const [state,   setState]   = useState(saved?.state   || '');
-  const [pincode, setPincode] = useState(saved?.pincode || '');
+  const [flat,     setFlat]     = useState(saved?.flat     || '');
+  const [street,   setStreet]   = useState(saved?.street   || '');
+  const [landmark, setLandmark] = useState(saved?.landmark || '');
+  const [city,     setCity]     = useState(saved?.city     || '');
+  const [state,    setState]    = useState(saved?.state    || '');
+  const [pincode,  setPincode]  = useState(saved?.pincode  || '');
   const [notes,         setNotes]         = useState('');
   const [paying,        setPaying]        = useState(false);
   const [err,           setErr]           = useState('');
@@ -39,6 +40,8 @@ export default function Checkout() {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountPct: number } | null>(null);
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponErr,     setCouponErr]     = useState('');
+  const [success,       setSuccess]       = useState(false);
+  const [orderNum,      setOrderNum]      = useState('');
 
   function touch(field: string) { setTouched(prev => ({ ...prev, [field]: true })); }
 
@@ -90,6 +93,22 @@ export default function Checkout() {
     return null;
   }
 
+  if (success) {
+    return (
+      <div className="chk-overlay">
+        <div className="chk-success">
+          <div className="chk-success-icon">✓</div>
+          <h2>Order Confirmed!</h2>
+          <p>
+            Your order <strong>{orderNum}</strong> has been placed successfully.
+            We'll be in touch with delivery details soon.
+          </p>
+          <button onClick={() => navigate('/dashboard')}>Go to Dashboard →</button>
+        </div>
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     navigate('/');
     return null;
@@ -103,13 +122,14 @@ export default function Checkout() {
     const values = { name, email, phone, flat, street, city, state, pincode };
     const firstErr = (Object.keys(all) as (keyof typeof validators)[]).map(f => validators[f](values[f])).find(e => e);
     if (firstErr) { setErr(firstErr); return; }
-    handlePay(`${flat}, ${street}, ${city}, ${state} – ${pincode}`);
+    const landmarkPart = landmark.trim() ? `, ${landmark.trim()}` : '';
+    handlePay(`${flat}, ${street}${landmarkPart}, ${city}, ${state} – ${pincode}`);
   }
 
   async function handlePay(deliveryAddress: string) {
     const treeItems = items.filter(i => i.type === 'tree');
     const boxItems  = items.filter(i => i.type === 'box');
-    const addr = { flat, street, city, state, pincode };
+    const addr = { flat, street, landmark, city, state, pincode };
 
     const cartItems = [
       ...treeItems.map(i => ({ plan: i.plan!, quantity: i.qty })),
@@ -138,7 +158,7 @@ export default function Checkout() {
         userEmail: email,
         userPhone: phone,
         deliveryAddress,
-        deliveryAddressStructured: { flat, street, city, state, pincode },
+        deliveryAddressStructured: { flat, street, landmark, city, state, pincode },
         notes,
         phone,
         description: desc,
@@ -153,7 +173,7 @@ export default function Checkout() {
                 razorpayPaymentId: paymentId,
                 razorpaySignature,
                 buyer: { name, email, phone },
-                deliveryAddress: { flat, street, city, state, pincode },
+                deliveryAddress: { flat, street, landmark, city, state, pincode },
                 items: [
                   ...treeItems.map(i => ({ type: 'tree', plan: i.plan!, variety: i.variety, productId: i.id, quantity: i.qty, unitPrice: i.price })),
                   ...boxItems.map(i => ({ type: 'box', variety: i.variety, productId: i.id, quantity: i.qty, unitPrice: i.price })),
@@ -168,6 +188,8 @@ export default function Checkout() {
               body: JSON.stringify({ phone, deliveryAddress: addr }),
             }).then(() => updateUser({ phone, deliveryAddress: addr })).catch(() => {});
 
+            setOrderNum(result.orderNumber);
+            setSuccess(true);
             clearCart();
             navigate('/order-confirmed', {
               state: {
@@ -175,7 +197,7 @@ export default function Checkout() {
                 items: richItems,
                 buyer: { name, email, phone },
                 deliveryAddress,
-                total,
+                total: finalTotal,
                 notes,
                 hasTree,
                 hasBox,
@@ -280,6 +302,16 @@ export default function Checkout() {
               </div>
             </div>
 
+            <div className="chk-field">
+              <label>Landmark <span style={{fontWeight:400,color:'#9ca3af'}}>(optional)</span></label>
+              <input
+                type="text"
+                placeholder="Near Metro Station, Opposite City Mall…"
+                value={landmark}
+                onChange={e => setLandmark(e.target.value)}
+              />
+            </div>
+
             <div className="chk-row chk-row-3">
               <div className="chk-field">
                 <label>City</label>
@@ -323,7 +355,7 @@ export default function Checkout() {
             <div className="chk-field">
               <label>Order notes <span style={{fontWeight:400,color:'#9ca3af'}}>(optional)</span></label>
               <textarea
-                placeholder="Special instructions, landmark, or anything you'd like us to know..."
+                placeholder="Special instructions or anything you'd like us to know..."
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 rows={3}

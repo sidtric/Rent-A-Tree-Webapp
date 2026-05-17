@@ -20,15 +20,24 @@ interface OrderState {
   hasBox: boolean;
 }
 
+const VARIETY_LABELS: Record<string, string> = {
+  chausa:  'Chausa Aam',
+  dasheri: 'Dasheri Aam',
+  langra:  'Langra Aam',
+};
+
+const PLAN_LABELS: Record<string, string> = {
+  sapling: 'Sapling',
+  adult:   'Adult',
+  grand:   'Grand',
+};
+
 function itemLabel(item: RichItem): string {
+  const variety = VARIETY_LABELS[item.variety] || item.variety;
   if (item.type === 'tree') {
-    const plan = item.plan
-      ? item.plan.charAt(0).toUpperCase() + item.plan.slice(1)
-      : '';
-    const variety = item.variety.charAt(0).toUpperCase() + item.variety.slice(1);
+    const plan = item.plan ? (PLAN_LABELS[item.plan] || item.plan) : '';
     return `${variety} ${plan} Tree Rental (Token)`;
   }
-  const variety = item.variety.charAt(0).toUpperCase() + item.variety.slice(1);
   return `${variety} Mango Box`;
 }
 
