@@ -2,9 +2,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { usePrices } from '../context/PricesContext';
-import { apiFetch } from '../lib/api';
 import './TreeDetail.css';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 type Variety = 'chausa' | 'dasheri' | 'langra';
 type Tier = 'Base' | 'Mid' | 'Big';
@@ -55,8 +54,6 @@ export default function TreeDetail() {
   const { user } = useAuth();
   const { items, addItem, setOpen } = useCart();
   const prices = usePrices();
-  const [bookedSlugs, setBookedSlugs] = useState<string[]>([]);
-
   if (!prices) return null;
 
   const trees: Tree[] = (['dasheri', 'chausa', 'langra'] as Variety[]).flatMap((variety, vi) =>
@@ -78,18 +75,6 @@ export default function TreeDetail() {
   );
   const treeBySlug: Record<string, Tree> = Object.fromEntries(trees.map(t => [t.slug, t]));
 
-  useEffect(() => {
-    if (!user) return;
-    apiFetch<{ plan: string; variety: string }[]>('/api/rentals/my')
-      .then(rentals => {
-        const slugs = rentals
-          .filter(r => PLAN_TO_TIER[r.plan])
-          .map(r => `${r.variety}-${PLAN_TO_TIER[r.plan]}`);
-        setBookedSlugs(slugs);
-      })
-      .catch(() => {});
-  }, [user]);
-
   const slug = id ? (LEGACY_MAP[id] || id) : '';
   const tree = treeBySlug[slug];
 
@@ -104,7 +89,6 @@ export default function TreeDetail() {
 
   const balance = tree.fullPrice - tree.tokenPrice;
   const sameVarietyTrees = trees.filter(t => t.variety === tree.variety);
-  const isBooked = bookedSlugs.includes(tree.slug);
   const inCart = items.some(i => i.id === tree.slug);
 
   function handleBook() {
@@ -147,9 +131,7 @@ export default function TreeDetail() {
             Token is non-refundable.
           </p>
 
-          {isBooked ? (
-            <div className="td-booked">🔒 This tree is booked</div>
-          ) : inCart ? (
+          {inCart ? (
             <button className="td-prebook-btn td-prebook-btn--added" onClick={() => setOpen(true)}>
               Added to Cart — View Cart <span className="btn-arrow">→</span>
             </button>
@@ -166,41 +148,29 @@ export default function TreeDetail() {
         <h2 className="td-related-title">All {tree.varietyLabel} Trees</h2>
         <p className="td-related-sub">Pick a size that fits your family. All sizes are {tree.varietyLabel} mangoes from our Ramnagar orchard.</p>
         <div className="td-related-grid">
-          {sameVarietyTrees.map(t => {
-            const tBooked = bookedSlugs.includes(t.slug);
-            return (
-              <div key={t.slug} className={`td-related-card ${tBooked ? 'is-booked' : ''} ${t.slug === tree.slug ? 'is-current' : ''}`}>
-                <div className="td-related-img" style={{ backgroundImage: `url(${t.img})` }}>
-                  {tBooked && <span className="td-related-booked-badge">Booked</span>}
+          {sameVarietyTrees.map(t => (
+            <div key={t.slug} className={`td-related-card ${t.slug === tree.slug ? 'is-current' : ''}`}>
+              <div className="td-related-img" style={{ backgroundImage: `url(${t.img})` }} />
+              <div className="td-related-body">
+                <div className="td-plan-header">
+                  <span className="td-plan-name">{t.tier} Tree</span>
+                  <span className={`td-plan-badge td-plan-badge-${t.tier.toLowerCase()}`}>{t.tier}</span>
                 </div>
-                <div className="td-related-body">
-                  <div className="td-plan-header">
-                    <span className="td-plan-name">{t.tier} Tree</span>
-                    <span className={`td-plan-badge td-plan-badge-${t.tier.toLowerCase()}`}>{t.tier}</span>
-                  </div>
-                  <p className="td-plan-prebook">{tBooked ? 'Booked by you' : 'Booking available'}</p>
-                  <ul className="td-plan-features">
-                    <li>{t.yield} minimum yield</li>
-                    <li>Fresh delivery included</li>
-                    <li>Weekly video updates</li>
-                    <li>Personal nameplate on tree</li>
-                  </ul>
-                  <div className="td-plan-custom">₹{t.tokenPrice.toLocaleString('en-IN')} <span>token · {t.id}</span></div>
-                  {tBooked ? (
-                    <button className="td-related-btn td-related-btn-disabled" disabled>Tree is booked</button>
-                  ) : (
-                    <button
-                      className={`td-plan-btn td-plan-btn-${t.tier.toLowerCase()}`}
-                      onClick={() => {
-                        navigate(`/trees/${t.slug}`);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                    >Book Now</button>
-                  )}
-                </div>
+                <p className="td-plan-prebook">Booking available</p>
+                <ul className="td-plan-features">
+                  <li>{t.yield} minimum yield</li>
+                  <li>Fresh delivery included</li>
+                  <li>Weekly video updates</li>
+                  <li>Personal nameplate on tree</li>
+                </ul>
+                <div className="td-plan-custom">₹{t.tokenPrice.toLocaleString('en-IN')} <span>token · {t.id}</span></div>
+                <button
+                  className={`td-plan-btn td-plan-btn-${t.tier.toLowerCase()}`}
+                  onClick={() => { navigate(`/trees/${t.slug}`); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                >Book Now</button>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </section>
 
