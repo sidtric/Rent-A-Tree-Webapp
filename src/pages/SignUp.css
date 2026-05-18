@@ -155,8 +155,10 @@
   justify-content: center;
   margin-bottom: 4px;
 }
-.signup-google-wrap > div {
+.signup-google-wrap > div,
+.signup-google-wrap iframe {
   width: 100% !important;
+  min-width: unset !important;
 }
 
 .signup-login {
