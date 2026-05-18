@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import './CartDrawer.css';
@@ -5,6 +6,11 @@ import './CartDrawer.css';
 export default function CartDrawer() {
   const { items, removeItem, updateQty, total, count, open, setOpen } = useCart();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
 
   if (!open) return null;
 

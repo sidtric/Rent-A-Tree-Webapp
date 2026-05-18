@@ -174,6 +174,8 @@
 .chk-success h2 { font-size: 1.75rem; font-weight: 800; color: #111; margin: 0 0 12px; }
 .chk-success p { font-size: 1rem; color: #666; margin: 0 0 28px; max-width: 400px; line-height: 1.6; }
 .chk-success button { padding: 13px 28px; background: #2d5a27; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+.chk-verifying-spinner { width: 52px; height: 52px; border: 4px solid #e5e7eb; border-top-color: #2d5a27; border-radius: 50%; animation: chk-spin 0.8s linear infinite; margin-bottom: 24px; }
+@keyframes chk-spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 900px) {
   .chk-overlay { position: relative; z-index: 1; overflow: visible; }

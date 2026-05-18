@@ -34,6 +34,7 @@ export default function Checkout() {
   const [pincode,  setPincode]  = useState(saved?.pincode  || '');
   const [notes,         setNotes]         = useState('');
   const [paying,        setPaying]        = useState(false);
+  const [verifying,     setVerifying]     = useState(false);
   const [err,           setErr]           = useState('');
   const [touched,       setTouched]       = useState<Record<string, boolean>>({});
   const [couponInput,   setCouponInput]   = useState('');
@@ -91,6 +92,18 @@ export default function Checkout() {
   if (!user) {
     navigate('/login', { state: { from: '/checkout' } });
     return null;
+  }
+
+  if (verifying) {
+    return (
+      <div className="chk-overlay">
+        <div className="chk-success">
+          <div className="chk-verifying-spinner" />
+          <h2>Verifying your payment…</h2>
+          <p>Please wait, do not close this page.</p>
+        </div>
+      </div>
+    );
   }
 
   if (success) {
@@ -165,6 +178,8 @@ export default function Checkout() {
         couponCode: appliedCoupon?.code,
         onError: (msg) => { setErr(msg); setPaying(false); },
         onSuccess: async (paymentId, orderId, razorpaySignature) => {
+          setVerifying(true);
+          setPaying(false);
           try {
             const result = await apiFetch<{ orderNumber: string }>('/api/checkout/confirm', {
               method: 'POST',
@@ -205,6 +220,7 @@ export default function Checkout() {
               replace: true,
             });
           } catch {
+            setVerifying(false);
             setErr('Payment was received but we could not save your order. Please contact support with your payment ID: ' + paymentId);
             setPaying(false);
           }
