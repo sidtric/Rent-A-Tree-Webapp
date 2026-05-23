@@ -51,7 +51,7 @@ const STEPS = [
 ];
 
 const STATS = [
-  { value: '500+', label: 'Trees Rented' },
+  { value: '500+', label: 'Trees Available' },
   { value: '2nd',  label: 'Generation Farm' },
   { value: '3',    label: 'Mango Varieties' },
   { value: '100%', label: 'Fresh Harvest' },
