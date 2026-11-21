@@ -38,9 +38,9 @@ interface BoxOrder {
 }
 
 const PLAN_META_BASE = {
-  sapling: { label: 'Sapling Tree', size: 'Small Tree', yield: '15–20 kg', fallbackImg: 'https://images.unsplash.com/photo-1542223616-9de9adb5e3e8?w=600&q=80' },
-  adult:   { label: 'Adult Tree',   size: 'Mid Tree',   yield: '30–45 kg', fallbackImg: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80' },
-  grand:   { label: 'Grand Tree',   size: 'Big Tree',   yield: '50–70 kg', fallbackImg: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
+  sapling: { label: 'Sapling Tree', size: 'Small Tree', yield: '~20 kg', fallbackImg: 'https://images.unsplash.com/photo-1542223616-9de9adb5e3e8?w=600&q=80' },
+  adult:   { label: 'Adult Tree',   size: 'Mid Tree',   yield: '~40 kg', fallbackImg: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80' },
+  grand:   { label: 'Grand Tree',   size: 'Big Tree',   yield: '~65 kg', fallbackImg: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
 };
 
 

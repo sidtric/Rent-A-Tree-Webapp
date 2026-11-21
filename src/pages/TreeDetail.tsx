@@ -41,7 +41,7 @@ const VARIETY_CODE: Record<Variety, string> = {
 
 const TIER_NUM: Record<Tier, string> = { Base: '01', Mid: '02', Big: '03' };
 const TIER_TO_PLAN: Record<Tier, 'sapling' | 'adult' | 'grand'> = { Base: 'sapling', Mid: 'adult', Big: 'grand' };
-const TIER_YIELD: Record<Tier, string> = { Base: '15–25 kg', Mid: '30–45 kg', Big: '50–70 kg' };
+const TIER_YIELD: Record<Tier, string> = { Base: '~20 kg', Mid: '~40 kg', Big: '~65 kg' };
 const LEGACY_MAP: Record<string, string> = { sapling: 'chausa-base', adult: 'dasheri-mid', grand: 'langra-big' };
 
 const TIER_COLOR: Record<Tier, string> = { Base: '#4b5563', Mid: '#2563eb', Big: '#d97706' };

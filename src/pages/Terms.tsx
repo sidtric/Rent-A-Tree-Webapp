@@ -19,7 +19,7 @@ const SECTIONS = [
       'Tree rental plans are seasonal and valid for one mango harvest season (approximately May 15 – July 31 of the applicable year).',
       'Plans are available in three tiers: Sapling (₹2,499), Adult (₹4,499), and Grand (₹7,999). Pricing is per season and is subject to change for future seasons.',
       'Each rented tree is a real, identified tree on our Ramnagar orchard. We assign specific trees to renters at the time of booking.',
-      'Estimated yields (15–20 kg, 30–45 kg, and 60–80 kg respectively) are indicative and may vary due to seasonal weather, pest conditions, or other agricultural factors. YourOrchard is not liable for yield shortfalls caused by such factors.',
+      'Estimated yields (~20 kg, ~40 kg, and ~65 kg respectively) are indicative and may vary due to seasonal weather, pest conditions, or other agricultural factors. YourOrchard is not liable for yield shortfalls caused by such factors.',
       'Tree rentals include: weekly farm update photos/videos, full-season tree care by our team, and free home delivery of your harvest once mangoes are ready.',
       'Renters do not acquire ownership of any tree or land. The rental is a right to receive that tree\'s seasonal produce.',
     ],
